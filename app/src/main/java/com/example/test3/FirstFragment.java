@@ -16,11 +16,28 @@ public class FirstFragment extends Fragment {
 
     @Override
     public View onCreateView(
+
+
+
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
 
+
+
         binding = FragmentFirstBinding.inflate(inflater, container, false);
+
+        Hero knight = new Hero("Knight", 200, 30,10, 0, "Knight");
+
+        Enemy goblin = new Enemy("Goblin", 100, 20, 5, 50, false);
+        Enemy eliteGoblin = new Enemy("Goblin Warlord", 100, 20, 5, 150, true);
+
+        Battle battle1 = new Battle(knight, goblin);
+        battle1.start();
+
+        Battle battle2 = new Battle(knight, eliteGoblin);
+        battle2.start();
+
         return binding.getRoot();
 
     }
