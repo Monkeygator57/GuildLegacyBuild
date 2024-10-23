@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class SpriteSheetImageView extends AppCompatImageView {
     private int currentFrame = 0;
-    private int frameCount = 5; // Total number of frames in the sprite sheet
+    private int frameCount = 6; // Total number of frames in the sprite sheet
     private int frameWidth;
     private int frameHeight;
     private Rect frameToDraw;
