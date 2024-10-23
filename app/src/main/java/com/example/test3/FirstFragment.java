@@ -49,6 +49,10 @@ public class FirstFragment extends Fragment {
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment)
         );
+
+        //Reference the SpriteSheetImageView in this Fragment
+        SpriteSheetImageView spriteSheetImageView = view.findViewById(R.id.spriteImageView);
+        // The animation will start automatically when drawn
     }
 
     @Override
