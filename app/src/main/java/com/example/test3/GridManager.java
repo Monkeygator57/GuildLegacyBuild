@@ -33,16 +33,15 @@ public class GridManager {
     public void initializeGrid() {
         // example setup of initial heroes and enemies,
         heroGrid[0][0] = new Hero("Warrior", 100,30,10,0, "Warrior");
-        enemyGrid[6][0] = new Enemy("Goblin",50, 20,5, 0, false);
-
         heroGrid[1][0] = new Hero("Warrior", 100,30,10,0, "Warrior");
+        heroGrid[2][0] = new Hero("Warrior", 100,30,10,0, "Warrior");
+        heroGrid[1][1] = new Hero("Warrior", 100,30,10,0, "Warrior");
+        heroGrid[2][1] = new Hero("Warrior", 100,30,10,0, "Warrior");
+
+        enemyGrid[8][8] = new Enemy("Goblin",50, 20,5, 0, false);
+        enemyGrid[6][0] = new Enemy("Goblin",50, 20,5, 0, false);
         enemyGrid[6][1] = new Enemy("Goblin",50, 20,5, 0, false);
 
-        heroGrid[1][1] = new Hero("Warrior", 100,30,10,0, "Warrior");
-        enemyGrid[7][0] = new Enemy("Goblin",50, 20,5, 0, false);
-
-        heroGrid[2][0] = new Hero("Warrior", 100,30,10,0, "Warrior");
-        enemyGrid[7][1] = new Enemy("Goblin",50, 20,5, 0, false);
     }
 
     // Method to display grid
@@ -56,8 +55,8 @@ public class GridManager {
 
                 // Set size for each cell
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                layoutParams.width = 50;
-                layoutParams.height = 50;
+                layoutParams.width = 100;
+                layoutParams.height = 100;
                 layoutParams.setMargins(8,8,8,8);
                 container.setLayoutParams(layoutParams);
 
@@ -103,8 +102,8 @@ public class GridManager {
     // help method to create a circular drawable
     private ShapeDrawable createCircleDrawable(int color) {
         ShapeDrawable circle = new ShapeDrawable(new OvalShape());
-        circle.setIntrinsicHeight(100);
-        circle.setIntrinsicWidth(100);
+        circle.setIntrinsicHeight(50);
+        circle.setIntrinsicWidth(50);
         circle.getPaint().setColor(color);
         return circle;
     }
