@@ -38,14 +38,19 @@ public class SpriteSheetImageView extends AppCompatImageView {
             frameWidth = bitmapWidth / frameCount; // Each frame is 1 / frameCount of the width
             frameHeight = bitmapHeight; // Assume each frame has the same height
 
-            // Set the screen position where the sprite animation will be drawn
-            // This centers the animation in the view
-           // int left = (getWidth() - frameWidth) / 2;
-          //  int top = (getHeight() - frameHeight) / 2;
+            // Scale factor (2x double... 4x quadruple)
+            int scaleFactor = 4;
+
+            // Scale the width and height of each frame
+            int scaledWidth = frameWidth * scaleFactor;
+            int scaledHeight = frameHeight * scaleFactor;
+
+            // Center the sprite on the screen
+            int left = (getWidth() - scaledWidth) / 2;
+            int top = (getHeight() - scaledHeight) / 2;
 
             // Define the screen area where the frame will be drawn
-          //  frameOnScreen = new Rect(left, top, frameWidth, frameHeight);
-            frameOnScreen = new Rect(0, 0, frameWidth, frameHeight);
+            frameOnScreen = new Rect(left, top, left + scaledWidth, top + scaledHeight);
         }
     }
 
