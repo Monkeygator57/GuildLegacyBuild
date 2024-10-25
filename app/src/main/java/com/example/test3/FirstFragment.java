@@ -27,10 +27,10 @@ public class FirstFragment extends Fragment {
 
         binding = FragmentFirstBinding.inflate(inflater, container, false);
 
-        Hero knight = new Hero("Knight", 200, 30,10, 0, "Knight");
+        Hero knight = new Hero("Knight", 200, 30,10, 1, 10, 4, 5, 0, "Knight");
 
-        Enemy goblin = new Enemy("Goblin", 100, 20, 5, 50, false);
-        Enemy eliteGoblin = new Enemy("Goblin Warlord", 100, 20, 5, 150, true);
+        Enemy goblin = new Enemy("Goblin", 100, 20, 5, 1, 10, 5, 5, 0, false);
+        Enemy eliteGoblin = new Enemy("Goblin Warlord", 100, 20, 5, 1, 10, 5,5,10,true);
 
         Battle battle1 = new Battle(knight, goblin);
         battle1.start();

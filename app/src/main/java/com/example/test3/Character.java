@@ -7,12 +7,22 @@ public abstract class Character {
     protected int health;
     protected int attackPower;
     protected int defense;
+    protected int speed;
+    protected int strength;
+    protected int agility;
+    protected int intelligence;
+    //protected enum animations{};
 
-    public Character(String name, int health, int attackPower, int defense) {
+    public Character(String name, int health, int attackPower, int defense, int speed, int strength, int agility, int intelligence) {
         this.name = name;
         this.health = health;
         this.attackPower = attackPower;
         this.defense = defense;
+        this.strength = strength;
+        this.agility = agility;
+        this.intelligence = intelligence;
+        this.speed = speed;
+        //this.animations();
     }
 
     // Method for attack
@@ -45,5 +55,21 @@ public abstract class Character {
 
     public int getAttackPower() {
         return attackPower;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getAgility() {
+        return agility;
+    }
+
+    public int getIntelligence() {
+        return intelligence;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 }

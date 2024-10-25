@@ -4,8 +4,8 @@ public class Hero extends Character{
     private int experiencePoints;
     private String heroClass;
 
-    public Hero(String name, int health, int attackPower, int defence, int experiencePoints, String heroClass) {
-        super(name, health, attackPower, defence);
+    public Hero(String name, int health, int attackPower, int defence, int speed, int strength, int intelligence, int agility, int experiencePoints, String heroClass) {
+        super(name, health, attackPower, defence, speed, strength, intelligence, agility);
         this.experiencePoints = experiencePoints;
         this.heroClass = heroClass;
     }

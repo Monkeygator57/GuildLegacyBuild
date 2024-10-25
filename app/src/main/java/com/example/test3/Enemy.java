@@ -4,8 +4,8 @@ public class Enemy extends Character {
     private int lootValue;
     private boolean isElite;
 
-    public Enemy(String name, int health, int attackPower, int defence, int lootValue, boolean isElite) {
-        super (name, health, attackPower, defence);
+    public Enemy(String name, int health, int attackPower, int defence,int speed, int strength, int intelligence, int agility, int lootValue, boolean isElite) {
+        super (name, health, attackPower, defence, speed, strength, intelligence, agility);
         this.lootValue = lootValue;
         this.isElite = isElite;
 
