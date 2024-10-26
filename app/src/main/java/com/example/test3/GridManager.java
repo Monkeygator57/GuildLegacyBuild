@@ -41,7 +41,6 @@ public class GridManager {
         enemyGrid[8][8] = new Enemy("Goblin",50, 20,5, 0, false);
         enemyGrid[6][0] = new Enemy("Goblin",50, 20,5, 0, false);
         enemyGrid[6][1] = new Enemy("Goblin",50, 20,5, 0, false);
-
     }
 
     // Method to display grid
@@ -56,9 +55,12 @@ public class GridManager {
                 // Set size for each cell
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
                 layoutParams.width = 100;
-                layoutParams.height = 100;
-                layoutParams.setMargins(8,8,8,8);
+                layoutParams.height = 120;
+
+                layoutParams.setMargins(6,6,6,6);
                 container.setLayoutParams(layoutParams);
+
+                container.setBackgroundColor(Color.DKGRAY);
 
                 // Add a hero or Enemy to the grid cell
                 if (heroGrid[row][col] != null) {
@@ -80,7 +82,7 @@ public class GridManager {
         circle.setBackground(createCircleDrawable(color));
 
         //Set layout parameters for the circle
-        FrameLayout.LayoutParams circleParams = new FrameLayout.LayoutParams(100,100);
+        FrameLayout.LayoutParams circleParams = new FrameLayout.LayoutParams(80,80);
         circleParams.gravity = Gravity.CENTER;
         circle.setLayoutParams(circleParams);
 
