@@ -11,16 +11,45 @@ import android.util.Log;
 
 public class SpriteSheetImageView extends AppCompatImageView {
     private int currentFrame = 0;
-    private int frameCount = 6; // Total number of frames in the sprite sheet
+    private int frameCount = 1; // Default total frames in the sprite sheet
     private int frameWidth;
     private int frameHeight;
     private Rect frameToDraw;
     private Rect frameOnScreen;
     private Paint paint;
 
+    private Character currentCharacter;
+
+
     public SpriteSheetImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
+    }
+
+    // Method to set the character and its current SpriteState
+    public void setCharacter(Character character) {
+        this.currentCharacter = character;
+        updateSpriteForState();
+    }
+
+    // Internal method to update frame count and resources based on character's state
+    private void updateSpriteForState() {
+        if (currentCharacter == null) return;
+
+        Character.SpriteState spriteState = currentCharacter.getSpriteState();
+
+        // Set the frame count based on character's current state
+        this.frameCount = currentCharacter.getFrameCountsForCurrentState();
+        this.currentFrame = 0; // Reset to first frame
+
+        // Load the correct sprite sheet resource based on character's current state
+        String spriteResource = currentCharacter.getCurrentSpriteSheetResource();
+        if (spriteState != null) {
+            int resourceId = getResources().getIdentifier(spriteResource, "drawable", getContext().getPackageName());
+            setImageResource(resourceId); // Load the sprite sheet
+        }
+
+        invalidate(); // Trigger a redraw
     }
 
     @Override
@@ -53,6 +82,21 @@ public class SpriteSheetImageView extends AppCompatImageView {
             frameOnScreen = new Rect(left, top, left + scaledWidth, top + scaledHeight);
         }
     }
+
+   /* public void setSpriteState(Character.SpriteState state) {
+        Character.SpriteState state = character.getSpriteState();
+
+        frameCount = state.getFrameCount();
+        currentFrame = 0; // Reset to the first frame for the new animation state
+
+        String spriteResource = character.getCurrentSpriteSheetResources();
+        if (spriteResource != null) {
+            int resourceId = getResources().getIdentifier(spriteResource, "drawable", getContext().getPackageName());
+            setImageResource(resourceId);
+        }
+
+        invalidate(); // Trigger a redraw with new frame count
+    }*/
 
     @Override
     protected void onDraw(Canvas canvas) {
