@@ -1,6 +1,7 @@
 package com.example.test3;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.test3.databinding.FragmentFirstBinding;
+import com.example.test3.Battle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ public class FirstFragment extends Fragment {
     private Hero hero;
     private Enemy goblin;
     private Enemy eliteGoblin;
+    private Handler handler = new Handler();
 
     @Nullable
     @Override
@@ -63,18 +66,18 @@ public class FirstFragment extends Fragment {
 
         // Define sprite sheets for the elite goblin character
         Map<Character.SpriteState, String> goblinEliteSpriteSheets = new HashMap<>();
-        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "orc_rider_idle");
-        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "orc_rider_attack01");
-        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "orc_rider_hurt");
-        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "orc_rider_death");
+        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "elite_orc_idle");
+        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
+        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
+        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
 
         Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
         goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 8);
+        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
         goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
         goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
 
-        Enemy eliteGoblin = new Enemy("Goblin Warlord", 150, 25, 10, 1, 15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinFrameCounts);
+        Enemy eliteGoblin = new Enemy("Goblin Warlord", 150, 25, 10, 1, 15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
 
         // Set the hero’s initial state and display it
         spriteSheetImageViewHero.setCharacter(knight);
@@ -87,7 +90,10 @@ public class FirstFragment extends Fragment {
 
         // **Start the battles sequentially**
         //battle1.start();
-        //battle2.start();
+        battle2.start();
+
+        // Schedule the second battle with a delay (e.g., 5 seconds after the first battle starts)
+        handler.postDelayed(battle2::start, 2000);  // 5000 ms = 5 seconds
 
         return binding.getRoot();
     }

@@ -1,5 +1,6 @@
 package com.example.test3;
 
+import android.os.Handler;
 import android.util.Log;
 
 public class Battle {
@@ -7,8 +8,10 @@ public class Battle {
     private Enemy enemy;
     private SpriteSheetImageView heroImageView;
     private SpriteSheetImageView enemyImageView;
+    private Handler handler = new Handler();
+    private int delayBetweenActions = 1000;  // Consistent delay between actions in milliseconds
+    private boolean isTurnInProgress = false;  // Flag to control turn sequence
 
-    // Updated constructor to accept SpriteSheetImageView references
     public Battle(Hero hero, Enemy enemy, SpriteSheetImageView heroImageView, SpriteSheetImageView enemyImageView) {
         this.hero = hero;
         this.enemy = enemy;
@@ -16,48 +19,105 @@ public class Battle {
         this.enemyImageView = enemyImageView;
     }
 
-    // Run the battle with animation
     public void start() {
         Log.v("Battle", "Battle Start");
         System.out.println("Battle starting: " + hero.getName() + " vs " + enemy.getName());
 
-        // Turn-based battle loop with animations
-        while (hero.isAlive() && enemy.isAlive()) {
-            // Hero attacks first
-            hero.setSpriteState(Character.SpriteState.ATTACK);
-            heroImageView.setCharacter(hero);  // Display the attack animation
-            hero.attack(enemy);
+        executeTurn();
+    }
 
-            if (!enemy.isAlive()) {
-                enemy.setSpriteState(Character.SpriteState.DEATH);
-                enemyImageView.setCharacter(enemy);  // Display death animation
-                System.out.println(enemy.getName() + " has been defeated!");
-                break;
-            } else {
-                enemy.setSpriteState(Character.SpriteState.HIT);
-                enemyImageView.setCharacter(enemy);  // Display hit animation
-            }
+    private void executeTurn() {
+        if (isTurnInProgress) return;  // Exit if a turn is already in progress
+        isTurnInProgress = true;       // Mark turn as in progress
 
-            // Enemy's turn
-            enemy.setSpriteState(Character.SpriteState.ATTACK);
-            enemyImageView.setCharacter(enemy);  // Display attack animation
-            enemy.attack(hero);
+        // Clear any pending tasks to prevent overlap
+        handler.removeCallbacksAndMessages(null);
 
-            if (!hero.isAlive()) {
-                hero.setSpriteState(Character.SpriteState.DEATH);
-                heroImageView.setCharacter(hero);  // Display death animation
-                System.out.println(hero.getName() + " has been defeated!");
-            } else {
-                hero.setSpriteState(Character.SpriteState.HIT);
-                heroImageView.setCharacter(hero);  // Display hit animation
-            }
+        if (!hero.isAlive() || !enemy.isAlive()) {
+            displayWinner();
+            isTurnInProgress = false;
+            return;
         }
 
-        // Final winner display
+        // Hero's turn to attack
+        handler.postDelayed(() -> {
+            heroAttack();
+        }, delayBetweenActions);
+    }
+
+    private void heroAttack() {
+        hero.setSpriteState(Character.SpriteState.ATTACK);
+        heroImageView.setCharacter(hero);  // Display attack animation
+        hero.attack(enemy);
+
+        handler.postDelayed(() -> {
+            hero.setSpriteState(Character.SpriteState.IDLE);
+            heroImageView.setCharacter(hero);  // Return to idle after attack
+
+            if (!enemy.isAlive()) {
+                enemyDeath();
+            } else {
+                enemyHit();
+            }
+        }, delayBetweenActions);
+    }
+
+    private void enemyHit() {
+        enemy.setSpriteState(Character.SpriteState.HIT);
+        enemyImageView.setCharacter(enemy);  // Display hit animation
+
+        handler.postDelayed(() -> {
+            enemyAttack();
+        }, delayBetweenActions);
+    }
+
+    private void enemyAttack() {
+        enemy.setSpriteState(Character.SpriteState.ATTACK);
+        enemyImageView.setCharacter(enemy);  // Display attack animation
+        enemy.attack(hero);
+
+        handler.postDelayed(() -> {
+            enemy.setSpriteState(Character.SpriteState.IDLE);
+            enemyImageView.setCharacter(enemy);  // Return to idle after attack
+
+            if (!hero.isAlive()) {
+                heroDeath();
+            } else {
+                heroHit();
+            }
+        }, delayBetweenActions);
+    }
+
+    private void heroHit() {
+        hero.setSpriteState(Character.SpriteState.HIT);
+        heroImageView.setCharacter(hero);  // Display hit animation
+
+        handler.postDelayed(() -> {
+            isTurnInProgress = false;  // Reset flag to allow the next turn
+            executeTurn();             // Restart the turn sequence
+        }, delayBetweenActions);
+    }
+
+    private void heroDeath() {
+        hero.setSpriteState(Character.SpriteState.DEATH);
+        heroImageView.setCharacter(hero);  // Display death animation
+        System.out.println(hero.getName() + " has been defeated!");
+        displayWinner();
+    }
+
+    private void enemyDeath() {
+        enemy.setSpriteState(Character.SpriteState.DEATH);
+        enemyImageView.setCharacter(enemy);  // Display death animation
+        System.out.println(enemy.getName() + " has been defeated!");
+        displayWinner();
+    }
+
+    private void displayWinner() {
         if (hero.isAlive()) {
             System.out.println(hero.getName() + " wins the battle!");
         } else {
             System.out.println(enemy.getName() + " wins the battle!");
         }
+        handler.removeCallbacksAndMessages(null);  // Clear all tasks after the battle
     }
 }
