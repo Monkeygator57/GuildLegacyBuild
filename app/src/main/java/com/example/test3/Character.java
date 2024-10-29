@@ -14,7 +14,7 @@ public abstract class Character {
     protected int agility;
     protected int intelligence;
     protected SpriteState currentState;
-    protected Map<SpriteState, String> spriteSheetResources = new HashMap<>();
+    protected Map<SpriteState, String> spriteSheetResources;
     protected Map<SpriteState, Integer> stateFrameCounts;
 
 

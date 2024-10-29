@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.test3.databinding.FragmentFirstBinding;
-import com.example.test3.Battle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,10 +20,7 @@ public class FirstFragment extends Fragment {
     private SpriteSheetImageView spriteSheetImageViewHero;
     private SpriteSheetImageView spriteSheetImageViewGoblin;
     private SpriteSheetImageView spriteSheetImageViewEliteGoblin;
-    private Hero hero;
-    private Enemy goblin;
-    private Enemy eliteGoblin;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
 
     @Nullable
     @Override
@@ -97,20 +93,6 @@ public class FirstFragment extends Fragment {
 
         return binding.getRoot();
     }
-
-    // Method to update SpriteSheetImageView based on the character's state
-    /*private void updateSpriteImageView(Character character) {
-        // Set character's state to IDLE (or another state as needed)
-        character.setSpriteState(Character.SpriteState.IDLE);
-
-        // Get the current sprite resource based on the character's state
-        String spriteResource = character.getCurrentSpriteSheetResource();
-        int resourceId = getResources().getIdentifier(spriteResource, "drawable", requireActivity().getPackageName());
-        spriteSheetImageView.setImageResource(resourceId);
-
-        // Set the SpriteSheetImageView's state for animation control
-        spriteSheetImageView.setSpriteState(character.getSpriteState());
-    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {

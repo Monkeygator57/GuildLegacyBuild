@@ -4,12 +4,12 @@ import android.os.Handler;
 import android.util.Log;
 
 public class Battle {
-    private Hero hero;
-    private Enemy enemy;
-    private SpriteSheetImageView heroImageView;
-    private SpriteSheetImageView enemyImageView;
-    private Handler handler = new Handler();
-    private int delayBetweenActions = 1000;  // Consistent delay between actions in milliseconds
+    private final Hero hero;
+    private final Enemy enemy;
+    private final SpriteSheetImageView heroImageView;
+    private final SpriteSheetImageView enemyImageView;
+    private final Handler handler = new Handler();
+    private final int delayBetweenActions = 1000;  // Consistent delay between actions in milliseconds
     private boolean isTurnInProgress = false;  // Flag to control turn sequence
 
     public Battle(Hero hero, Enemy enemy, SpriteSheetImageView heroImageView, SpriteSheetImageView enemyImageView) {

@@ -16,13 +16,13 @@ public class SpriteSheetImageView extends AppCompatImageView {
     private int frameHeight;
     private Rect frameToDraw;
     private Rect frameOnScreen;
-    private Paint paint;
+    private final Paint paint;
     private Character currentCharacter;
     private boolean stopAtLastFrame = false;
     private Character.SpriteState lastState = null;
-    private int frameDelay = 200;  // Adjust frame delay as needed
+    private final int frameDelay = 200;  // Adjust frame delay as needed
     private boolean isAnimating = false;  // Animation control flag
-    private Handler animationHandler = new Handler();  // Handler for animation timing
+    private final Handler animationHandler = new Handler();  // Handler for animation timing
 
     public SpriteSheetImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
