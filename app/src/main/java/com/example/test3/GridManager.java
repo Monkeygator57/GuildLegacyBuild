@@ -48,7 +48,7 @@ public class GridManager {
         characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
 
         // display initial grid
-        displayCharacterGrid(); // look at this
+        displayCharacterGrid();
     }
 
     // Method to display the character grid
@@ -122,7 +122,7 @@ public class GridManager {
 
         //Create a label for the character (temp)
         TextView label = new TextView(context);
-        label.setText("Temp NAME");
+        label.setText("Temp NAME");  //hardcoded, but temporary
         label.setTextColor(Color.GRAY);
         label.setTextSize(12);
         label.setGravity(Gravity.CENTER);
@@ -150,9 +150,17 @@ public class GridManager {
             int toRow = toPosition.first;
             int toCol = toPosition.second;
 
-            //calculate translation based on grid cell dimensions
-            float translationX = (toCol - fromCol) * 105;
-            float translationY = (toRow - fromRow) * 105;
+            //Retrieve layout params of one cell
+            FrameLayout sampleCell = (FrameLayout) gridLayout.getChildAt(0);
+            GridLayout.LayoutParams cellParams = (GridLayout.LayoutParams) sampleCell.getLayoutParams();
+
+            // calculate the cell width and height, including ALL margins
+            float cellWidth = cellParams.width + cellParams.leftMargin + cellParams.rightMargin;
+            float cellHeight = cellParams.height + cellParams.topMargin + cellParams.bottomMargin;
+
+            //calculate translation based on true grid dimensions
+            float translationX = (toCol - fromCol) * cellWidth;
+            float translationY = (toRow - fromRow) * cellHeight;
 
             //Animate the character to the new position
             ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", translationX);
