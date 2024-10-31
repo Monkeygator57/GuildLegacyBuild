@@ -37,13 +37,39 @@ public class GridManager {
     //method to initialize the grid with example data. (place hero/enemy)
     public void initializeGrid() {
         // example setup of initial heroes and enemies,
-        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,"Warrior");
-        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,"Warrior");
+        // Define sprite sheets for the knight character
+        Map<Character.SpriteState, String> knightSpriteSheets = new HashMap<>();
+        knightSpriteSheets.put(Character.SpriteState.IDLE, "knight_idle");
+        knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
+        knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
+        knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
+        // Define sprite sheet frames for states
+        Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
+        knightFrameCounts.put(Character.SpriteState.IDLE, 6);     // 4 frames for IDLE
+        knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 6 frames for ATTACK
+        knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 2 frames for HIT
+        knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 5 frames for Death
+
+        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
+        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
         characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
         characterObjects.put(new Pair<>(1, 0), hero2); //place hero2 at (1,0)
 
-        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, false);
-        Enemy enemy2 = new Enemy("Goblin", 50, 20, 5, 0, false);
+        // Define sprite sheets for the goblin character
+        Map<Character.SpriteState, String> goblinSpriteSheets = new HashMap<>();
+        goblinSpriteSheets.put(Character.SpriteState.IDLE, "orc_idle");
+        goblinSpriteSheets.put(Character.SpriteState.ATTACK, "orc_attack01");
+        goblinSpriteSheets.put(Character.SpriteState.HIT, "orc_hurt");
+        goblinSpriteSheets.put(Character.SpriteState.DEATH, "orc_death");
+
+        Map<Character.SpriteState, Integer> goblinFrameCounts = new HashMap<>();
+        goblinFrameCounts.put(Character.SpriteState.IDLE, 6);
+        goblinFrameCounts.put(Character.SpriteState.ATTACK, 6);
+        goblinFrameCounts.put(Character.SpriteState.HIT, 4);
+        goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
+
+        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
+        Enemy enemy2 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
         characterObjects.put(new Pair<>(7, 8), enemy1); //place enemy1 at (9,9)
         characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
 
