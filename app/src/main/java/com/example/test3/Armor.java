@@ -1,15 +1,17 @@
+package com.example.test3;
+
+
 public class Armor extends Item {
     private int defenseBonus;
-    private String armorType; //i figure we can use this to add a bonus (for light armor) and a penalty (for heavy armor) to speed
-    private final int speedModifier;
-
+    private ArmorWeight armorWeight;
+    private int speedModifier;
 
     public enum ArmorWeight {
-        LIGHT(2),    // Speed buff
-        MEDIUM(0),   // No speed effect
-        HEAVY(-3);   // Speed debuff
+        LIGHT(2),
+        MEDIUM(0),
+        HEAVY(-3);
 
-
+        private final int speedModifier;
 
         ArmorWeight(int speedModifier) {
             this.speedModifier = speedModifier;
@@ -20,17 +22,22 @@ public class Armor extends Item {
         }
     }
 
-    public Armor(String name, String description, int value, int weight, int defenseBonus, String armorType) {
-        super(name, description, value);
+    public Armor(String name, String description, int value, int weight, int defenseBonus, ArmorWeight armorWeight) {
+        super(name, description, value, weight);  // Now matches Item constructor
         this.defenseBonus = defenseBonus;
-        this.armorType = armorType;
+        this.armorWeight = armorWeight;
+        this.speedModifier = armorWeight.getSpeedModifier();
     }
 
     public int getDefenseBonus() {
         return defenseBonus;
     }
 
-    public String getArmorType() {
-        return armorType;
+    public ArmorWeight getArmorWeight() {
+        return armorWeight;
+    }
+
+    public int getSpeedModifier() {
+        return speedModifier;
     }
 }
