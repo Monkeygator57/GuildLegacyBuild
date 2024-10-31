@@ -68,8 +68,21 @@ public class GridManager {
         goblinFrameCounts.put(Character.SpriteState.HIT, 4);
         goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
 
+        // Define sprite sheets for the elite goblin character
+        Map<Character.SpriteState, String> goblinEliteSpriteSheets = new HashMap<>();
+        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "elite_orc_idle");
+        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
+        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
+        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
+
+        Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
+        goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
+        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
+        goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
+        goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
+
         Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
-        Enemy enemy2 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
+        Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
         characterObjects.put(new Pair<>(7, 8), enemy1); //place enemy1 at (9,9)
         characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
 
@@ -190,8 +203,10 @@ public class GridManager {
             int toCol = toPosition.second;
 
             //calculate translation based on grid cell dimensions
-            float translationX = (toCol - fromCol) * 105;
-            float translationY = (toRow - fromRow) * 105;
+            int cellSize = 105; // Default cell size
+            int margin = 6;     // Default margin between cells
+            float translationX = (toCol - fromCol) * (cellSize + margin *2);
+            float translationY = (toRow - fromRow) * (cellSize + margin *2);
 
             //Animate the character to the new position
             ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", translationX);
@@ -212,12 +227,12 @@ public class GridManager {
         }
     }
 
-    // helper method to create a circular drawable
+    /*// helper method to create a circular drawable
     private ShapeDrawable createCircleDrawable(int color) {
         ShapeDrawable circle = new ShapeDrawable(new OvalShape());
         circle.setIntrinsicHeight(50);
         circle.setIntrinsicWidth(50);
         circle.getPaint().setColor(color);
         return circle;
-    }
+    }*/
 }
