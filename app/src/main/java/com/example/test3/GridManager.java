@@ -127,35 +127,48 @@ public class GridManager {
         layoutParams.setMargins(6,6,6,6);
         container.setLayoutParams(layoutParams);
 
-        // determine color of circle (temp)
+        /*// determine color of circle (temp)
         int color =0;
 
         if (character instanceof Hero) {
             color =Color.BLUE;
         } else if (character instanceof Enemy) {
             color = Color.RED;
-        }
+        }*/
 
-        // create a circle to visually represent the character
+        // Create and configure the SpriteSheetImageView for the character
+        SpriteSheetImageView spriteView = new SpriteSheetImageView(context, null);
+        spriteView.setCharacter((Character) character); // Set the character
+
+        /*// create a circle to visually represent the character
         View circle = new View(context);
         circle.setBackground(createCircleDrawable(color));
+
 
         //Set layout parameters for the circle
         FrameLayout.LayoutParams circleParams = new FrameLayout.LayoutParams(80,80);
         circleParams.gravity = Gravity.CENTER;
         circle.setLayoutParams(circleParams);
-
+*/
+        // Set layout parameter for the sprite
+        FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(80, 90);
+        spriteParams.gravity = Gravity.CENTER;
+        spriteView.setLayoutParams(spriteParams);
 
         //Create a label for the character (temp)
         TextView label = new TextView(context);
-        label.setText("Temp NAME");
+        label.setText(((Character) character).getName());
         label.setTextColor(Color.GRAY);
         label.setTextSize(12);
         label.setGravity(Gravity.CENTER);
 
-        //add the circle and label to the container
+        /*//add the circle and label to the container
         container.addView(circle);
         container.addView(label);
+*/
+        // Add the sprite and label to the container
+        container.addView(spriteView);
+        //container.addView(label);
 
         gridLayout.addView(container);
 
