@@ -2,8 +2,6 @@ package com.example.test3;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -37,13 +35,52 @@ public class GridManager {
     //method to initialize the grid with example data. (place hero/enemy)
     public void initializeGrid() {
         // example setup of initial heroes and enemies,
-        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,"Warrior");
-        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,"Warrior");
+        // Define sprite sheets for the knight character
+        Map<Character.SpriteState, String> knightSpriteSheets = new HashMap<>();
+        knightSpriteSheets.put(Character.SpriteState.IDLE, "knight_idle");
+        knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
+        knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
+        knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
+        // Define sprite sheet frames for states
+        Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
+        knightFrameCounts.put(Character.SpriteState.IDLE, 6);     // 4 frames for IDLE
+        knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 6 frames for ATTACK
+        knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 2 frames for HIT
+        knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 5 frames for Death
+
+        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
+        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
         characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
         characterObjects.put(new Pair<>(1, 0), hero2); //place hero2 at (1,0)
 
-        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, false);
-        Enemy enemy2 = new Enemy("Goblin", 50, 20, 5, 0, false);
+        // Define sprite sheets for the goblin character
+        Map<Character.SpriteState, String> goblinSpriteSheets = new HashMap<>();
+        goblinSpriteSheets.put(Character.SpriteState.IDLE, "orc_idle");
+        goblinSpriteSheets.put(Character.SpriteState.ATTACK, "orc_attack01");
+        goblinSpriteSheets.put(Character.SpriteState.HIT, "orc_hurt");
+        goblinSpriteSheets.put(Character.SpriteState.DEATH, "orc_death");
+
+        Map<Character.SpriteState, Integer> goblinFrameCounts = new HashMap<>();
+        goblinFrameCounts.put(Character.SpriteState.IDLE, 6);
+        goblinFrameCounts.put(Character.SpriteState.ATTACK, 6);
+        goblinFrameCounts.put(Character.SpriteState.HIT, 4);
+        goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
+
+        // Define sprite sheets for the elite goblin character
+        Map<Character.SpriteState, String> goblinEliteSpriteSheets = new HashMap<>();
+        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "elite_orc_idle");
+        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
+        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
+        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
+
+        Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
+        goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
+        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
+        goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
+        goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
+
+        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
+        Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
         characterObjects.put(new Pair<>(7, 8), enemy1); //place enemy1 at (9,9)
         characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
 
@@ -101,34 +138,24 @@ public class GridManager {
         layoutParams.setMargins(6,6,6,6);
         container.setLayoutParams(layoutParams);
 
-        // determine color of circle (temp)
-        int color =0;
+        // Create and configure the SpriteSheetImageView for the character
+        SpriteSheetImageView spriteView = new SpriteSheetImageView(context, null);
+        spriteView.setCharacter((Character) character); // Set the character
 
-        if (character instanceof Hero) {
-            color =Color.BLUE;
-        } else if (character instanceof Enemy) {
-            color = Color.RED;
-        }
-
-        // create a circle to visually represent the character
-        View circle = new View(context);
-        circle.setBackground(createCircleDrawable(color));
-
-        //Set layout parameters for the circle
-        FrameLayout.LayoutParams circleParams = new FrameLayout.LayoutParams(80,80);
-        circleParams.gravity = Gravity.CENTER;
-        circle.setLayoutParams(circleParams);
-
+        // Set layout parameter for the sprite
+        FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(80, 80);
+        spriteParams.gravity = Gravity.CENTER;
+        spriteView.setLayoutParams(spriteParams);
 
         //Create a label for the character (temp)
         TextView label = new TextView(context);
-        label.setText("Temp NAME");
+        label.setText(((Character) character).getName());
         label.setTextColor(Color.GRAY);
         label.setTextSize(12);
         label.setGravity(Gravity.CENTER);
 
-        //add the circle and label to the container
-        container.addView(circle);
+        // Add the sprite and label to the container
+        container.addView(spriteView);
         container.addView(label);
 
         gridLayout.addView(container);
@@ -151,8 +178,10 @@ public class GridManager {
             int toCol = toPosition.second;
 
             //calculate translation based on grid cell dimensions
-            float translationX = (toCol - fromCol) * 105;
-            float translationY = (toRow - fromRow) * 105;
+            int cellSize = 105; // Default cell size
+            int margin = 6;     // Default margin between cells
+            float translationX = (toCol - fromCol) * (cellSize + margin *2);
+            float translationY = (toRow - fromRow) * (cellSize + margin *2);
 
             //Animate the character to the new position
             ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", translationX);
@@ -173,12 +202,4 @@ public class GridManager {
         }
     }
 
-    // helper method to create a circular drawable
-    private ShapeDrawable createCircleDrawable(int color) {
-        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
-        circle.setIntrinsicHeight(50);
-        circle.setIntrinsicWidth(50);
-        circle.getPaint().setColor(color);
-        return circle;
-    }
 }
