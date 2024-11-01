@@ -18,13 +18,12 @@ public class GridBattleActivity extends AppCompatActivity {
         GridLayout gridLayout = findViewById(R.id.characterGrid);
         gridManager = new GridManager(gridLayout, this);
 
-        gridManager.initializeGrid();
-        gridManager.displayCharacterGrid(); // look at this
+        gridManager.initializeGrid(); // initialize grid with characters.
 
         Button moveHeroButton = findViewById(R.id.moveHeroButton);
         moveHeroButton.setOnClickListener(view -> {
             //move a hero from 0,0 to 1,1
-            gridManager.moveCharacter(new Pair<>(0,0), new Pair<>(1,1));
+            gridManager.moveCharacter(new Pair<>(0,0), new Pair<>(5,5));
         });
     }
 }
