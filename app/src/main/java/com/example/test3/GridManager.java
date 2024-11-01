@@ -2,14 +2,11 @@ package com.example.test3;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import androidx.gridlayout.widget.GridLayout;
 import android.widget.TextView;
-
 import android.animation.ObjectAnimator;
 import android.util.Pair;
 import java.util.HashMap;
@@ -34,22 +31,6 @@ public class GridManager {
         this.characterObjects = new HashMap<>();
     }
 
-    //method to initialize the grid with example data. (place hero/enemy)
-    public void initializeGrid() {
-        // example setup of initial heroes and enemies,
-        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,"Warrior");
-        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,"Warrior");
-        characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
-        characterObjects.put(new Pair<>(1, 0), hero2); //place hero2 at (1,0)
-
-        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, false);
-        Enemy enemy2 = new Enemy("Goblin", 50, 20, 5, 0, false);
-        characterObjects.put(new Pair<>(7, 8), enemy1); //place enemy1 at (9,9)
-        characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
-
-        // display initial grid
-        displayCharacterGrid();
-    }
 
     // Method to display the character grid
     public void displayCharacterGrid() {
@@ -102,35 +83,6 @@ public class GridManager {
         container.setLayoutParams(layoutParams);
 
         // determine color of circle (temp)
-        int color =0;
-
-        if (character instanceof Hero) {
-            color =Color.BLUE;
-        } else if (character instanceof Enemy) {
-            color = Color.RED;
-        }
-
-        // create a circle to visually represent the character
-        View circle = new View(context);
-        circle.setBackground(createCircleDrawable(color));
-
-        //Set layout parameters for the circle
-        FrameLayout.LayoutParams circleParams = new FrameLayout.LayoutParams(80,80);
-        circleParams.gravity = Gravity.CENTER;
-        circle.setLayoutParams(circleParams);
-
-
-        //Create a label for the character (temp)
-        TextView label = new TextView(context);
-        label.setText("Temp NAME");  //hardcoded, but temporary
-        label.setTextColor(Color.GRAY);
-        label.setTextSize(12);
-        label.setGravity(Gravity.CENTER);
-
-        //add the circle and label to the container
-        container.addView(circle);
-        container.addView(label);
-
         gridLayout.addView(container);
 
         //Save both the view and the character object in the hashmaps
@@ -179,14 +131,5 @@ public class GridManager {
             characterObjects.remove(fromPosition);
             characterObjects.put(toPosition, character);
         }
-    }
-
-    // helper method to create a circular drawable
-    private ShapeDrawable createCircleDrawable(int color) {
-        ShapeDrawable circle = new ShapeDrawable(new OvalShape());
-        circle.setIntrinsicHeight(50);
-        circle.setIntrinsicWidth(50);
-        circle.getPaint().setColor(color);
-        return circle;
     }
 }
