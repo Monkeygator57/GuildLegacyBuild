@@ -36,53 +36,31 @@ public class GridManager {
     public void initializeGrid() {
         // example setup of initial heroes and enemies,
         // Define sprite sheets for the knight character
-        Map<Character.SpriteState, String> knightSpriteSheets = new HashMap<>();
-        knightSpriteSheets.put(Character.SpriteState.IDLE, "knight_idle");
-        knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
-        knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
-        knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
-        // Define sprite sheet frames for states
-        Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
-        knightFrameCounts.put(Character.SpriteState.IDLE, 6);     // 4 frames for IDLE
-        knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 6 frames for ATTACK
-        knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 2 frames for HIT
-        knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 5 frames for Death
 
-        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
-        characterObjects.put(new Pair<>(1, 0), hero2); //place hero2 at (1,0)
+        Hero hero1 = CharacterFactory.createWarrior();
+        Hero hero2 = CharacterFactory.createWarrior();
+        Hero hero3 = CharacterFactory.createRanger();
+        Hero hero4 = CharacterFactory.createMage();
+        Hero hero5 = CharacterFactory.createRanger();
 
-        // Define sprite sheets for the goblin character
-        Map<Character.SpriteState, String> goblinSpriteSheets = new HashMap<>();
-        goblinSpriteSheets.put(Character.SpriteState.IDLE, "orc_idle");
-        goblinSpriteSheets.put(Character.SpriteState.ATTACK, "orc_attack01");
-        goblinSpriteSheets.put(Character.SpriteState.HIT, "orc_hurt");
-        goblinSpriteSheets.put(Character.SpriteState.DEATH, "orc_death");
 
-        Map<Character.SpriteState, Integer> goblinFrameCounts = new HashMap<>();
-        goblinFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinFrameCounts.put(Character.SpriteState.ATTACK, 6);
-        goblinFrameCounts.put(Character.SpriteState.HIT, 4);
-        goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
+        //Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
+        //Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
+        characterObjects.put(new Pair<>(3, 2), hero1); //place hero1 at (0,0)
+        characterObjects.put(new Pair<>(5, 2), hero2); //place hero2 at (1,0)
+        characterObjects.put(new Pair<>(2, 1), hero3);
+        characterObjects.put(new Pair<>(4, 1), hero4);
+        characterObjects.put(new Pair<>(6, 1), hero5);
 
-        // Define sprite sheets for the elite goblin character
-        Map<Character.SpriteState, String> goblinEliteSpriteSheets = new HashMap<>();
-        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "elite_orc_idle");
-        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
-        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
-        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
+        Enemy enemy1 = CharacterFactory.createGoblin();
+        Enemy enemy2 = CharacterFactory.createGoblin();
+        Enemy enemy3 = CharacterFactory.createGoblin();
 
-        Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
-        goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
-        goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
-        goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
-
-        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
-        Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
-        characterObjects.put(new Pair<>(7, 8), enemy1); //place enemy1 at (9,9)
-        characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
+        //Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
+        //Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
+        characterObjects.put(new Pair<>(6, 6), enemy1); //place enemy1 at (9,9)
+        characterObjects.put(new Pair<>(4, 6), enemy2); //place enemy2 at (8,9)
+        characterObjects.put(new Pair<>(2, 6), enemy3);
 
         // display initial grid
         displayCharacterGrid(); // look at this
@@ -156,7 +134,7 @@ public class GridManager {
 
         // Add the sprite and label to the container
         container.addView(spriteView);
-        container.addView(label);
+        //container.addView(label);
 
         gridLayout.addView(container);
 

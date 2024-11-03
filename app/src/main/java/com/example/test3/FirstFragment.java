@@ -30,59 +30,20 @@ public class FirstFragment extends Fragment {
         spriteSheetImageViewGoblin = binding.spriteImageViewGoblin;
         spriteSheetImageViewEliteGoblin = binding.spriteImageViewEliteGoblin;
 
-        // Define sprite sheets for the knight character
-        Map<Character.SpriteState, String> knightSpriteSheets = new HashMap<>();
-        knightSpriteSheets.put(Character.SpriteState.IDLE, "knight_idle");
-        knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
-        knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
-        knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
-        // Define sprite sheet frames for states
-        Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
-        knightFrameCounts.put(Character.SpriteState.IDLE, 6);     // 4 frames for IDLE
-        knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 6 frames for ATTACK
-        knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 2 frames for HIT
-        knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 5 frames for Death
+       Hero warrior = CharacterFactory.createWarrior();
 
-        Hero knight = new Hero("Knight", 200, 30, 10, 1, 10, 4, 5, 0, "Knight", knightSpriteSheets, knightFrameCounts);
+       Enemy goblin = CharacterFactory.createGoblin();
+       Enemy eliteGoblin = CharacterFactory.createGoblinElite();
 
-        // Define sprite sheets for the goblin character
-        Map<Character.SpriteState, String> goblinSpriteSheets = new HashMap<>();
-        goblinSpriteSheets.put(Character.SpriteState.IDLE, "orc_idle");
-        goblinSpriteSheets.put(Character.SpriteState.ATTACK, "orc_attack01");
-        goblinSpriteSheets.put(Character.SpriteState.HIT, "orc_hurt");
-        goblinSpriteSheets.put(Character.SpriteState.DEATH, "orc_death");
-
-        Map<Character.SpriteState, Integer> goblinFrameCounts = new HashMap<>();
-        goblinFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinFrameCounts.put(Character.SpriteState.ATTACK, 6);
-        goblinFrameCounts.put(Character.SpriteState.HIT, 4);
-        goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
-
-        Enemy goblin = new Enemy("Goblin", 100, 20, 5, 1, 10, 5, 5, 0, false, goblinSpriteSheets, goblinFrameCounts);
-
-        // Define sprite sheets for the elite goblin character
-        Map<Character.SpriteState, String> goblinEliteSpriteSheets = new HashMap<>();
-        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "elite_orc_idle");
-        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
-        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
-        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
-
-        Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
-        goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
-        goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
-        goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
-
-        Enemy eliteGoblin = new Enemy("Goblin Warlord", 150, 25, 10, 1, 15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
 
         // Set the hero’s initial state and display it
-        spriteSheetImageViewHero.setCharacter(knight);
+        spriteSheetImageViewHero.setCharacter(warrior);
         spriteSheetImageViewGoblin.setCharacter(goblin);
         spriteSheetImageViewEliteGoblin.setCharacter(eliteGoblin);
 
         // **Initialize battles with sprite views for hero and enemies**
-        Battle battle1 = new Battle(knight, goblin, spriteSheetImageViewHero, spriteSheetImageViewGoblin);
-        Battle battle2 = new Battle(knight, eliteGoblin, spriteSheetImageViewHero, spriteSheetImageViewEliteGoblin);
+        Battle battle1 = new Battle(warrior, goblin, spriteSheetImageViewHero, spriteSheetImageViewGoblin);
+        Battle battle2 = new Battle(warrior, eliteGoblin, spriteSheetImageViewHero, spriteSheetImageViewEliteGoblin);
 
         // **Start the battles sequentially**
         //battle1.start();

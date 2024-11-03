@@ -6,8 +6,8 @@ public class Hero extends Character{
     private int experiencePoints;
     private String heroClass;
 
-    public Hero(String name, int health, int attackPower, int defence, int speed, int strength, int intelligence, int agility, int experiencePoints, String heroClass, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts) {
-        super(name, health, attackPower, defence, speed, strength, intelligence, agility, spriteSheetResources, stateFrameCounts);
+    public Hero(String name, int health, int attackPower, int defence, int speed, int moveSpeed, int strength, int intelligence, int agility, int experiencePoints, String heroClass, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
+        super(name, health, attackPower, defence, speed, moveSpeed, strength, intelligence, agility, spriteSheetResources, stateFrameCounts, facingLeft);
         this.experiencePoints = experiencePoints;
         this.heroClass = heroClass;
     }

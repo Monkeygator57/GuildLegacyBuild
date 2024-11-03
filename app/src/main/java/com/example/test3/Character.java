@@ -1,7 +1,12 @@
 package com.example.test3;
 
+import android.util.Pair;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
+
 
 // Parent Class
 public abstract class Character {
@@ -10,13 +15,18 @@ public abstract class Character {
     protected int attackPower;
     protected int defense;
     protected int speed;
+    protected int moveSpeed;
     protected int strength;
     protected int agility;
     protected int intelligence;
+    protected boolean facingLeft;
     protected SpriteState currentState;
     protected Map<SpriteState, String> spriteSheetResources;
     protected Map<SpriteState, Integer> stateFrameCounts;
 
+    // New properties for pathfinding and movement
+    protected int x, y; // Current position on grid
+    protected List<Pair<Integer, Integer>> path = new LinkedList<>(); // Path to follow
 
     public enum SpriteState {
         IDLE(5), ATTACK(3), HIT(2), DEATH(4);
@@ -34,7 +44,7 @@ public abstract class Character {
 
 
 
-    public Character(String name, int health, int attackPower, int defense, int speed, int strength, int agility, int intelligence, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts) {
+    public Character(String name, int health, int attackPower, int defense, int speed, int moveSpeed, int strength, int agility, int intelligence, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
         this.name = name;
         this.health = health;
         this.attackPower = attackPower;
@@ -43,6 +53,8 @@ public abstract class Character {
         this.agility = agility;
         this.intelligence = intelligence;
         this.speed = speed;
+        this.moveSpeed = moveSpeed;
+        this.facingLeft = facingLeft;
         this.spriteSheetResources = spriteSheetResources != null ? spriteSheetResources : new HashMap<>();
         this.stateFrameCounts = stateFrameCounts != null ? stateFrameCounts : new HashMap<>();
         this.currentState = SpriteState.IDLE;
@@ -64,6 +76,24 @@ public abstract class Character {
         return currentState;
     }
 
+
+    // Pathfinding method to move towards a target
+    public void moveTowards(int targetX, int targetY) {
+        AStarPathfinder pathfinder = new AStarPathfinder();
+        this.path = pathfinder.findPath(x, y, targetX, targetY);
+    }
+
+    // Method to follow path using moveSpeed
+    public void followPath() {
+        for (int i = 0; i < moveSpeed && !path.isEmpty(); i++) {
+            Pair<Integer, Integer> nextPosition = path.remove(0);
+            this.x = nextPosition.first;
+            this.y = nextPosition.second;
+        }
+        // Set facing direction based on movement
+        facingLeft = !path.isEmpty() && path.get(0).first < x;
+    }
+
     // Method for attack
     public abstract void attack(Character target);
 
@@ -80,9 +110,15 @@ public abstract class Character {
     }
 
     // Gathers and Setters
+    public boolean getFacingLeft() {
+        return facingLeft;
+    }
+
     public int getHealth() {
         return health;
     }
+
+    public int getMoveSpeed(){ return moveSpeed; }
 
     public String getName() {
         return name;
