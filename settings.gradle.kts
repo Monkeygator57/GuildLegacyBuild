@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Test 3"
 include(":app")
- 
+include(":guildlegacybuild")
