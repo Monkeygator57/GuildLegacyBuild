@@ -7,16 +7,18 @@ public abstract class Character {
     protected int health;
     protected int attackPower;
     protected int defense;
+    protected int baseSpeed;
     protected Weapon equippedWeaon;
     protected Armor equippedArmor;
 
-    public Character(String name, int health, int attackPower, int defense) {
+    public Character(String name, int health, int attackPower, int defense, int baseSpeed) {
         this.name = name;
         this.health = health;
         this.attackPower = attackPower;
         this.defense = defense;
+        this.baseSpeed = baseSpeed;
+        this.equippedWeapon = null;
         this.equippedArmor = null;
-        this.equippedWeaon = null;
     }
 
     // Method for attack
@@ -80,5 +82,13 @@ public abstract class Character {
             totalDefense += equippedArmor.getDefenseBonus();
         }
         return totalDefense;
+    }
+
+    public int getTotalSpeed() {
+        int totalSpeed = baseSpeed;
+        if (equippedArmor != null) {
+            totalSpeed += equippedArmor.getSpeedModifier();
+        }
+        return Math.max(1, totalSpeed); // Speed cannot go below 1
     }
 }
