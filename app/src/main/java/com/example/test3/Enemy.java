@@ -1,5 +1,7 @@
 package com.example.test3;
 
+import android.util.Log;
+
 import java.util.Map;
 
 public class Enemy extends Character {
@@ -21,11 +23,10 @@ public class Enemy extends Character {
 
     @Override
     public void attack(Character target) {
-        setSpriteState(SpriteState.ATTACK);
-        System.out.println(name + " attacks " + target.getName() + " for " + attackPower + " damage!");
-        target.takeDamage(attackPower);
-
-        setSpriteState(SpriteState.IDLE);
+        // Implement attack logic
+        int damage = this.attackPower; // Adjust as needed
+        target.takeDamage(damage);
+        Log.d("Enemy", this.name + " attacked " + target.getName() + " for " + damage + " damage.");
     }
 
     // Loot System mechanics goes here

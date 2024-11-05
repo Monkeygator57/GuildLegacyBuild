@@ -1,5 +1,7 @@
 package com.example.test3;
 
+import android.util.Log;
+
 import java.util.Map;
 
 public class Hero extends Character{
@@ -13,7 +15,7 @@ public class Hero extends Character{
     int maxHealth;
 
     public Hero(String name,Job job, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
-        super(name,job.getBaseHealth(), 1, 0, 0,2,3, job.getBaseStrength(),job.getBaseAgility(), job.getBaseIntelligence(), spriteSheetResources, stateFrameCounts, facingLeft);
+        super(name,job.getBaseHealth(), 0, 0, 0,1,3, job.getBaseStrength(),job.getBaseAgility(), job.getBaseIntelligence(), spriteSheetResources, stateFrameCounts, facingLeft);
         this.experiencePoints = experiencePoints;
         this.job = job;
         this.level = 1;
@@ -29,15 +31,15 @@ public class Hero extends Character{
         this.intelligence = job.getBaseIntelligence() + level * job.getIntelligenceGrowth();  // Increase intelligence based on level
         this.agility = job.getBaseAgility() + level * job.getAgilityGrowth();  // Increase agility based on level
         this.attackRange = job.getAttackRange(); // Keep attack range as per job
+        this.attackPower = job.getBaseAttackPower() * job.getMainStatValue();
     }
 
     @Override
     public void attack(Character target) {
-        setSpriteState(SpriteState.ATTACK);
-        System.out.println(name + " attacks " + target.getName() + " for " + attackPower + " damage!");
-        target.takeDamage(attackPower);
-
-        setSpriteState(SpriteState.IDLE);
+        // Implement attack logic
+        int damage = this.attackPower; // Adjust as needed
+        target.takeDamage(damage);
+        Log.d("Hero", this.name + " attacked " + target.getName() + " for " + damage + " damage.");
     }
 
     public void resetHealth(){

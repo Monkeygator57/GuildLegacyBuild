@@ -1,5 +1,11 @@
 package com.example.test3;
 
+enum MainStatType {
+    STRENGTH,
+    INTELLIGENCE,
+    AGILITY
+}
+
 public class Job {
     private String name;
     private int baseHealth;
@@ -11,8 +17,10 @@ public class Job {
     private int strengthGrowth;
     private int intelligenceGrowth;
     private int agilityGrowth;
+    private int attackPower;
+    private MainStatType mainStat;
 
-    public Job(String name, int baseHealth, int healthGrowth, int baseStrength, int strengthGrowth, int baseIntelligence, int intelligenceGrowth, int baseAgility, int agilityGrowth, int attackRange){
+    public Job(String name, int baseHealth, int healthGrowth, int baseStrength, int strengthGrowth, int baseIntelligence, int intelligenceGrowth, int baseAgility, int agilityGrowth, int attackRange, MainStatType mainStat, int attackPower) {
         this.name = name;
         this.baseHealth = baseHealth;
         this.healthGrowth = healthGrowth;
@@ -23,6 +31,8 @@ public class Job {
         this.baseAgility = baseAgility;
         this.agilityGrowth = agilityGrowth;
         this.attackRange = attackRange;
+        this.attackPower = attackPower;
+        this.mainStat = mainStat;
     }
 
     // Getters for job-specific attributes
@@ -45,5 +55,21 @@ public class Job {
     public int getAgilityGrowth() { return agilityGrowth; }
 
     public String getName() { return name; }
+
+    // Method to get the value of the main stat
+    public int getMainStatValue() {
+        switch (mainStat) {
+            case STRENGTH:
+                return baseStrength;
+            case INTELLIGENCE:
+                return baseIntelligence;
+            case AGILITY:
+                return baseAgility;
+            default:
+                return 0; // Or throw an exception if appropriate
+        }
+    }
+
+    public int getBaseAttackPower() { return attackPower; }
 
 }

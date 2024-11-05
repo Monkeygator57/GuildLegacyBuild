@@ -13,7 +13,7 @@ public class CharacterFactory {
         knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
         knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
         knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
-        knightSpriteSheets.put(Character.SpriteState.MOVING, "knight_moving");
+        knightSpriteSheets.put(Character.SpriteState.MOVING, "knight_walk");
 
         // Define sprite sheet frames for states
         Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
@@ -21,7 +21,7 @@ public class CharacterFactory {
         knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 7 frames for ATTACK
         knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 4 frames for HIT
         knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 4 frames for Death
-        knightFrameCounts.put(Character.SpriteState.MOVING, 8);
+        knightFrameCounts.put(Character.SpriteState.MOVING, 8);   // 8 frames for Moving
 
         // Create and return the Warrior hero
         Job WarriorJob = createWarriorJob();
@@ -29,7 +29,7 @@ public class CharacterFactory {
     }
 
     public static Job createWarriorJob(){
-        return new Job("Warrior", 200, 10, 30, 4, 10, 1, 15, 2, 1);
+        return new Job("Warrior", 200, 10, 30, 4, 10, 1, 15, 2, 1, MainStatType.STRENGTH, 1);
     }
     public static Hero createMage(){
 
@@ -52,7 +52,7 @@ public class CharacterFactory {
     }
 
     public static Job createMageJob(){
-        return new Job("Mage", 100, 10, 10, 1, 30, 5, 10, 2, 5);
+        return new Job("Mage", 100, 10, 10, 1, 30, 5, 10, 2, 5, MainStatType.INTELLIGENCE, 1);
     }
 
     public static Hero createRanger(){
@@ -76,7 +76,7 @@ public class CharacterFactory {
     }
 
     public static Job createRangerJob(){
-        return new Job("Ranger", 150, 10, 15, 2, 10, 1, 30, 5, 3);
+        return new Job("Ranger", 150, 10, 15, 2, 10, 1, 30, 5, 3, MainStatType.AGILITY, 1);
     }
 
     public static Enemy createGoblin(){

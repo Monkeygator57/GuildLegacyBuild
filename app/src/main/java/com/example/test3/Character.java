@@ -1,11 +1,9 @@
 package com.example.test3;
 
+import android.util.Log;
 import android.util.Pair;
-
 import java.util.*;
 
-
-// Parent Class
 public abstract class Character {
     protected String name;
     protected int health;
@@ -23,12 +21,8 @@ public abstract class Character {
     protected Map<SpriteState, Integer> stateFrameCounts;
     private Pair<Integer, Integer> position; // Character's current position
 
-    // New properties for pathfinding and movement
-    protected int x, y; // Current position on grid
-    protected List<Pair<Integer, Integer>> path = new LinkedList<>(); // Path to follow
-
     public enum SpriteState {
-        IDLE(5), ATTACK(3), HIT(2), DEATH(4), MOVING(4);
+        IDLE(5), ATTACK(3), HIT(2), DEATH(4), MOVING(8);
 
         private final int frameCount;
 
@@ -40,8 +34,6 @@ public abstract class Character {
             return frameCount;
         }
     }
-
-
 
     public Character(String name, int health, int attackPower, int attackRange, int defense, int speed, int moveSpeed, int strength, int agility, int intelligence, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
         this.name = name;
@@ -76,34 +68,35 @@ public abstract class Character {
         return currentState;
     }
 
-
     // Pathfinding method to move towards a target
     public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, GridManager gridManager) {
         AStarPathfinder pathfinder = new AStarPathfinder();
 
+        // Get the grid size from GridManager
+        int numRows = gridManager.getNumRows();
+        int numCols = gridManager.getNumCols();
+
         // Get path from current position to target, avoiding occupied cells
-        List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(position.first, position.second, targetPosition.first, targetPosition.second, occupiedCells);
+        List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(
+                position.first, position.second,
+                targetPosition.first, targetPosition.second,
+                occupiedCells, numRows, numCols);
+
+        if (fullPath == null || fullPath.isEmpty()) {
+            // No path found or already at destination
+            return;
+        }
 
         // Limit path based on move speed
-        List<Pair<Integer, Integer>> limitedPath = fullPath.subList(0, Math.min(moveSpeed + 1, fullPath.size()));
+        int steps = Math.min(moveSpeed, fullPath.size() - 1); // Exclude starting position
+        List<Pair<Integer, Integer>> limitedPath = fullPath.subList(1, steps + 1);
 
         // Move along the limited path by updating the character's position on each step
         if (!limitedPath.isEmpty()) {
             Pair<Integer, Integer> nextPosition = limitedPath.get(limitedPath.size() - 1); // The furthest position within moveSpeed
-            gridManager.moveCharacter(position, nextPosition, moveSpeed);
+            gridManager.moveCharacter(position.first, position.second, nextPosition.first, nextPosition.second, this);
             position = nextPosition;  // Update the character's current position
         }
-    }
-
-    // Method to follow path using moveSpeed
-    public void followPath() {
-        for (int i = 0; i < moveSpeed && !path.isEmpty(); i++) {
-            Pair<Integer, Integer> nextPosition = path.remove(0);
-            this.x = nextPosition.first;
-            this.y = nextPosition.second;
-        }
-        // Set facing direction based on movement
-        facingLeft = !path.isEmpty() && path.get(0).first < x;
     }
 
     // Method for attack
@@ -111,9 +104,9 @@ public abstract class Character {
 
     // Method to take damage
     public void takeDamage(int damage) {
-        int damageTaken = Math.max(damage - defense, 0); // Damage Can't be Negative
+        int damageTaken = Math.max(damage - defense, 0); // Adjust for defense
         health -= damageTaken;
-        System.out.println(name + " takes " + damageTaken + " damage! Health now: " + health);
+        Log.d("Character", name + " takes " + damageTaken + " damage! Health now: " + health);
     }
 
     // Check if character is alive
@@ -121,7 +114,7 @@ public abstract class Character {
         return health > 0;
     }
 
-    // Gathers and Setters
+    // Getters and Setters
     public Pair<Integer, Integer> getPosition() {
         return position;
     }
