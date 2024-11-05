@@ -47,7 +47,7 @@ public class FirstFragment extends Fragment {
 
         // **Start the battles sequentially**
         //battle1.start();
-        battle2.start();
+        //battle2.start();
 
         // Schedule the second battle with a delay (e.g., 5 seconds after the first battle starts)
         handler.postDelayed(battle2::start, 2000);  // 5000 ms = 5 seconds

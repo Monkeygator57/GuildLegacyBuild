@@ -21,10 +21,14 @@ public class CharacterFactory {
         knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 4 frames for HIT
         knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 4 frames for Death
 
-        // Create and return the knight hero
-        return new Hero("Knight", 200, 30, 10, 1, 3,10, 4, 5, 0, "Knight", knightSpriteSheets, knightFrameCounts, false);
+        // Create and return the Warrior hero
+        Job WarriorJob = createWarriorJob();
+        return new Hero("Steve", WarriorJob, knightSpriteSheets, knightFrameCounts, false);
     }
 
+    public static Job createWarriorJob(){
+        return new Job("Warrior", 200, 10, 30, 4, 10, 1, 15, 2, 1);
+    }
     public static Hero createMage(){
 
         Map<Character.SpriteState, String> mageSpriteSheets = new HashMap<>();
@@ -39,7 +43,12 @@ public class CharacterFactory {
         mageFrameCounts.put(Character.SpriteState.DEATH, 4);
         mageFrameCounts.put(Character.SpriteState.ATTACK, 6);
 
-        return new Hero("Wizard", 100, 40, 10, 1, 3,10, 4, 5, 0, "Wizard", mageSpriteSheets, mageFrameCounts, false);
+        Job MageJob = createMageJob();
+        return new Hero("Balbus", MageJob, mageSpriteSheets, mageFrameCounts, false);
+    }
+
+    public static Job createMageJob(){
+        return new Job("Mage", 100, 10, 10, 1, 30, 5, 10, 2, 5);
     }
 
     public static Hero createRanger(){
@@ -56,7 +65,12 @@ public class CharacterFactory {
         rangerFrameCounts.put(Character.SpriteState.DEATH, 4);
         rangerFrameCounts.put(Character.SpriteState.ATTACK, 9);
 
-        return new Hero("Ranger", 100, 40,10, 1, 3,10, 4, 5, 0, "Ranger", rangerSpriteSheets, rangerFrameCounts, false);
+        Job RangerJob = createRangerJob();
+        return new Hero("Ranger", RangerJob, rangerSpriteSheets,rangerFrameCounts, false);
+    }
+
+    public static Job createRangerJob(){
+        return new Job("Ranger", 150, 10, 15, 2, 10, 1, 30, 5, 3);
     }
 
     public static Enemy createGoblin(){
@@ -73,7 +87,7 @@ public class CharacterFactory {
         goblinFrameCounts.put(Character.SpriteState.HIT, 4);
         goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
 
-        return new Enemy("Goblin", 100, 20, 5, 1, 3,10, 5, 5, 0, false, goblinSpriteSheets, goblinFrameCounts, true);
+        return new Enemy("Goblin", 100, 20, 1, 5, 1, 3,10, 5, 5, 0, false, goblinSpriteSheets, goblinFrameCounts, true);
     }
 
     public static Enemy createGoblinElite(){
@@ -90,6 +104,6 @@ public class CharacterFactory {
         goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
         goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
 
-        return new Enemy("Goblin Warlord", 150, 25, 10, 1, 3,15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinEliteFrameCounts, true);
+        return new Enemy("Goblin Warlord", 150, 25, 2, 10, 1, 3,15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinEliteFrameCounts, true);
     }
 }

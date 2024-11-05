@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import android.animation.ObjectAnimator;
 import android.util.Pair;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
+import android.os.Handler;
 
 public class GridManager {
 
@@ -32,12 +34,47 @@ public class GridManager {
         this.characterObjects = new HashMap<>();
     }
 
+    // Method to remove a character from the grid at a specified position
+    public void removeCharacter(Pair<Integer, Integer> position) {
+        // Remove the character object from the characterObjects map
+        characterObjects.remove(position);
+
+        // Remove the view from the characterViews map and the grid layout if it exists
+        View characterView = characterViews.remove(position);
+        if (characterView != null) {
+            gridLayout.removeView(characterView);
+        }
+    }
+
+    // Add method to get character view at a specific position
+    public SpriteSheetImageView getCharacterViewAtPosition(Pair<Integer, Integer> position) {
+        View characterView = characterViews.get(position);
+        if (characterView instanceof SpriteSheetImageView) {
+            return (SpriteSheetImageView) characterView;
+        }
+        return null;
+    }
+
+    // Add method to get all character objects
+    public Map<Pair<Integer, Integer>, Object> getCharacterObjects() {
+        return characterObjects;
+    }
+
+    // Method to get all currently occupied positions
+    public Set<Pair<Integer, Integer>> getOccupiedPositions() {
+        return new HashSet<>(characterObjects.keySet());
+    }
+
+    public Character getCharacterAtPosition(Pair<Integer, Integer> position){
+        return (Character) characterObjects.get(position);
+    }
+
     //method to initialize the grid with example data. (place hero/enemy)
     public void initializeGrid() {
         // example setup of initial heroes and enemies,
         // Define sprite sheets for the knight character
 
-        Hero hero1 = CharacterFactory.createWarrior();
+       /* Hero hero1 = CharacterFactory.createWarrior();
         Hero hero2 = CharacterFactory.createWarrior();
         Hero hero3 = CharacterFactory.createRanger();
         Hero hero4 = CharacterFactory.createMage();
@@ -46,7 +83,7 @@ public class GridManager {
 
         //Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
         //Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        characterObjects.put(new Pair<>(3, 2), hero1); //place hero1 at (0,0)
+        characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
         characterObjects.put(new Pair<>(5, 2), hero2); //place hero2 at (1,0)
         characterObjects.put(new Pair<>(2, 1), hero3);
         characterObjects.put(new Pair<>(4, 1), hero4);
@@ -60,7 +97,7 @@ public class GridManager {
         //Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
         characterObjects.put(new Pair<>(6, 6), enemy1); //place enemy1 at (9,9)
         characterObjects.put(new Pair<>(4, 6), enemy2); //place enemy2 at (8,9)
-        characterObjects.put(new Pair<>(2, 6), enemy3);
+        characterObjects.put(new Pair<>(2, 6), enemy3);*/
 
         // display initial grid
         displayCharacterGrid(); // look at this
@@ -104,7 +141,7 @@ public class GridManager {
     }
 
     //helper method to add character to the grid with relevant stats
-    private void addCharacterToGrid(int row, int col, Object character) {
+    public void addCharacterToGrid(int row, int col, Object character) {
         FrameLayout container = new FrameLayout(context);
 
         GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
@@ -145,45 +182,64 @@ public class GridManager {
     }
 
     // method to move character from one cell to another
-    public void moveCharacter(Pair<Integer, Integer> fromPosition, Pair<Integer, Integer> toPosition) {
+    public void moveCharacter(Pair<Integer, Integer> fromPosition, Pair<Integer, Integer> toPosition, int moveSpeed) {
         View characterView = characterViews.get(fromPosition);
         Object character = characterObjects.get(fromPosition);
 
         if (characterView != null && character != null) {
-            int fromRow = fromPosition.first;
-            int fromCol = fromPosition.second;
-            int toRow = toPosition.first;
-            int toCol = toPosition.second;
+            // Step 1: Generate the path using A* Pathfinding and limit to moveSpeed
+            AStarPathfinder pathfinder = new AStarPathfinder();
+            Set<Pair<Integer, Integer>> occupiedCells = new HashSet<>(characterObjects.keySet());
+            occupiedCells.remove(fromPosition); // Exclude the starting position of the character being moved
 
-            //Retrieve layout params of one cell
+            List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(
+                    fromPosition.first, fromPosition.second,
+                    toPosition.first, toPosition.second,
+                    occupiedCells
+            );
+
+            // Limit path to the character's movement speed
+            List<Pair<Integer, Integer>> path = fullPath.subList(0, Math.min(moveSpeed + 1, fullPath.size()));
+
+            // Step 2: Retrieve layout params of one cell to calculate true cell dimensions
             FrameLayout sampleCell = (FrameLayout) gridLayout.getChildAt(0);
             GridLayout.LayoutParams cellParams = (GridLayout.LayoutParams) sampleCell.getLayoutParams();
-
-            // calculate the cell width and height, including ALL margins
             float cellWidth = cellParams.width + cellParams.leftMargin + cellParams.rightMargin;
             float cellHeight = cellParams.height + cellParams.topMargin + cellParams.bottomMargin;
 
-            //calculate translation based on true grid dimensions
-            float translationX = (toCol - fromCol) * cellWidth;
-            float translationY = (toRow - fromRow) * cellHeight;
+            // Step 3: Animate along the path step-by-step
+            Handler handler = new Handler();
+            int animationDuration = 200; // Duration for each step in milliseconds
 
-            //Animate the character to the new position
-            ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", translationX);
-            ObjectAnimator objectY = ObjectAnimator.ofFloat(characterView, "translationY", translationY);
-            objectX.setDuration(200);
-            objectY.setDuration(200);
+            for (int i = 0; i < path.size() - 1; i++) {
+                final Pair<Integer, Integer> currentStep = path.get(i);
+                final Pair<Integer, Integer> nextStep = path.get(i + 1);
 
-            // Start animation
-            objectX.start();
-            objectY.start();
+                handler.postDelayed(() -> {
+                    // Calculate the translation for the next step
+                    float translationX = (nextStep.second - currentStep.second) * cellWidth;
+                    float translationY = (nextStep.first - currentStep.first) * cellHeight;
 
-            //update hashmaps to reflect new changes
-            characterViews.remove(fromPosition);
-            characterViews.put(toPosition, characterView);
+                    // Animate to the next position
+                    ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", characterView.getTranslationX() + translationX);
+                    ObjectAnimator objectY = ObjectAnimator.ofFloat(characterView, "translationY", characterView.getTranslationY() + translationY);
+                    objectX.setDuration(animationDuration);
+                    objectY.setDuration(animationDuration);
+                    objectX.start();
+                    objectY.start();
+                }, i * animationDuration);  // Delay each step by the step index * animationDuration
+            }
 
-            characterObjects.remove(fromPosition);
-            characterObjects.put(toPosition, character);
+            // Step 4: Update HashMaps after reaching the final position in the path
+            Pair<Integer, Integer> lastPosition = path.get(path.size() - 1);
+            handler.postDelayed(() -> {
+                // Update hashmaps to reflect the new position
+                characterViews.remove(fromPosition);
+                characterViews.put(lastPosition, characterView);
+
+                characterObjects.remove(fromPosition);
+                characterObjects.put(lastPosition, character);
+            }, (path.size() - 1) * animationDuration);  // Delay this update to happen after the final animation step
         }
     }
-
 }

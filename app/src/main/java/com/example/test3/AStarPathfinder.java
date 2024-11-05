@@ -5,12 +5,13 @@ import java.util.*;
 
 public class AStarPathfinder {
 
-    public List<Pair<Integer, Integer>> findPath(int startX, int startY, int targetX, int targetY) {
-        // Priority Queue for open nodes
+    private static final int OCCUPIED_PENALTY = 1000;  // High cost to avoid occupied cells
+
+    // Pass occupied cells as a parameter to discourage them in pathfinding
+    public List<Pair<Integer, Integer>> findPath(int startX, int startY, int targetX, int targetY, Set<Pair<Integer, Integer>> occupiedCells) {
         PriorityQueue<Node> openList = new PriorityQueue<>(Comparator.comparingInt(node -> node.fCost()));
         Set<Pair<Integer, Integer>> closedList = new HashSet<>();
 
-        // Initialize the starting node
         Node startNode = new Node(startX, startY, null);
         startNode.gCost = 0;
         startNode.hCost = calculateHeuristic(startX, startY, targetX, targetY);
@@ -26,39 +27,42 @@ public class AStarPathfinder {
 
             closedList.add(new Pair<>(currentNode.x, currentNode.y));
 
-            // Add neighbors to the open list
             for (Node neighbor : getNeighbors(currentNode)) {
-                if (closedList.contains(new Pair<>(neighbor.x, neighbor.y))) continue;
+                Pair<Integer, Integer> neighborPos = new Pair<>(neighbor.x, neighbor.y);
 
-                int tentativeGCost = currentNode.gCost + 1;  // 1 for adjacent move
-                if (tentativeGCost < neighbor.gCost) {
+                if (closedList.contains(neighborPos)) continue;
+
+                int moveCost = currentNode.gCost + 1; // Standard move cost
+
+                // Apply penalty if the cell is occupied
+                if (occupiedCells.contains(neighborPos)) {
+                    moveCost += OCCUPIED_PENALTY;
+                }
+
+                if (moveCost < neighbor.gCost) {
                     neighbor.parent = currentNode;
-                    neighbor.gCost = tentativeGCost;
+                    neighbor.gCost = moveCost;
                     neighbor.hCost = calculateHeuristic(neighbor.x, neighbor.y, targetX, targetY);
                     openList.add(neighbor);
                 }
             }
         }
 
-        // Return empty list if no path found
-        return new ArrayList<>();
+        return new ArrayList<>(); // Return empty path if no path is found
     }
 
-    // Heuristic method for A*
     private int calculateHeuristic(int x1, int y1, int x2, int y2) {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);  // Manhattan distance
     }
 
-    // Method to reconstruct path from target node
     private List<Pair<Integer, Integer>> reconstructPath(Node targetNode) {
         List<Pair<Integer, Integer>> path = new LinkedList<>();
         for (Node node = targetNode; node != null; node = node.parent) {
-            path.add(0, new Pair<>(node.x, node.y));  // Add each node in reverse
+            path.add(0, new Pair<>(node.x, node.y));
         }
         return path;
     }
 
-    // Get neighboring nodes (up, down, left, right)
     private List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<>();
         neighbors.add(new Node(node.x + 1, node.y, node));
@@ -68,7 +72,6 @@ public class AStarPathfinder {
         return neighbors;
     }
 
-    // Inner class to represent a node in A*
     private static class Node {
         int x, y;
         Node parent;
