@@ -5,10 +5,13 @@ import android.util.Log;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 
 public class BattleManager {
     private final List<Hero> heroes = new ArrayList<>();
@@ -16,205 +19,314 @@ public class BattleManager {
     private final List<SpriteSheetImageView> heroViews = new ArrayList<>();
     private List<SpriteSheetImageView> enemyViews = new ArrayList<>();
     private final Handler handler = new Handler();
-    private final int delayBetweenActions = 1000;
+    private final int delayBetweenActions = 500;  // Reduced delay for testing purposes
     private boolean isTurnInProgress = false;
     private int currentFloor = 1;
+    private final List<BattleCharacters> sortedCharacters = new ArrayList<>();
 
     // Queue for actions to be processed
     private final Queue<Runnable> actionQueue = new LinkedList<>();
 
-    private GridManager gridManager;  // Add GridManager reference
+    private GridManager gridManager;
+    private FloorFactory floorFactory;
 
-    // Constructor to accept GridManager
-    public BattleManager(GridManager gridManager) {
+    // Constructor to accept GridManager and FloorFactory
+    public BattleManager(GridManager gridManager, FloorFactory floorFactory) {
         this.gridManager = gridManager;
+        this.floorFactory = floorFactory;
     }
 
-    // Method to gather characters from the grid and set up heroes and enemies
-    public void gatherCharactersFromGrid() {
-        heroes.clear();
-        heroViews.clear();
-        enemies.clear();
-        enemyViews.clear();
+    // Overloaded constructor to accept only GridManager
+    public BattleManager(GridManager gridManager) {
+        this.gridManager = gridManager;
+        this.floorFactory = new FloorFactory(); // Provide a default or new instance
+    }
 
-        for (Map.Entry<Pair<Integer, Integer>, Object> entry : gridManager.getCharacterObjects().entrySet()) {
-            Pair<Integer, Integer> position = entry.getKey();
-            Object character = entry.getValue();
-
-            if (character instanceof Hero) {
-                heroes.add((Hero) character);
-                SpriteSheetImageView heroView = gridManager.getCharacterViewAtPosition(position);
-                if (heroView != null) {
-                    heroViews.add(heroView);
-                }
-            } else if (character instanceof Enemy) {
-                enemies.add((Enemy) character);
-                SpriteSheetImageView enemyView = gridManager.getCharacterViewAtPosition(position);
-                if (enemyView != null) {
-                    enemyViews.add(enemyView);
-                }
-            }
+    // Method to enqueue an action
+    public void enqueueAction(Runnable action) {
+        actionQueue.offer(action);
+        Log.d("BattleManager", "Action enqueued. Queue size after enqueue: " + actionQueue.size());
+        if (!isTurnInProgress) {
+            processNextAction();  // Start processing if not already in progress
         }
     }
 
+    // Method to process the next action in the queue
+    private void processNextAction() {
+        if (actionQueue.isEmpty()) {
+            isTurnInProgress = false;  // No more actions to process
+            Log.d("BattleManager", "No more actions to process.");
+            return;
+        }
+
+        isTurnInProgress = true;
+        Runnable nextAction = actionQueue.poll();  // Get the next action from the queue
+
+        if (nextAction != null) {
+            Log.d("BattleManager", "Processing action. Remaining queue size: " + actionQueue.size());
+            handler.postDelayed(() -> {
+                try {
+                    nextAction.run();  // Execute the action
+                    Log.d("BattleManager", "Action executed successfully.");
+                } catch (Exception e) {
+                    Log.e("BattleManager", "Error executing action: " + e.getMessage());
+                } finally {
+                    isTurnInProgress = false;  // Mark action as done
+                    processNextAction();  // Process the next action in the queue
+                }
+            }, delayBetweenActions);
+        } else {
+            isTurnInProgress = false;  // If for some reason no action was retrieved, mark as done
+        }
+    }
+
+    /// Gather and sort characters by speed
+    private void gatherAndSortCharactersBySpeed() {
+        sortedCharacters.clear();
+
+        // Check for mismatches between views and characters
+        if (heroViews.size() < heroes.size()) {
+            Log.e("BattleManager", "Mismatch: heroViews size (" + heroViews.size() + ") is less than heroes size (" + heroes.size() + ")");
+        }
+        if (enemyViews.size() < enemies.size()) {
+            Log.e("BattleManager", "Mismatch: enemyViews size (" + enemyViews.size() + ") is less than enemies size (" + enemies.size() + ")");
+        }
+
+        // Add heroes with matching views to sortedCharacters
+        for (int i = 0; i < Math.min(heroes.size(), heroViews.size()); i++) {
+            SpriteSheetImageView view = heroViews.get(i);
+            if (view == null) {
+                Log.e("BattleManager", "Hero view is null at index: " + i);
+                continue;
+            }
+            sortedCharacters.add(new BattleCharacters(heroes.get(i), view));
+        }
+
+        // Add enemies with matching views to sortedCharacters
+        for (int i = 0; i < Math.min(enemies.size(), enemyViews.size()); i++) {
+            SpriteSheetImageView view = enemyViews.get(i);
+            if (view == null) {
+                Log.e("BattleManager", "Enemy view is null at index: " + i);
+                continue;
+            }
+            sortedCharacters.add(new BattleCharacters(enemies.get(i), view));
+        }
+
+        // Sort characters by speed in descending order
+        sortedCharacters.sort((a, b) -> b.character.getSpeed() - a.character.getSpeed());
+
+        Log.d("BattleManager", "Characters sorted by speed for battle.");
+        Log.d("BattleManager", "Total characters sorted by speed: " + sortedCharacters.size());
+        Log.d("BattleManager", "Number of heroes: " + heroes.size());
+        Log.d("BattleManager", "Number of enemies: " + enemies.size());
+    }
+
+    // Start battle sequence using sorted characters
+    public void startBattle() {
+        gatherAndSortCharactersBySpeed();
+        Log.d("BattleManager", "Characters sorted by speed. Queue size before enqueuing: " + actionQueue.size());
+
+        for (BattleCharacters character : sortedCharacters) {
+            Log.d("BattleManager", "Enqueuing action for character: " + character.getName());
+
+            // Explicitly create a Runnable to avoid the lambda type error
+            enqueueAction(new Runnable() {
+                @Override
+                public void run() {
+                    characterAction(character);
+                }
+            });
+        }
+
+        if (!isTurnInProgress) {
+            Log.d("BattleManager", "Starting action processing.");
+            processNextAction();
+        }
+    }
+
+    // Start new floor
     public void startNewFloor(Floor floor) {
-        // Clear the grid to remove old characters and reset
-        //gridManager.clearGrid();
+        // Clear existing lists to avoid residual data
+        heroes.clear();
+        enemies.clear();
+        heroViews.clear();
+        enemyViews.clear();
+
+        // Populate heroes, enemies, and corresponding views from the Floor object
+        heroes.addAll(floor.getHeroes());
+        enemies.addAll(floor.getEnemies());
+        heroViews.addAll(floor.getHeroViews());
+        enemyViews.addAll(floor.getEnemyViews());
+
+        // Logging to confirm the setup
+        Log.d("BattleManager", "BattleManager setup - Number of heroes: " + heroes.size());
+        Log.d("BattleManager", "BattleManager setup - Number of enemies: " + enemies.size());
+        Log.d("BattleManager", "BattleManager setup - Number of hero views: " + heroViews.size());
+        Log.d("BattleManager", "BattleManager setup - Number of enemy views: " + enemyViews.size());
 
         // Add heroes to the grid
-        for (int i = 0; i < floor.getHeroPositions().size(); i++) {
+        for (int i = 0; i < heroes.size(); i++) {
             Pair<Integer, Integer> position = floor.getHeroPositions().get(i);
-            Hero hero = floor.getHeroes().get(i);
-            SpriteSheetImageView heroView = floor.getHeroViews().get(i);
+            Hero hero = heroes.get(i);
+            SpriteSheetImageView heroView = heroViews.get(i);
 
             // Extract row and column from the Pair and call addCharacterToGrid()
             int row = position.first;
             int col = position.second;
             gridManager.addCharacterToGrid(row, col, hero);
+
+            // Optionally log each hero placement
+            Log.d("BattleManager", "Placed hero at (" + row + ", " + col + ")");
         }
 
         // Add enemies to the grid
-        for (int i = 0; i < floor.getEnemyPositions().size(); i++) {
+        for (int i = 0; i < enemies.size(); i++) {
             Pair<Integer, Integer> position = floor.getEnemyPositions().get(i);
-            Enemy enemy = floor.getEnemies().get(i);
-            SpriteSheetImageView enemyView = floor.getEnemyViews().get(i);
+            Enemy enemy = enemies.get(i);
+            SpriteSheetImageView enemyView = enemyViews.get(i);
 
             // Extract row and column from the Pair and call addCharacterToGrid()
             int row = position.first;
             int col = position.second;
             gridManager.addCharacterToGrid(row, col, enemy);
+
+            // Optionally log each enemy placement
+            Log.d("BattleManager", "Placed enemy at (" + row + ", " + col + ")");
         }
-
-        // Gather characters from the grid for the battle manager
-        //this.gatherCharactersFromGrid(gridManager);
-
-        // Display the grid again to ensure everything is rendered correctly
-        //gridManager.displayCharacterGrid();
 
         // Start the battle
         this.startBattle();
     }
 
-    private void startBattle() {
-        Log.v("BattleManager", "Battle Start");
-        System.out.println("Battle starting with " + heroes.size() + " heroes and " + enemies.size() + " enemies.");
-        executeNextAction();
-    }
+    // Character action logic: move or attack
+    private void characterAction(BattleCharacters character) {
+        Log.d("BattleManager", "Character " + character.character.getName() + " is taking action.");
+        BattleCharacters target = findClosestEnemy(character);
 
-    private void resetHeroHealth() {
-        for (Hero hero : heroes) {
-            hero.resetHealth();  // Ensure each hero has a `resetHealth` method to restore initial health
+        if (target == null) {
+            Log.d("BattleManager", character.character.getName() + " has no target.");
+            return;  // No target available
         }
-    }
 
-    private void executeNextAction() {
-        if (isTurnInProgress) return;  // Prevent overlapping actions
-        isTurnInProgress = true;
-
-        // Clear any pending tasks to prevent overlap
-        handler.removeCallbacksAndMessages(null);
-
-        // Process actions in the queue
-        if (!actionQueue.isEmpty()) {
-            Runnable action = actionQueue.poll();
-            action.run();  // Run the action
+        if (isInRange(character, target)) {
+            Log.d("BattleManager", character.character.getName() + " is in range to attack " + target.character.getName());
+            enqueueAction(() -> attack(character, target));
         } else {
-            // Determine next action if queue is empty
-            if (!heroes.isEmpty() && !enemies.isEmpty()) {
-                Hero hero = heroes.get(0);  // Example: pick the first hero
-                Enemy enemy = enemies.get(0);  // Example: pick the first enemy
-                queueAction(() -> heroAttack(hero, enemy));
-            } else {
-                displayWinner();
-                isTurnInProgress = false;
-                return;
-            }
+            Log.d("BattleManager", character.character.getName() + " is moving towards " + target.character.getName());
+            moveCharacterTowardsTarget(character, target);
+        }
+    }
+
+    // Find the closest enemy for the character
+    private BattleCharacters findClosestEnemy(BattleCharacters character) {
+        List<BattleCharacters> enemies = character.character instanceof Hero ? sortedEnemies() : sortedHeroes();
+        BattleCharacters closestEnemy = null;
+        int closestDistance = Integer.MAX_VALUE;
+
+        Pair<Integer, Integer> currentPosition = getCharacterPosition(character.character);
+        if (currentPosition == null) {
+            Log.e("BattleManager", "Character position not found for: " + character.character.getName());
+            return null;
         }
 
-        // Set up for the next action in the queue
-        handler.postDelayed(() -> {
-            isTurnInProgress = false;
-            executeNextAction();
-        }, delayBetweenActions);
-    }
-
-    private void queueAction(Runnable action) {
-        actionQueue.add(action);
-    }
-
-    private void heroAttack(Hero hero, Enemy enemy) {
-        SpriteSheetImageView heroView = heroViews.get(heroes.indexOf(hero));
-        hero.setSpriteState(Character.SpriteState.ATTACK);
-        heroView.setCharacter(hero);  // Show attack animation
-        hero.attack(enemy);
-
-        handler.postDelayed(() -> {
-            hero.setSpriteState(Character.SpriteState.IDLE);
-            heroView.setCharacter(hero);  // Return to idle
-
-            if (!enemy.isAlive()) {
-                queueAction(() -> enemyDeath(enemy));
-            } else {
-                queueAction(() -> enemyHit(enemy));
+        for (BattleCharacters enemy : enemies) {
+            Pair<Integer, Integer> enemyPosition = getCharacterPosition(enemy.character);
+            if (enemyPosition != null) {
+                int distance = Math.abs(currentPosition.first - enemyPosition.first) + Math.abs(currentPosition.second - enemyPosition.second);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestEnemy = enemy;
+                }
             }
-        }, delayBetweenActions);
+        }
+        if (closestEnemy != null) {
+            Log.d("BattleManager", "Closest enemy to " + character.character.getName() + " is " + closestEnemy.character.getName());
+        }
+        return closestEnemy;
     }
 
-    private void enemyHit(Enemy enemy) {
-        SpriteSheetImageView enemyView = enemyViews.get(enemies.indexOf(enemy));
-        enemy.setSpriteState(Character.SpriteState.HIT);
-        enemyView.setCharacter(enemy);  // Show hit animation
+    // Determine if character is in range to attack
+    private boolean isInRange(BattleCharacters character, BattleCharacters target) {
+        Pair<Integer, Integer> charPosition = getCharacterPosition(character.character);
+        Pair<Integer, Integer> targetPosition = getCharacterPosition(target.character);
+
+        if (charPosition == null || targetPosition == null) {
+            Log.e("BattleManager", "Cannot determine range, positions are null.");
+            return false;
+        }
+
+        int distance = Math.abs(charPosition.first - targetPosition.first) + Math.abs(charPosition.second - targetPosition.second);
+        boolean inRange = distance <= character.character.getAttackRange();
+        Log.d("BattleManager", character.character.getName() + " is " + (inRange ? "in" : "out of") + " range to attack " + target.character.getName());
+        return inRange;
     }
 
-    private void enemyAttack(Enemy enemy, Hero hero) {
-        SpriteSheetImageView enemyView = enemyViews.get(enemies.indexOf(enemy));
-        enemy.setSpriteState(Character.SpriteState.ATTACK);
-        enemyView.setCharacter(enemy);  // Show attack animation
-        enemy.attack(hero);
+    // Move character towards target using A* pathfinding
+    private void moveCharacterTowardsTarget(BattleCharacters character, BattleCharacters target) {
+        Pair<Integer, Integer> currentPosition = getCharacterPosition(character.character);
+        Pair<Integer, Integer> targetPosition = getCharacterPosition(target.character);
 
-        handler.postDelayed(() -> {
-            enemy.setSpriteState(Character.SpriteState.IDLE);
-            enemyView.setCharacter(enemy);  // Return to idle
+        if (currentPosition == null || targetPosition == null) {
+            Log.e("BattleManager", "Cannot move character, positions are null.");
+            return;  // Ensure positions are available
+        }
 
-            if (!hero.isAlive()) {
-                queueAction(() -> heroDeath(hero));
-            } else {
-                queueAction(() -> heroHit(hero));
-            }
-        }, delayBetweenActions);
-    }
+        AStarPathfinder pathfinder = new AStarPathfinder();
+        Set<Pair<Integer, Integer>> occupiedCells = gridManager.getCharacterObjects().keySet();
+        List<Pair<Integer, Integer>> path = pathfinder.findPath(currentPosition.first, currentPosition.second, targetPosition.first, targetPosition.second, occupiedCells);
 
-    private void heroHit(Hero hero) {
-        SpriteSheetImageView heroView = heroViews.get(heroes.indexOf(hero));
-        hero.setSpriteState(Character.SpriteState.HIT);
-        heroView.setCharacter(hero);  // Show hit animation
-    }
-
-    private void heroDeath(Hero hero) {
-        SpriteSheetImageView heroView = heroViews.get(heroes.indexOf(hero));
-        hero.setSpriteState(Character.SpriteState.DEATH);
-        heroView.setCharacter(hero);  // Show death animation
-        System.out.println(hero.getName() + " has been defeated!");
-        heroes.remove(hero);
-    }
-
-    private void enemyDeath(Enemy enemy) {
-        SpriteSheetImageView enemyView = enemyViews.get(enemies.indexOf(enemy));
-        enemy.setSpriteState(Character.SpriteState.DEATH);
-        enemyView.setCharacter(enemy);  // Show death animation
-        System.out.println(enemy.getName() + " has been defeated!");
-        enemies.remove(enemy);
-    }
-
-    private void displayWinner() {
-        if (!heroes.isEmpty()) {
-            System.out.println("Heroes win the floor!");
-            currentFloor++;  // Increment floor for the next setup
-        } else if (!enemies.isEmpty()) {
-            System.out.println("Enemies win the floor!");
+        if (path != null && !path.isEmpty()) {
+            int animationDurationPerStep = 200;  // Set the duration per step for animation
+            gridManager.animatePath(character.characterView, currentPosition, path, animationDurationPerStep);
+            character.character.setSpriteState(Character.SpriteState.MOVING);
+            character.characterView.setCharacter(character.character);  // Update the view
+            Log.d("BattleManager", character.character.getName() + " moves along the path.");
         } else {
-            System.out.println("It's a draw!");
+            Log.d("BattleManager", "No valid path found for " + character.character.getName());
         }
-        handler.removeCallbacksAndMessages(null);  // Clear all tasks
+    }
+
+    // Attack method for a character
+    private void attack(BattleCharacters attacker, BattleCharacters target) {
+        Log.d("BattleManager", attacker.character.getName() + " is attacking " + target.character.getName());
+        attacker.character.setSpriteState(Character.SpriteState.ATTACK);
+        attacker.characterView.setCharacter(attacker.character);
+
+        target.character.takeDamage(attacker.character.getAttackPower());
+        Log.d("BattleManager", target.character.getName() + " took damage, remaining health: " + target.character.getHealth());
+
+        // Handle target's death
+        if (target.character.getHealth() <= 0) {
+            target.character.setSpriteState(Character.SpriteState.DEATH);
+            gridManager.removeCharacter(getCharacterPosition(target.character));
+            Log.d("BattleManager", target.character.getName() + " has been defeated!");
+        }
+    }
+
+    // Helper methods to get sorted enemies and heroes
+    private List<BattleCharacters> sortedEnemies() {
+        List<BattleCharacters> enemyList = new ArrayList<>();
+        for (int i = 0; i < enemies.size(); i++) {
+            enemyList.add(new BattleCharacters(enemies.get(i), enemyViews.get(i)));
+        }
+        return enemyList;
+    }
+
+    private List<BattleCharacters> sortedHeroes() {
+        List<BattleCharacters> heroList = new ArrayList<>();
+        for (int i = 0; i < heroes.size(); i++) {
+            heroList.add(new BattleCharacters(heroes.get(i), heroViews.get(i)));
+        }
+        return heroList;
+    }
+
+    // Helper method to get character position
+    private Pair<Integer, Integer> getCharacterPosition(Object character) {
+        for (Map.Entry<Pair<Integer, Integer>, Object> entry : gridManager.getCharacterObjects().entrySet()) {
+            if (entry.getValue().equals(character)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

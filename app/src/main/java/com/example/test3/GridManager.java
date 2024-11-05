@@ -71,35 +71,6 @@ public class GridManager {
 
     //method to initialize the grid with example data. (place hero/enemy)
     public void initializeGrid() {
-        // example setup of initial heroes and enemies,
-        // Define sprite sheets for the knight character
-
-       /* Hero hero1 = CharacterFactory.createWarrior();
-        Hero hero2 = CharacterFactory.createWarrior();
-        Hero hero3 = CharacterFactory.createRanger();
-        Hero hero4 = CharacterFactory.createMage();
-        Hero hero5 = CharacterFactory.createRanger();
-
-
-        //Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        //Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
-        characterObjects.put(new Pair<>(5, 2), hero2); //place hero2 at (1,0)
-        characterObjects.put(new Pair<>(2, 1), hero3);
-        characterObjects.put(new Pair<>(4, 1), hero4);
-        characterObjects.put(new Pair<>(6, 1), hero5);
-
-        Enemy enemy1 = CharacterFactory.createGoblin();
-        Enemy enemy2 = CharacterFactory.createGoblin();
-        Enemy enemy3 = CharacterFactory.createGoblin();
-
-        //Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
-        //Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
-        characterObjects.put(new Pair<>(6, 6), enemy1); //place enemy1 at (9,9)
-        characterObjects.put(new Pair<>(4, 6), enemy2); //place enemy2 at (8,9)
-        characterObjects.put(new Pair<>(2, 6), enemy3);*/
-
-        // display initial grid
         displayCharacterGrid(); // look at this
     }
 
@@ -187,7 +158,7 @@ public class GridManager {
         Object character = characterObjects.get(fromPosition);
 
         if (characterView != null && character != null) {
-            // Step 1: Generate the path using A* Pathfinding and limit to moveSpeed
+            // Step 1: Generate the path using A* Pathfinding and limit it to moveSpeed
             AStarPathfinder pathfinder = new AStarPathfinder();
             Set<Pair<Integer, Integer>> occupiedCells = new HashSet<>(characterObjects.keySet());
             occupiedCells.remove(fromPosition); // Exclude the starting position of the character being moved
@@ -198,48 +169,64 @@ public class GridManager {
                     occupiedCells
             );
 
-            // Limit path to the character's movement speed
-            List<Pair<Integer, Integer>> path = fullPath.subList(0, Math.min(moveSpeed + 1, fullPath.size()));
-
-            // Step 2: Retrieve layout params of one cell to calculate true cell dimensions
-            FrameLayout sampleCell = (FrameLayout) gridLayout.getChildAt(0);
-            GridLayout.LayoutParams cellParams = (GridLayout.LayoutParams) sampleCell.getLayoutParams();
-            float cellWidth = cellParams.width + cellParams.leftMargin + cellParams.rightMargin;
-            float cellHeight = cellParams.height + cellParams.topMargin + cellParams.bottomMargin;
-
-            // Step 3: Animate along the path step-by-step
-            Handler handler = new Handler();
-            int animationDuration = 200; // Duration for each step in milliseconds
-
-            for (int i = 0; i < path.size() - 1; i++) {
-                final Pair<Integer, Integer> currentStep = path.get(i);
-                final Pair<Integer, Integer> nextStep = path.get(i + 1);
-
-                handler.postDelayed(() -> {
-                    // Calculate the translation for the next step
-                    float translationX = (nextStep.second - currentStep.second) * cellWidth;
-                    float translationY = (nextStep.first - currentStep.first) * cellHeight;
-
-                    // Animate to the next position
-                    ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", characterView.getTranslationX() + translationX);
-                    ObjectAnimator objectY = ObjectAnimator.ofFloat(characterView, "translationY", characterView.getTranslationY() + translationY);
-                    objectX.setDuration(animationDuration);
-                    objectY.setDuration(animationDuration);
-                    objectX.start();
-                    objectY.start();
-                }, i * animationDuration);  // Delay each step by the step index * animationDuration
+            if (fullPath == null || fullPath.isEmpty()) {
+                // No valid path found, exit
+                return;
             }
 
-            // Step 4: Update HashMaps after reaching the final position in the path
-            Pair<Integer, Integer> lastPosition = path.get(path.size() - 1);
-            handler.postDelayed(() -> {
-                // Update hashmaps to reflect the new position
-                characterViews.remove(fromPosition);
-                characterViews.put(lastPosition, characterView);
+            // Limit the path to the character's movement speed
+            List<Pair<Integer, Integer>> path = fullPath.subList(0, Math.min(moveSpeed + 1, fullPath.size()));
 
-                characterObjects.remove(fromPosition);
-                characterObjects.put(lastPosition, character);
-            }, (path.size() - 1) * animationDuration);  // Delay this update to happen after the final animation step
+            // Step 2: Animate along the path step-by-step
+            if (characterView instanceof SpriteSheetImageView) {
+                animatePath((SpriteSheetImageView) characterView, fromPosition, path, 200);
+            }
         }
     }
+
+    public void animatePath(SpriteSheetImageView characterView, Pair<Integer, Integer> fromPosition, List<Pair<Integer, Integer>> path, int animationDurationPerStep) {
+        if (characterView == null || path.isEmpty()) {
+            return; // If no character is found or the path is empty, do nothing
+        }
+
+        // Step 1: Retrieve layout params of one cell to calculate true cell dimensions
+        FrameLayout sampleCell = (FrameLayout) gridLayout.getChildAt(0);
+        GridLayout.LayoutParams cellParams = (GridLayout.LayoutParams) sampleCell.getLayoutParams();
+        float cellWidth = cellParams.width + cellParams.leftMargin + cellParams.rightMargin;
+        float cellHeight = cellParams.height + cellParams.topMargin + cellParams.bottomMargin;
+
+        // Step 2: Animate along the path step-by-step
+        Handler handler = new Handler();
+
+        for (int i = 0; i < path.size() - 1; i++) {
+            final Pair<Integer, Integer> currentStep = path.get(i);
+            final Pair<Integer, Integer> nextStep = path.get(i + 1);
+
+            handler.postDelayed(() -> {
+                // Calculate the translation for the next step
+                float translationX = (nextStep.second - currentStep.second) * cellWidth;
+                float translationY = (nextStep.first - currentStep.first) * cellHeight;
+
+                // Animate to the next position
+                ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", characterView.getTranslationX() + translationX);
+                ObjectAnimator objectY = ObjectAnimator.ofFloat(characterView, "translationY", characterView.getTranslationY() + translationY);
+                objectX.setDuration(animationDurationPerStep);
+                objectY.setDuration(animationDurationPerStep);
+                objectX.start();
+                objectY.start();
+            }, i * animationDurationPerStep);  // Delay each step by the step index * animationDuration
+        }
+
+        // Step 3: Update HashMaps after reaching the final position in the path
+        Pair<Integer, Integer> lastPosition = path.get(path.size() - 1);
+        handler.postDelayed(() -> {
+            // Update hashmaps to reflect the new position
+            characterViews.remove(fromPosition);
+            characterViews.put(lastPosition, characterView);
+
+            characterObjects.remove(fromPosition);
+            characterObjects.put(lastPosition, characterObjects.get(fromPosition));
+        }, (path.size() - 1) * animationDurationPerStep);  // Delay this update to happen after the final animation step
+    }
+
 }

@@ -28,7 +28,7 @@ public abstract class Character {
     protected List<Pair<Integer, Integer>> path = new LinkedList<>(); // Path to follow
 
     public enum SpriteState {
-        IDLE(5), ATTACK(3), HIT(2), DEATH(4);
+        IDLE(5), ATTACK(3), HIT(2), DEATH(4), MOVING(4);
 
         private final int frameCount;
 

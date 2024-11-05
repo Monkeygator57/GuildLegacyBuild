@@ -42,15 +42,15 @@ public class FirstFragment extends Fragment {
         spriteSheetImageViewEliteGoblin.setCharacter(eliteGoblin);
 
         // **Initialize battles with sprite views for hero and enemies**
-        Battle battle1 = new Battle(warrior, goblin, spriteSheetImageViewHero, spriteSheetImageViewGoblin);
-        Battle battle2 = new Battle(warrior, eliteGoblin, spriteSheetImageViewHero, spriteSheetImageViewEliteGoblin);
+        //Battle battle1 = new Battle(warrior, goblin, spriteSheetImageViewHero, spriteSheetImageViewGoblin);
+        //Battle battle2 = new Battle(warrior, eliteGoblin, spriteSheetImageViewHero, spriteSheetImageViewEliteGoblin);
 
         // **Start the battles sequentially**
         //battle1.start();
         //battle2.start();
 
         // Schedule the second battle with a delay (e.g., 5 seconds after the first battle starts)
-        handler.postDelayed(battle2::start, 2000);  // 5000 ms = 5 seconds
+        //handler.postDelayed(battle2::start, 2000);  // 5000 ms = 5 seconds
 
         return binding.getRoot();
     }

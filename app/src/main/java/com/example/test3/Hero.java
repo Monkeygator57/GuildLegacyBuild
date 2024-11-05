@@ -13,7 +13,7 @@ public class Hero extends Character{
     int maxHealth;
 
     public Hero(String name,Job job, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
-        super(name,job.getBaseHealth(), 1, 0, 0,1,3, job.getBaseStrength(),job.getBaseAgility(), job.getBaseIntelligence(), spriteSheetResources, stateFrameCounts, facingLeft);
+        super(name,job.getBaseHealth(), 1, 0, 0,2,3, job.getBaseStrength(),job.getBaseAgility(), job.getBaseIntelligence(), spriteSheetResources, stateFrameCounts, facingLeft);
         this.experiencePoints = experiencePoints;
         this.job = job;
         this.level = 1;

@@ -13,6 +13,7 @@ public class CharacterFactory {
         knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
         knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
         knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
+        knightSpriteSheets.put(Character.SpriteState.MOVING, "knight_moving");
 
         // Define sprite sheet frames for states
         Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
@@ -20,6 +21,7 @@ public class CharacterFactory {
         knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 7 frames for ATTACK
         knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 4 frames for HIT
         knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 4 frames for Death
+        knightFrameCounts.put(Character.SpriteState.MOVING, 8);
 
         // Create and return the Warrior hero
         Job WarriorJob = createWarriorJob();
@@ -36,12 +38,14 @@ public class CharacterFactory {
         mageSpriteSheets.put(Character.SpriteState.HIT, "wizard_hurt");
         mageSpriteSheets.put(Character.SpriteState.DEATH, "wizard_death");
         mageSpriteSheets.put(Character.SpriteState.ATTACK, "wizard_attack01");
+        mageSpriteSheets.put(Character.SpriteState.MOVING, "wizard_walk");
 
         Map<Character.SpriteState, Integer> mageFrameCounts = new HashMap<>();
         mageFrameCounts.put(Character.SpriteState.IDLE, 6);
         mageFrameCounts.put(Character.SpriteState.HIT, 4);
         mageFrameCounts.put(Character.SpriteState.DEATH, 4);
         mageFrameCounts.put(Character.SpriteState.ATTACK, 6);
+        mageFrameCounts.put(Character.SpriteState.MOVING, 8);
 
         Job MageJob = createMageJob();
         return new Hero("Balbus", MageJob, mageSpriteSheets, mageFrameCounts, false);
@@ -58,12 +62,14 @@ public class CharacterFactory {
         rangerSpriteSheets.put(Character.SpriteState.HIT, "archer_hurt");
         rangerSpriteSheets.put(Character.SpriteState.DEATH, "archer_death");
         rangerSpriteSheets.put(Character.SpriteState.ATTACK, "archer_attack01");
+        rangerSpriteSheets.put(Character.SpriteState.MOVING, "archer_walk");
 
         Map<Character.SpriteState, Integer> rangerFrameCounts = new HashMap<>();
         rangerFrameCounts.put(Character.SpriteState.IDLE, 6);
         rangerFrameCounts.put(Character.SpriteState.HIT, 4);
         rangerFrameCounts.put(Character.SpriteState.DEATH, 4);
         rangerFrameCounts.put(Character.SpriteState.ATTACK, 9);
+        rangerFrameCounts.put(Character.SpriteState.MOVING, 8);
 
         Job RangerJob = createRangerJob();
         return new Hero("Ranger", RangerJob, rangerSpriteSheets,rangerFrameCounts, false);
@@ -80,12 +86,14 @@ public class CharacterFactory {
         goblinSpriteSheets.put(Character.SpriteState.ATTACK, "orc_attack01");
         goblinSpriteSheets.put(Character.SpriteState.HIT, "orc_hurt");
         goblinSpriteSheets.put(Character.SpriteState.DEATH, "orc_death");
+        goblinSpriteSheets.put(Character.SpriteState.MOVING, "orc_walk");
 
         Map<Character.SpriteState, Integer> goblinFrameCounts = new HashMap<>();
         goblinFrameCounts.put(Character.SpriteState.IDLE, 6);
         goblinFrameCounts.put(Character.SpriteState.ATTACK, 6);
         goblinFrameCounts.put(Character.SpriteState.HIT, 4);
         goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
+        goblinFrameCounts.put(Character.SpriteState.MOVING, 8);
 
         return new Enemy("Goblin", 100, 20, 1, 5, 1, 3,10, 5, 5, 0, false, goblinSpriteSheets, goblinFrameCounts, true);
     }
@@ -97,12 +105,14 @@ public class CharacterFactory {
         goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
         goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
         goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
+        goblinEliteSpriteSheets.put(Character.SpriteState.MOVING, "elite_orc_walk");
 
         Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
         goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
         goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
         goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
         goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
+        goblinEliteFrameCounts.put(Character.SpriteState.MOVING, 8);
 
         return new Enemy("Goblin Warlord", 150, 25, 2, 10, 1, 3,15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinEliteFrameCounts, true);
     }
