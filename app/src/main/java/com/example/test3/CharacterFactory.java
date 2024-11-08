@@ -72,7 +72,7 @@ public class CharacterFactory {
         rangerFrameCounts.put(Character.SpriteState.MOVING, 8);
 
         Job RangerJob = createRangerJob();
-        return new Hero("Ranger", RangerJob, rangerSpriteSheets,rangerFrameCounts, false);
+        return new Hero("Ron", RangerJob, rangerSpriteSheets,rangerFrameCounts, false);
     }
 
     public static Job createRangerJob(){
