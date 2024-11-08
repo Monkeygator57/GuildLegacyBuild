@@ -2,6 +2,7 @@ package com.example.test3;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
@@ -99,15 +100,31 @@ public class SpriteSheetImageView extends AppCompatImageView {
         BitmapDrawable drawable = (BitmapDrawable) getDrawable();
         if (drawable == null) return;
 
+        // Initialize frameToDraw if it hasn't been set yet
         if (frameToDraw == null) {
             frameToDraw = new Rect(0, 0, frameWidth, frameHeight);
         }
 
+        // Prepare the matrix and center point for the flip transformation
+        Matrix matrix = new Matrix();
+        if (currentCharacter != null && currentCharacter.facingLeft) {
+            // Flip horizontally around the center of frameOnScreen
+            float pivotX = frameOnScreen.centerX();
+            float pivotY = frameOnScreen.centerY();
+            matrix.preScale(-1, 1, pivotX, pivotY);
+        }
+
+        // Set up the frame to draw based on the current frame in the sprite sheet
         frameToDraw.left = currentFrame * frameWidth;
         frameToDraw.right = frameToDraw.left + frameWidth;
 
+        // Save canvas state, apply the flip matrix, draw the frame, and restore canvas state
+        canvas.save();
+        canvas.concat(matrix);
         canvas.drawBitmap(drawable.getBitmap(), frameToDraw, frameOnScreen, paint);
+        canvas.restore();
     }
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
