@@ -5,7 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:background="@drawable/mainmenubackground">
 
     <!-- Top Bar: Player Info -->
     <TextView
@@ -13,6 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Player: New Player (Lvl 1)"
+            android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -22,11 +24,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Gold: 0 | Gems: 0"
+            android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Central Area: Map Placeholder and Begin Button -->
+
+
+    <!-- Side Menus: Placeholder Buttons -->
     <Button
             android:id="@+id/begin_button"
             android:layout_width="wrap_content"
@@ -35,9 +40,7 @@
             app:layout_constraintTop_toBottomOf="@+id/player_info"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="40dp" />
-
-    <!-- Side Menus: Placeholder Buttons -->
+            android:layout_marginTop="564dp" app:layout_constraintHorizontal_bias="0.498"/>
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,17 +49,6 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="20dp">
 
-        <Button
-                android:id="@+id/events_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Events" />
-
-        <Button
-                android:id="@+id/newbie_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Newbie" />
     </LinearLayout>
 
     <LinearLayout
@@ -67,17 +59,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="20dp">
 
-        <Button
-                android:id="@+id/quests_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Quests" />
-
-        <Button
-                android:id="@+id/bag_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Bag" />
     </LinearLayout>
 
     <!-- Bottom Navigation Bar -->
@@ -96,21 +77,48 @@
                 android:text="World Map" />
 
         <Button
-                android:id="@+id/campaign_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Campaign" />
-
-        <Button
                 android:id="@+id/heroes_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Heroes" />
-
         <Button
-                android:id="@+id/guild_button"
+                android:id="@+id/bag_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Guild" />
+                android:text="Bag"/>
+        <Button
+                android:id="@+id/events_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Events"/>
+
     </LinearLayout>
+    <Button
+            android:id="@+id/guild_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guild"
+            app:layout_constraintTop_toBottomOf="@+id/player_info"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="200dp" />
+
+    <Button
+            android:id="@+id/campaign_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Campaign"
+            app:layout_constraintTop_toBottomOf="@+id/guild_button"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="20dp" />
+
+    <Button
+            android:id="@+id/quests_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quests"
+            app:layout_constraintTop_toBottomOf="@+id/guild_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="20dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
