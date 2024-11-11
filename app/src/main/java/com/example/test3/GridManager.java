@@ -9,92 +9,94 @@ import androidx.gridlayout.widget.GridLayout;
 import android.widget.TextView;
 
 import android.animation.ObjectAnimator;
+import android.util.Log;
 import android.util.Pair;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.*;
+
+import android.os.Handler;
 
 public class GridManager {
 
     private final GridLayout gridLayout;
     private final Context context;
 
-    //hash maps to store characters view and object properties (stats of hero/enemy) by its grid position, represented by a pair of ints.
+    // Hash maps to store character views and objects by their grid position.
     private final HashMap<Pair<Integer, Integer>, View> characterViews;
-    private final HashMap<Pair<Integer, Integer>, Object> characterObjects;
+    private final HashMap<Pair<Integer, Integer>, Character> characterObjects;
 
+    private final int numRows = 9;
+    private final int numCols = 9;
 
-    public GridManager(GridLayout gridLayout, Context context){
+    // Add getter methods
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public int getNumCols() {
+        return numCols;
+    }
+
+    public GridManager(GridLayout gridLayout, Context context) {
         this.gridLayout = gridLayout;
         this.context = context;
 
-        //initialize hash maps
+        // Initialize hash maps
         this.characterViews = new HashMap<>();
         this.characterObjects = new HashMap<>();
     }
 
-    //method to initialize the grid with example data. (place hero/enemy)
+    // Method to remove a character from the grid at a specified position
+    public void removeCharacter(int row, int col) {
+        Pair<Integer, Integer> position = new Pair<>(row, col);
+
+        // Remove the character object from the characterObjects map
+        characterObjects.remove(position);
+
+        // Remove the view from the characterViews map and the grid layout if it exists
+        View characterView = characterViews.remove(position);
+        if (characterView != null) {
+            gridLayout.removeView(characterView);
+        }
+    }
+
+    // Method to get character view at a specific position
+    public SpriteSheetImageView getCharacterViewAtPosition(int row, int col) {
+        Pair<Integer, Integer> position = new Pair<>(row, col);
+        View characterView = characterViews.get(position);
+        if (characterView instanceof SpriteSheetImageView) {
+            return (SpriteSheetImageView) characterView;
+        }
+        return null;
+    }
+
+    // Method to get all character objects
+    public Map<Pair<Integer, Integer>, Character> getCharacterObjects() {
+        return characterObjects;
+    }
+
+    // Method to get all currently occupied positions
+    public Set<Pair<Integer, Integer>> getOccupiedPositions() {
+        return new HashSet<>(characterObjects.keySet());
+    }
+
+    public Character getCharacterAtPosition(int row, int col) {
+        Pair<Integer, Integer> position = new Pair<>(row, col);
+        return characterObjects.get(position);
+    }
+
+    // Method to initialize the grid
     public void initializeGrid() {
-        // example setup of initial heroes and enemies,
-        // Define sprite sheets for the knight character
-        Map<Character.SpriteState, String> knightSpriteSheets = new HashMap<>();
-        knightSpriteSheets.put(Character.SpriteState.IDLE, "knight_idle");
-        knightSpriteSheets.put(Character.SpriteState.ATTACK, "knight_attack01");
-        knightSpriteSheets.put(Character.SpriteState.HIT, "knight_hurt");
-        knightSpriteSheets.put(Character.SpriteState.DEATH, "knight_death");
-        // Define sprite sheet frames for states
-        Map<Character.SpriteState, Integer> knightFrameCounts = new HashMap<>();
-        knightFrameCounts.put(Character.SpriteState.IDLE, 6);     // 4 frames for IDLE
-        knightFrameCounts.put(Character.SpriteState.ATTACK, 7);   // 6 frames for ATTACK
-        knightFrameCounts.put(Character.SpriteState.HIT, 4);      // 2 frames for HIT
-        knightFrameCounts.put(Character.SpriteState.DEATH, 4);    // 5 frames for Death
-
-        Hero hero1 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        Hero hero2 = new Hero("Warrior", 100, 30, 10, 0,10,10,10,0,"Warrior", knightSpriteSheets, knightFrameCounts);
-        characterObjects.put(new Pair<>(0, 0), hero1); //place hero1 at (0,0)
-        characterObjects.put(new Pair<>(1, 0), hero2); //place hero2 at (1,0)
-
-        // Define sprite sheets for the goblin character
-        Map<Character.SpriteState, String> goblinSpriteSheets = new HashMap<>();
-        goblinSpriteSheets.put(Character.SpriteState.IDLE, "orc_idle");
-        goblinSpriteSheets.put(Character.SpriteState.ATTACK, "orc_attack01");
-        goblinSpriteSheets.put(Character.SpriteState.HIT, "orc_hurt");
-        goblinSpriteSheets.put(Character.SpriteState.DEATH, "orc_death");
-
-        Map<Character.SpriteState, Integer> goblinFrameCounts = new HashMap<>();
-        goblinFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinFrameCounts.put(Character.SpriteState.ATTACK, 6);
-        goblinFrameCounts.put(Character.SpriteState.HIT, 4);
-        goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
-
-        // Define sprite sheets for the elite goblin character
-        Map<Character.SpriteState, String> goblinEliteSpriteSheets = new HashMap<>();
-        goblinEliteSpriteSheets.put(Character.SpriteState.IDLE, "elite_orc_idle");
-        goblinEliteSpriteSheets.put(Character.SpriteState.ATTACK, "elite_orc_attack01");
-        goblinEliteSpriteSheets.put(Character.SpriteState.HIT, "elite_orc_hurt");
-        goblinEliteSpriteSheets.put(Character.SpriteState.DEATH, "elite_orc_death");
-
-        Map<Character.SpriteState, Integer> goblinEliteFrameCounts = new HashMap<>();
-        goblinEliteFrameCounts.put(Character.SpriteState.IDLE, 6);
-        goblinEliteFrameCounts.put(Character.SpriteState.ATTACK, 7);
-        goblinEliteFrameCounts.put(Character.SpriteState.HIT, 4);
-        goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
-
-        Enemy enemy1 = new Enemy("Goblin", 50, 20, 5, 0, 10,10,10,0,false, goblinSpriteSheets, goblinFrameCounts);
-        Enemy enemy2 = new Enemy("Elite Goblin", 50, 20, 5, 0, 10,10,10,0,true, goblinEliteSpriteSheets, goblinEliteFrameCounts);
-        characterObjects.put(new Pair<>(7, 8), enemy1); //place enemy1 at (9,9)
-        characterObjects.put(new Pair<>(8, 8), enemy2); //place enemy2 at (8,9)
-
-        // display initial grid
-        displayCharacterGrid(); // look at this
+        displayCharacterGrid();
     }
 
     // Method to display the character grid
     public void displayCharacterGrid() {
-        gridLayout.removeAllViews(); //clear existing views on grid
+        gridLayout.removeAllViews(); // Clear existing views on grid
 
-        // creates grid tiles, loops through each row and column to create cell for each grid
-        for (int row = 0; row < 9; row++) {
-            for (int col = 0; col < 9; col++) {
+        // Create grid tiles
+        for (int row = 0; row < numRows; row++) {
+            for (int col = 0; col < numCols; col++) {
                 FrameLayout tileContainer = new FrameLayout(context);
 
                 // Set size for each cell
@@ -104,7 +106,7 @@ public class GridManager {
                 );
                 layoutParams.width = 105;
                 layoutParams.height = 105;
-                layoutParams.setMargins(6,6,6,6);
+                layoutParams.setMargins(6, 6, 6, 6);
                 tileContainer.setLayoutParams(layoutParams);
                 tileContainer.setBackgroundColor(Color.DKGRAY);
 
@@ -113,20 +115,20 @@ public class GridManager {
             }
         }
 
-        //Loop through each character position in characterObjects
-        for (Map.Entry<Pair<Integer, Integer>, Object> entry : characterObjects.entrySet()) {
+        // Loop through each character position in characterObjects
+        for (Map.Entry<Pair<Integer, Integer>, Character> entry : characterObjects.entrySet()) {
             Pair<Integer, Integer> position = entry.getKey();
-            Object character = entry.getValue();
+            Character character = entry.getValue();
 
             int row = position.first;
             int col = position.second;
 
-            addCharacterToGrid(row, col, character); // look at this
+            addCharacterToGrid(row, col, character);
         }
     }
 
-    //helper method to add character to the grid with relevant stats
-    private void addCharacterToGrid(int row, int col, Object character) {
+    // Helper method to add character to the grid
+    public void addCharacterToGrid(int row, int col, Character character) {
         FrameLayout container = new FrameLayout(context);
 
         GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
@@ -135,77 +137,126 @@ public class GridManager {
         );
         layoutParams.width = 105;
         layoutParams.height = 105;
-        layoutParams.setMargins(6,6,6,6);
+        layoutParams.setMargins(6, 6, 6, 6);
         container.setLayoutParams(layoutParams);
 
         // Create and configure the SpriteSheetImageView for the character
         SpriteSheetImageView spriteView = new SpriteSheetImageView(context, null);
-        spriteView.setCharacter((Character) character); // Set the character
+        spriteView.setCharacter(character); // Set the character
 
-        // Set layout parameter for the sprite
+        // Set layout parameters for the sprite
         FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(80, 80);
         spriteParams.gravity = Gravity.CENTER;
         spriteView.setLayoutParams(spriteParams);
 
-        //Create a label for the character (temp)
-        TextView label = new TextView(context);
-        label.setText(((Character) character).getName());
-        label.setTextColor(Color.GRAY);
-        label.setTextSize(12);
-        label.setGravity(Gravity.CENTER);
-
-        // Add the sprite and label to the container
+        // Add the sprite to the container
         container.addView(spriteView);
-        container.addView(label);
 
         gridLayout.addView(container);
 
-        //Save both the view and the character object in the hashmaps
+        // Save both the view and the character object in the hashmaps
         Pair<Integer, Integer> position = new Pair<>(row, col);
-        characterViews.put(position, container); // store the visual view
-        characterObjects.put(position, character); // store the actual character object.
+        characterViews.put(position, container); // Store the visual view
+        characterObjects.put(position, character); // Store the character object
     }
 
-    // method to move character from one cell to another
-    public void moveCharacter(Pair<Integer, Integer> fromPosition, Pair<Integer, Integer> toPosition) {
+    // Method to move character from one cell to another
+    public void moveCharacter(int oldRow, int oldCol, int newRow, int newCol, Character character) {
+        Pair<Integer, Integer> fromPosition = new Pair<>(oldRow, oldCol);
+        Pair<Integer, Integer> toPosition = new Pair<>(newRow, newCol);
+
         View characterView = characterViews.get(fromPosition);
-        Object character = characterObjects.get(fromPosition);
 
         if (characterView != null && character != null) {
-            int fromRow = fromPosition.first;
-            int fromCol = fromPosition.second;
-            int toRow = toPosition.first;
-            int toCol = toPosition.second;
+            // Step 1: Generate the path using A* Pathfinding and limit to moveSpeed
+            AStarPathfinder pathfinder = new AStarPathfinder();
+            Set<Pair<Integer, Integer>> occupiedCells = new HashSet<>(characterObjects.keySet());
+            occupiedCells.remove(fromPosition); // Exclude the starting position of the character being moved
 
-            //Retrieve layout params of one cell
+            // Get the grid size
+            int numRows = getNumRows();
+            int numCols = getNumCols();
+
+            List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(
+                    oldRow, oldCol,
+                    newRow, newCol,
+                    occupiedCells, numRows, numCols
+            );
+
+            if (fullPath == null || fullPath.size() < 2) {
+                // No path found or already at destination
+                return;
+            }
+
+            // Limit path to the character's movement speed
+            int moveSpeed = character.getMoveSpeed();
+            int maxSteps = Math.min(moveSpeed, fullPath.size() - 1);
+            List<Pair<Integer, Integer>> path = fullPath.subList(0, maxSteps + 1); // Include starting position
+
+            // Step 2: Retrieve layout params of one cell to calculate true cell dimensions
             FrameLayout sampleCell = (FrameLayout) gridLayout.getChildAt(0);
             GridLayout.LayoutParams cellParams = (GridLayout.LayoutParams) sampleCell.getLayoutParams();
-
-            // calculate the cell width and height, including ALL margins
             float cellWidth = cellParams.width + cellParams.leftMargin + cellParams.rightMargin;
             float cellHeight = cellParams.height + cellParams.topMargin + cellParams.bottomMargin;
 
-            //calculate translation based on true grid dimensions
-            float translationX = (toCol - fromCol) * cellWidth;
-            float translationY = (toRow - fromRow) * cellHeight;
+            // Step 3: Animate along the path step-by-step
+            Handler handler = new Handler();
+            int animationDuration = 200; // Duration for each step in milliseconds
 
-            //Animate the character to the new position
-            ObjectAnimator objectX = ObjectAnimator.ofFloat(characterView, "translationX", translationX);
-            ObjectAnimator objectY = ObjectAnimator.ofFloat(characterView, "translationY", translationY);
-            objectX.setDuration(200);
-            objectY.setDuration(200);
+            for (int i = 0; i < path.size() - 1; i++) {
+                final Pair<Integer, Integer> currentStep = path.get(i);
+                final Pair<Integer, Integer> nextStep = path.get(i + 1);
 
-            // Start animation
-            objectX.start();
-            objectY.start();
+                int finalI = i;
+                handler.postDelayed(() -> {
+                    // Calculate the translation for the next step
+                    float translationX = (nextStep.second - currentStep.second) * cellWidth;
+                    float translationY = (nextStep.first - currentStep.first) * cellHeight;
 
-            //update hashmaps to reflect new changes
-            characterViews.remove(fromPosition);
-            characterViews.put(toPosition, characterView);
+                    // Animate to the next position
+                    characterView.animate()
+                            .translationXBy(translationX)
+                            .translationYBy(translationY)
+                            .setDuration(animationDuration)
+                            .start();
+                }, i * animationDuration);  // Delay each step by the step index * animationDuration
+            }
 
-            characterObjects.remove(fromPosition);
-            characterObjects.put(toPosition, character);
+            // Step 4: Update HashMaps after reaching the final position in the path
+            handler.postDelayed(() -> {
+                // Update hashmaps to reflect the new position
+                characterViews.remove(fromPosition);
+                characterViews.put(toPosition, characterView);
+
+                characterObjects.remove(fromPosition);
+                characterObjects.put(toPosition, character);
+
+                // Reset the translation so the view is back to its grid position
+                characterView.setTranslationX(0);
+                characterView.setTranslationY(0);
+
+                // Update the character's sprite state back to idle
+                character.setSpriteState(Character.SpriteState.IDLE);
+                if (characterView instanceof FrameLayout) {
+                    View spriteView = ((FrameLayout) characterView).getChildAt(0);
+                    if (spriteView instanceof SpriteSheetImageView) {
+                        ((SpriteSheetImageView) spriteView).setCharacter(character);
+                    }
+                }
+
+                Log.d("GridManager", character.getName() + " has moved to (" + newRow + ", " + newCol + ")");
+            }, (path.size() - 1) * animationDuration);  // Delay this update to happen after the final animation step
         }
     }
 
+    // Method to check if a position is occupied
+    public boolean isPositionOccupied(int row, int col) {
+        Pair<Integer, Integer> position = new Pair<>(row, col);
+        return characterObjects.containsKey(position);
+    }
+
+    // Method to check if a position is within the grid bounds
+    public boolean isValidPosition(int row, int col) {
+        return row >= 0 && row < numRows && col >= 0 && col < numCols;
+    }
 }

@@ -1,13 +1,15 @@
 package com.example.test3;
 
+import android.util.Log;
+
 import java.util.Map;
 
 public class Enemy extends Character {
     private int lootValue;
     private boolean isElite;
 
-    public Enemy(String name, int health, int attackPower, int defence,int speed, int strength, int intelligence, int agility, int lootValue, boolean isElite, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts) {
-        super (name, health, attackPower, defence, speed, strength, intelligence, agility, spriteSheetResources, stateFrameCounts);
+    public Enemy(String name, int health, int attackPower, int attackRange, int defence, int speed, int moveSpeed, int strength, int intelligence, int agility, int lootValue, boolean isElite, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
+        super (name, health, attackPower, attackRange, defence, speed, moveSpeed, strength, intelligence, agility, spriteSheetResources, stateFrameCounts, facingLeft);
         this.lootValue = lootValue;
         this.isElite = isElite;
 
@@ -21,11 +23,10 @@ public class Enemy extends Character {
 
     @Override
     public void attack(Character target) {
-        setSpriteState(SpriteState.ATTACK);
-        System.out.println(name + " attacks " + target.getName() + " for " + attackPower + " damage!");
-        target.takeDamage(attackPower);
-
-        setSpriteState(SpriteState.IDLE);
+        // Implement attack logic
+        int damage = this.attackPower; // Adjust as needed
+        target.takeDamage(damage);
+        Log.d("Enemy", this.name + " attacked " + target.getName() + " for " + damage + " damage.");
     }
 
     // Loot System mechanics goes here
