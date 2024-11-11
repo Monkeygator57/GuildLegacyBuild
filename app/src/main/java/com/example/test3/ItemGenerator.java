@@ -1,141 +1,95 @@
 package com.example.test3;
 
-import java.util.Random;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+//i spent a solid four hours trying to get this idea to work
+//one hour on stackoverflow, another hour and a half on reddit, and god only knows how long
+//scrolling through android studio documentation
+//but finally... i THINK we got it...
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemGenerator {
-    private static final String[] weaponNames = {"Rusty Sword", "Wooden Club", "Iron Dagger", "Enchanted Bow", "Radiant Greatsword", "Jagged Halberd"};
-    private static final String[] armorNames = {"Leather Tunic", "Chain Mail", "Plate Armor", "Dragonscale Breastplate", "Shimmering Robes", "Spiked Pauldrons"};
-    private static final int[] weaponAttackBonus = {2, 3, 5, 8, 12, 15};
-    private static final int[] armorDefenseBonus = {1, 3, 6, 10, 14, 18};
-    private static final Armor.ArmorWeight[] armorWeights = {
-            Armor.ArmorWeight.LIGHT, Armor.ArmorWeight.MEDIUM, Armor.ArmorWeight.HEAVY
-    };
 
-    private static final Random random = new Random();
+    private static final String WEAPON_DATA_FILE = "weapon_data.xml";
+    private static final String ARMOR_DATA_FILE = "armor_data.xml";
+    private static final String TRINKET_DATA_FILE = "trinket_data.xml";
 
-    public static Weapon generateWeapon() {
-        ItemRarity rarity = getRandomRarity();
-        int index = random.nextInt(weaponNames.length);
-        int value = getItemValue(rarity);
-        int weight = getItemWeight(rarity);
-        int attackBonus = getItemAttackBonus(rarity, index);
-
-        return new Weapon(
-                weaponNames[index],
-                "A " + rarity.toString().toLowerCase() + " weapon.",
-                value,
-                weight,
-                attackBonus
-        );
-    }
-
-    public static Armor generateArmor() {
-        ItemRarity rarity = getRandomRarity();
-        int index = random.nextInt(armorNames.length);
-        int value = getItemValue(rarity);
-        int weight = getItemWeight(rarity);
-        int defenseBonus = getItemDefenseBonus(rarity, index);
-        Armor.ArmorWeight armorWeight = armorWeights[random.nextInt(armorWeights.length)];
-
-        return new Armor(
-                armorNames[index],
-                "A " + rarity.toString().toLowerCase() + " armor piece.",
-                value,
-                weight,
-                defenseBonus,
-                armorWeight
-        );
-    }
-
-    private static ItemRarity getRandomRarity() {
-        ItemRarity[] rarities = ItemRarity.values();
-        return rarities[random.nextInt(rarities.length)];
-    }
-
-    private static int getItemValue(ItemRarity rarity) {
-        int value;
-        switch (rarity) {
-            case COMMON:
-                value = random.nextInt(25) + 25;
-                break;
-            case UNCOMMON:
-                value = random.nextInt(50) + 50;
-                break;
-            case RARE:
-                value = random.nextInt(100) + 100;
-                break;
-            case LEGENDARY:
-                value = random.nextInt(200) + 200;
-                break;
-            default:
-                value = 0;
+    public static List<Weapon> loadWeapons() {
+        List<Weapon> weapons = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(WEAPON_DATA_FILE));
+            NodeList weaponNodes = document.getElementsByTagName("weapon");
+            for (int i = 0; i < weaponNodes.getLength(); i++) {
+                Node weaponNode = weaponNodes.item(i);
+                if (weaponNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element weaponElement = (Element) weaponNode;
+                    String name = weaponElement.getElementsByTagName("name").item(0).getTextContent();
+                    int attackBonus = Integer.parseInt(weaponElement.getElementsByTagName("attackBonus").item(0).getTextContent());
+                    weapons.add(new Weapon(name, "", 0, 0, attackBonus));
+                }
+            }
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
         }
-        return value;
+        return weapons;
     }
 
-    private static int getItemWeight(ItemRarity rarity) {
-        int weight;
-        switch (rarity) {
-            case COMMON:
-                weight = random.nextInt(3) + 1;
-                break;
-            case UNCOMMON:
-                weight = random.nextInt(5) + 3;
-                break;
-            case RARE:
-                weight = random.nextInt(7) + 5;
-                break;
-            case LEGENDARY:
-                weight = random.nextInt(10) + 8;
-                break;
-            default:
-                weight = 0;
+    public static List<Armor> loadArmor() {
+        List<Armor> armors = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(ARMOR_DATA_FILE));
+            NodeList armorNodes = document.getElementsByTagName("item");
+            for (int i = 0; i < armorNodes.getLength(); i++) {
+                Node armorNode = armorNodes.item(i);
+                if (armorNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element armorElement = (Element) armorNode;
+                    String name = armorElement.getElementsByTagName("name").item(0).getTextContent();
+                    int defenseBonus = Integer.parseInt(armorElement.getElementsByTagName("defenseBonus").item(0).getTextContent());
+                    String armorWeightStr = armorElement.getElementsByTagName("armorWeight").item(0).getTextContent();
+                    Armor.ArmorWeight armorWeight = Armor.ArmorWeight.valueOf(armorWeightStr);
+                    armors.add(new Armor(name, "", 0, 0, defenseBonus, armorWeight));
+                }
+            }
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
         }
-        return weight;
+        return armors;
     }
 
-    private static int getItemAttackBonus(ItemRarity rarity, int index) {
-        int attackBonus = weaponAttackBonus[index];
-        switch (rarity) {
-            case COMMON:
-                attackBonus = (int) (attackBonus * 1.0);
-                break;
-            case UNCOMMON:
-                attackBonus = (int) (attackBonus * 1.25);
-                break;
-            case RARE:
-                attackBonus = (int) (attackBonus * 1.5);
-                break;
-            case LEGENDARY:
-                attackBonus = (int) (attackBonus * 2.0);
-                break;
+    public static List<Trinket> loadTrinkets() {
+        List<Trinket> trinkets = new ArrayList<>();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(TRINKET_DATA_FILE));
+            NodeList trinketNodes = document.getElementsByTagName("item");
+            for (int i = 0; i < trinketNodes.getLength(); i++) {
+                Node trinketNode = trinketNodes.item(i);
+                if (trinketNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element trinketElement = (Element) trinketNode;
+                    String name = trinketElement.getElementsByTagName("name").item(0).getTextContent();
+                    int statBonus = Integer.parseInt(trinketElement.getElementsByTagName("statBonus").item(0).getTextContent());
+                    trinkets.add(new Trinket(name, "", 0, 0, statBonus));
+                }
+            }
+        } catch (ParserConfigurationException | IOException | SAXException e) {
+            e.printStackTrace();
         }
-        return attackBonus;
-    }
-
-    private static int getItemDefenseBonus(ItemRarity rarity, int index) {
-        int defenseBonus = armorDefenseBonus[index];
-        switch (rarity) {
-            case COMMON:
-                defenseBonus = (int) (defenseBonus * 1.0);
-                break;
-            case UNCOMMON:
-                defenseBonus = (int) (defenseBonus * 1.25);
-                break;
-            case RARE:
-                defenseBonus = (int) (defenseBonus * 1.5);
-                break;
-            case LEGENDARY:
-                defenseBonus = (int) (defenseBonus * 2.0);
-                break;
-        }
-        return defenseBonus;
-    }
-
-    public enum ItemRarity {
-        COMMON,
-        UNCOMMON,
-        RARE,
-        LEGENDARY
+        return trinkets;
     }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<armor>
+    <item>
+        <name>Leather Tunic</name>
+        <defenseBonus>1</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Chain Mail</name>
+        <defenseBonus>3</defenseBonus>
+        <armorWeight>MEDIUM</armorWeight>
+    </item>
+    <item>
+        <name>Plate Armor</name>
+        <defenseBonus>6</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
+    <item>
+        <name>Dragonscale Breastplate</name>
+        <defenseBonus>10</defenseBonus>
+        <armorWeight>MEDIUM</armorWeight>
+    </item>
+    <item>
+        <name>Shimmering Robes</name>
+        <defenseBonus>14</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Spiked Pauldrons</name>
+        <defenseBonus>18</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
+</armor>
