@@ -10,6 +10,8 @@ public abstract class Character {
     protected int baseSpeed;
     protected Weapon equippedWeaon;
     protected Armor equippedArmor;
+    protected Trinket equippedTrinket;
+
 
     public Character(String name, int health, int attackPower, int defense, int baseSpeed) {
         this.name = name;
@@ -19,6 +21,7 @@ public abstract class Character {
         this.baseSpeed = baseSpeed;
         this.equippedWeapon = null;
         this.equippedArmor = null;
+        this.equippedTrinket = null;
     }
 
     // Method for attack
@@ -42,6 +45,11 @@ public abstract class Character {
     public void equipArmor(Armor armor) {
         this.equippedArmor = armor;
         System.out.println(name + " equipped " + armor.getName());
+    }
+
+    public void equipTrinket(Trinket trinket) {
+        this.equippedTrinket = trinket;
+        System.out.println(name + " equipped " + trinket.getName());
     }
 
 
@@ -73,6 +81,9 @@ public abstract class Character {
         if (equippedWeapon != null) {
             totalAttack += equippedWeapon.getAttackBonus();
         }
+        if (equippedTrinket != null) {
+            totalAttack += equippedTrinket.getStatBonus();
+        }
         return totalAttack;
     }
 
@@ -80,6 +91,9 @@ public abstract class Character {
         int totalDefense = defense;
         if (equippedArmor != null) {
             totalDefense += equippedArmor.getDefenseBonus();
+        }
+        if (equippedTrinket != null) {
+            totalDefense += equippedTrinket.getStatBonus();
         }
         return totalDefense;
     }
@@ -89,6 +103,10 @@ public abstract class Character {
         if (equippedArmor != null) {
             totalSpeed += equippedArmor.getSpeedModifier();
         }
+        if (equippedTrinket != null) {
+            totalSpeed += equippedTrinket.getStatBonus();
+        }
         return Math.max(1, totalSpeed); // Speed cannot go below 1
     }
 }
+
