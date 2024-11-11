@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapons>
+    <weapon>
+        <name>Rusty Sword</name>
+        <attackBonus>2</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Wooden Club</name>
+        <attackBonus>3</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Iron Dagger</name>
+        <attackBonus>5</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Enchanted Bow</name>
+        <attackBonus>8</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Radiant Greatsword</name>
+        <attackBonus>12</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Jagged Halberd</name>
+        <attackBonus>15</attackBonus>
+    </weapon>
+</weapons>
