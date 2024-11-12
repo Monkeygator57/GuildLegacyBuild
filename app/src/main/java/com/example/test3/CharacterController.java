@@ -1,14 +1,13 @@
 package com.example.test3;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
-
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import androidx.gridlayout.widget.GridLayout;
-import android.widget.TextView;
 
-import android.animation.ObjectAnimator;
 import android.util.Log;
 import android.util.Pair;
 
@@ -16,7 +15,7 @@ import java.util.*;
 
 import android.os.Handler;
 
-public class GridManager {
+public class CharacterController {
 
     private final GridLayout gridLayout;
     private final Context context;
@@ -32,12 +31,11 @@ public class GridManager {
     public int getNumRows() {
         return numRows;
     }
-
     public int getNumCols() {
         return numCols;
     }
 
-    public GridManager(GridLayout gridLayout, Context context) {
+    public CharacterController(GridLayout gridLayout, Context context) {
         this.gridLayout = gridLayout;
         this.context = context;
 
@@ -130,6 +128,9 @@ public class GridManager {
         Pair<Integer, Integer> position = new Pair<>(row, col);
         characterViews.put(position, container); // Store the visual view
         characterObjects.put(position, character); // Store the character object
+
+        //enable drag and drop for this character view
+        enableDragAndDrop(container);
     }
 
     // Method to move character from one cell to another
@@ -226,6 +227,22 @@ public class GridManager {
         Pair<Integer, Integer> position = new Pair<>(row, col);
         return characterObjects.containsKey(position);
     }
+
+
+    //Drag and drop functionality.
+    private void enableDragAndDrop(View characterView) {
+        if (!((GridBattleActivity) context).isBattleStarted) {
+            characterView.setOnLongClickListener(v -> {
+                ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
+                ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                v.startDrag(dragData, shadowBuilder, v, 0);
+                return true;
+            });
+        }
+    }
+
 
     // Method to check if a position is within the grid bounds
     public boolean isValidPosition(int row, int col) {

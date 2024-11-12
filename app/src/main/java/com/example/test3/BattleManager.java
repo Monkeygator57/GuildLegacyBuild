@@ -11,13 +11,14 @@ import java.util.function.Consumer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 public class BattleManager {
     private final List<Hero> heroes = new ArrayList<>();
     private final List<Enemy> enemies = new ArrayList<>();
     private final List<SpriteSheetImageView> heroViews = new ArrayList<>();
     private final List<SpriteSheetImageView> enemyViews = new ArrayList<>();
     private final List<BattleCharacter> allCharacters = new ArrayList<>();
-    private final GridManager gridManager;
+    private final CharacterController characterController;
     private FloorFactory floorFactory;
 
     private final Handler handler = new Handler();
@@ -26,21 +27,21 @@ public class BattleManager {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    // Constructor to accept GridManager and FloorFactory
-    public BattleManager(GridManager gridManager, FloorFactory floorFactory) {
-        this.gridManager = gridManager;
+    // Constructor to accept CharacterController and FloorFactory
+    public BattleManager(CharacterController characterController, FloorFactory floorFactory) {
+        this.characterController = characterController;
         this.floorFactory = floorFactory;
     }
 
-    // Overloaded constructor to accept only GridManager
-    public BattleManager(GridManager gridManager) {
-        this.gridManager = gridManager;
+    // Overloaded constructor to accept only CharacterController
+    public BattleManager(CharacterController characterController) {
+        this.characterController = characterController;
         this.floorFactory = new FloorFactory(); // Provide a default or new instance
     }
 
-    // Public getter for gridManager
-    public GridManager getGridManager() {
-        return gridManager;
+    // Public getter for characterController
+    public CharacterController getCharacterController() {
+        return characterController;
     }
 
     // Start new floor
@@ -70,7 +71,7 @@ public class BattleManager {
 
             int row = position.first;
             int col = position.second;
-            gridManager.addCharacterToGrid(row, col, hero);
+            characterController.addCharacterToGrid(row, col, hero);
 
             // Add to allCharacters
             BattleCharacter battleCharacter = new BattleCharacter(hero, heroView, row, col);
@@ -87,7 +88,7 @@ public class BattleManager {
 
             int row = position.first;
             int col = position.second;
-            gridManager.addCharacterToGrid(row, col, enemy);
+            characterController.addCharacterToGrid(row, col, enemy);
 
             // Add to allCharacters
             BattleCharacter battleCharacter = new BattleCharacter(enemy, enemyView, row, col);
@@ -158,14 +159,14 @@ public class BattleManager {
         int endRow = target.getRow();
         int endCol = target.getCol();
 
-        Set<Pair<Integer, Integer>> occupiedCells = gridManager.getOccupiedPositions();
+        Set<Pair<Integer, Integer>> occupiedCells = characterController.getOccupiedPositions();
 
         occupiedCells.remove(new Pair<>(startRow, startCol)); // Exclude the character's current position
         occupiedCells.remove(new Pair<>(endRow, endCol));     // Exclude the target's position
 
         // Get the grid size from GridManager
-        int numRows = gridManager.getNumRows();
-        int numCols = gridManager.getNumCols();
+        int numRows = characterController.getNumRows();
+        int numCols = characterController.getNumCols();
 
         AStarPathfinder pathfinder = new AStarPathfinder();
         List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(
@@ -203,7 +204,7 @@ public class BattleManager {
         int newCol = newPosition.second;
 
         // Update the grid manager
-        gridManager.moveCharacter(oldRow, oldCol, newRow, newCol, character.getCharacter());
+        characterController.moveCharacter(oldRow, oldCol, newRow, newCol, character.getCharacter());
 
         // Update character's position
         character.setPosition(newRow, newCol);
@@ -236,7 +237,7 @@ public class BattleManager {
                 // Remove from grid and allCharacters list
                 int defenderRow = defender.getRow();
                 int defenderCol = defender.getCol();
-                gridManager.removeCharacter(defenderRow, defenderCol);
+                characterController.removeCharacter(defenderRow, defenderCol);
                 allCharacters.remove(defender);
 
                 // Remove from specific lists

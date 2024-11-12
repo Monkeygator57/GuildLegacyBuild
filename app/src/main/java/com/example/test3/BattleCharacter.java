@@ -97,7 +97,7 @@ public class BattleCharacter {
                 int nextCol = nextPosition.second;
 
                 // Check if the new position is occupied
-                if (!battleManager.getGridManager().isPositionOccupied(nextRow, nextCol)) {
+                if (!battleManager.getCharacterController().isPositionOccupied(nextRow, nextCol)) {
                     battleManager.moveCharacter(this, nextPosition);
                     Log.d("BattleCharacter", character.getName() + " moved to (" + nextRow + ", " + nextCol + ")");
 
