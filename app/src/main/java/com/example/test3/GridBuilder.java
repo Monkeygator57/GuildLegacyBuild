@@ -20,6 +20,7 @@ public class GridBuilder {
     private static final int CELL_HEIGHT = 105;
     private static final int CELL_MARGIN = 6;
 
+    //grid builder constructor
     public GridBuilder(int numRows, int numCols, int stagingAreaRows, GridLayout gridLayout) {
         this.characterGrid = gridLayout;
         this.numRows = numRows;
@@ -28,6 +29,7 @@ public class GridBuilder {
         createGrid();
     }
 
+    // layout paramaters for a single, used to avoid redundant code
     private GridLayout.LayoutParams createCellLayoutParams(int row, int col) {
         GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
                 GridLayout.spec(row),
@@ -39,13 +41,13 @@ public class GridBuilder {
         return layoutParams;
     }
 
-
+    // main grid creation method
     private void createGrid() {
         characterGrid.removeAllViews();
         characterGrid.setRowCount(numRows + stagingAreaRows);
         characterGrid.setColumnCount(numCols);
 
-        // Working grid maker
+        // Working grid maker, creates standard 9 x 9 grid.
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
                 FrameLayout tileContainer = new FrameLayout(characterGrid.getContext());
@@ -60,17 +62,19 @@ public class GridBuilder {
             }
          }
 
+        //create staging area
         for (int col = 0; col < numCols; col++) {
             FrameLayout stagingTile = new FrameLayout(characterGrid.getContext());
 
             GridLayout.LayoutParams stagingParams = createCellLayoutParams(numRows, col);
             stagingTile.setLayoutParams(stagingParams);
 
-            stagingTile.setBackgroundColor(Color.LTGRAY);
+            stagingTile.setBackgroundColor(Color.LTGRAY); // set staging area to lighter color (temp)
 
             characterGrid.addView(stagingTile, stagingParams);
         }
 
+        // create ondraglistener for each cell
         for (int row = 0; row < numRows; row++) {
             for (int col = 0; col < numCols; col++) {
                 int cellIndex = row * numCols + col;
@@ -94,7 +98,7 @@ public class GridBuilder {
                             v.setBackgroundColor(Color.GRAY); // reset color
                             return true;
                         case DragEvent.ACTION_DRAG_ENDED:
-                            if (!event.getResult()) {
+                            if (!event.getResult()) { // used in case character is placed out of bounds of grid
                                 draggedView = (View) event.getLocalState();
                                 parent = (ViewGroup) draggedView.getParent();
                                 if (parent != null) {
@@ -115,6 +119,7 @@ public class GridBuilder {
         }
     }
 
+    // used to find available tile if placed out of bounds
     private FrameLayout findAvailableStagingTile() {
         for (int col = 0; col < numCols; col++) {
             FrameLayout stagingTile = (FrameLayout) characterGrid.getChildAt(numCols * numCols + col); // find empty tile if placed out of bounds

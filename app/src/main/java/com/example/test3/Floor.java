@@ -25,7 +25,7 @@ public class Floor {
         this.floorNumber = floorNumber;
         this.heroes = heroes;
         this.heroViews = heroViews;
-        this.heroPositions = heroPositions;
+        this.heroPositions = heroPositions != null ? heroPositions : new ArrayList<>(); //MODIFIED  allow null as an input
         this.enemies = enemies;
         this.enemyViews = enemyViews;
         this.enemyPositions = enemyPositions;

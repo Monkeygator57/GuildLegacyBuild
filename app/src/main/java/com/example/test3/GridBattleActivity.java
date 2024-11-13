@@ -21,7 +21,7 @@ public class GridBattleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid_battle); // Load the grid_battle.xml layout
 
-        // Initialize GridManager
+        // Initialize characterController
         GridLayout gridLayout = findViewById(R.id.characterGrid);
         characterController = new CharacterController(gridLayout, this);
         Log.d("GridBattleActivity", "GridManager initialized.");
@@ -30,12 +30,12 @@ public class GridBattleActivity extends AppCompatActivity {
         floorFactory = new FloorFactory();
         Log.d("GridBattleActivity", "FloorFactory initialized.");
 
-        // Initialize BattleManager with GridManager and FloorFactory
+        // Initialize BattleManager with CharacterController and FloorFactory
         battleManager = new BattleManager(new CharacterController(gridLayout, this), floorFactory);
         Log.d("GridBattleActivity", "BattleManager initialized.");
 
 
-        // Build grid
+        // Build visual grid
         gridBuilder = new GridBuilder(9,9, 3, gridLayout);
         Log.d("GridBattleActivity", "GridBuilder initialized.");
 

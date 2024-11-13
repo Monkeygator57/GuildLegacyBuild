@@ -83,7 +83,7 @@ public class CharacterController {
         return characterObjects.get(position);
     }
 
-    // Method to display the character grid
+    // Method to display the characters on the grid
     public void displayCharacterGrid() {
         // Loop through each character position in characterObjects
         for (Map.Entry<Pair<Integer, Integer>, Character> entry : characterObjects.entrySet()) {
@@ -229,7 +229,7 @@ public class CharacterController {
     }
 
 
-    //Drag and drop functionality.
+    //Drag and drop functionality for heroes
     private void enableDragAndDrop(View characterView) {
         if (!((GridBattleActivity) context).isBattleStarted) {
             characterView.setOnLongClickListener(v -> {
@@ -243,6 +243,24 @@ public class CharacterController {
         }
     }
 
+    // method to put heroes on staging area
+    public void initializeHeroesInStagingArea(List<Hero> heroes, List<SpriteSheetImageView> heroViews) {
+        //Define staging area positions
+        List<Pair<Integer,Integer>> stagingPositions = List.of(
+                new Pair<>(9, 0), new Pair<>(9, 1), new Pair<>(9, 2), new Pair<>(9, 3), new Pair<>(9, 2)
+        );
+
+        // assign each hero a posiion in the staging area
+        for (int i = 0; i < heroes.size() && i < stagingPositions.size(); i++) {
+            Hero hero = heroes.get(i);
+            Pair<Integer,Integer> position = stagingPositions.get(i);
+            int row = position.first;
+            int col = position.second;
+
+            // place hero on the grid in the staging area position
+            addCharacterToGrid(row, col, hero);
+        }
+    }
 
     // Method to check if a position is within the grid bounds
     public boolean isValidPosition(int row, int col) {

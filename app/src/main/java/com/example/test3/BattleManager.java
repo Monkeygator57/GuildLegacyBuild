@@ -59,6 +59,8 @@ public class BattleManager {
         heroViews.addAll(floor.getHeroViews());
         enemyViews.addAll(floor.getEnemyViews());
 
+        characterController.initializeHeroesInStagingArea(heroes, heroViews);
+
         // Logging to confirm the setup
         Log.d("BattleManager", "BattleManager setup - Number of heroes: " + heroes.size());
         Log.d("BattleManager", "BattleManager setup - Number of enemies: " + enemies.size());
