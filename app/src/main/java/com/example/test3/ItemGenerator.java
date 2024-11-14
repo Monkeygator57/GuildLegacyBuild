@@ -78,18 +78,67 @@ public class ItemGenerator {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new File(TRINKET_DATA_FILE));
             NodeList trinketNodes = document.getElementsByTagName("item");
+
+            int totalWeight = 0;
+            List<WeightedTrinketData> weightedTrinketData = new ArrayList<>();
+
             for (int i = 0; i < trinketNodes.getLength(); i++) {
                 Node trinketNode = trinketNodes.item(i);
                 if (trinketNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element trinketElement = (Element) trinketNode;
                     String name = trinketElement.getElementsByTagName("name").item(0).getTextContent();
                     int statBonus = Integer.parseInt(trinketElement.getElementsByTagName("statBonus").item(0).getTextContent());
-                    trinkets.add(new Trinket(name, "", 0, 0, statBonus));
+                    int weight = Integer.parseInt(trinketElement.getElementsByTagName("weight").item(0).getTextContent());
+                    TrinketType type = TrinketType.valueOf(trinketElement.getElementsByTagName("type").item(0).getTextContent());
+                    totalWeight += weight;
+                    weightedTrinketData.add(new WeightedTrinketData(name, statBonus, weight, type));
+                }
+            }
+
+            for (WeightedTrinketData data : weightedTrinketData) {
+                int roll = (int) (Math.random() * totalWeight);
+                int cumulativeWeight = 0;
+                for (WeightedTrinketData item : weightedTrinketData) {
+                    cumulativeWeight += item.weight;
+                    if (roll < cumulativeWeight) {
+                        switch (data.type) {
+                            case HEALTH_REGEN:
+                                trinkets.add(new HealthRegenTrinket(data.name, "", data.value, 0));
+                                break;
+                            case DAMAGE_OVER_TIME:
+                                trinkets.add(new DamageOverTimeTrinket(data.name, "", data.value, 0));
+                                break;
+                            case EXTRA_LIFE:
+                                trinkets.add(new ExtraLifeTrinket(data.name, "", data.value, 0));
+                                break;
+                        }
+                        break;
+                    }
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
         return trinkets;
+    }
+
+    private static class WeightedTrinketData {
+        String name;
+        int value;
+        int weight;
+        TrinketType type;
+
+        WeightedTrinketData(String name, int value, int weight, TrinketType type) {
+            this.name = name;
+            this.value = value;
+            this.weight = weight;
+            this.type = type;
+        }
+    }
+
+    public enum TrinketType {
+        HEALTH_REGEN,
+        DAMAGE_OVER_TIME,
+        EXTRA_LIFE
     }
 }

@@ -20,3 +20,4 @@ public class Trinket extends Item {
         return statBonus;
     }
 }
+
