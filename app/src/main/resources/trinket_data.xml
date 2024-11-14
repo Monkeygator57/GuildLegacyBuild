@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <trinkets>
     <item>
-        <name>Amulet of Power</name>
+        <name>Amulet of Regeneration</name>
+        <statBonus>1</statBonus>
+        <weight>5</weight>
+        <type>HEALTH_REGEN</type>
+    </item>
+    <item>
+        <name>Ring of Fire</name>
         <statBonus>3</statBonus>
+        <weight>3</weight>
+        <type>DAMAGE_OVER_TIME</type>
     </item>
     <item>
-        <name>Ring of Resilience</name>
-        <statBonus>5</statBonus>
-    </item>
-    <item>
-        <name>Pendant of Swiftness</name>
-        <statBonus>4</statBonus>
-    </item>
-    <item>
-        <name>Charm of Fortitude</name>
+        <name>Phoenix Down Totem</name>
         <statBonus>6</statBonus>
-    </item>
-    <item>
-        <name>Totem of Might</name>
-        <statBonus>7</statBonus>
-    </item>
-    <item>
-        <name>Talisman of Endurance</name>
-        <statBonus>8</statBonus>
+        <weight>3</weight>
+        <type>EXTRA_LIFE</type>
     </item>
 </trinkets>
