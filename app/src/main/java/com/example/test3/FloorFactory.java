@@ -66,7 +66,7 @@ public class FloorFactory {
         floor1HeroPositions.add(new Pair<>(0, 0));  // Position for hero1
         floor1HeroPositions.add(new Pair<>(5, 2));  // Position for hero2
         floor1HeroPositions.add(new Pair<>(4, 1));
-        floor1HeroPositions.add(new Pair<>(2, 1));
+        floor1HeroPositions.add(new Pair<>(2, 0));
         floor1HeroPositions.add(new Pair<>(6, 1));
 
         // Create Floor 1 with heroes, enemies, views, and positions
