@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         // Button to switch to grid fragment
         Button switchToGridButton = findViewById(R.id.switchToGridButton);
         switchToGridButton.setOnClickListener(v -> {
-
             Intent intent = new Intent(MainActivity.this, GridBattleActivity.class);
             startActivity(intent);
         });
@@ -83,8 +82,4 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-
-
-
 }

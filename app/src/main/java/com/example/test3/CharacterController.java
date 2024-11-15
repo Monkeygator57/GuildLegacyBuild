@@ -4,9 +4,11 @@ import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import androidx.gridlayout.widget.GridLayout;
+
 
 import android.util.Log;
 import android.util.Pair;
@@ -24,7 +26,7 @@ public class CharacterController {
     private final HashMap<Pair<Integer, Integer>, View> characterViews;
     private final HashMap<Pair<Integer, Integer>, Character> characterObjects;
 
-    private final int numRows = 9;
+    private final int numRows = 10;
     private final int numCols = 9;
 
     // Add getter methods
@@ -92,7 +94,7 @@ public class CharacterController {
 
             int row = position.first;
             int col = position.second;
-
+            // add charcter objects to grid
             addCharacterToGrid(row, col, character);
         }
     }
@@ -217,7 +219,7 @@ public class CharacterController {
                     }
                 }
 
-                Log.d("GridManager", character.getName() + " has moved to (" + newRow + ", " + newCol + ")");
+                Log.d("CharacterController", character.getName() + " has moved to (" + newRow + ", " + newCol + ")");
             }, (path.size() - 1) * animationDuration);  // Delay this update to happen after the final animation step
         }
     }
@@ -231,35 +233,16 @@ public class CharacterController {
 
     //Drag and drop functionality for heroes
     private void enableDragAndDrop(View characterView) {
-        if (!((GridBattleActivity) context).isBattleStarted) {
-            characterView.setOnLongClickListener(v -> {
-                ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
-                String[] mimeTypes = {ClipDescription.MIMETYPE_TEXT_PLAIN};
-                ClipData dragData = new ClipData(v.getTag().toString(), mimeTypes, item);
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-                v.startDrag(dragData, shadowBuilder, v, 0);
+        characterView.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData dragData = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(dragData, shadowBuilder, view, 0);
                 return true;
-            });
-        }
-    }
+            }
 
-    // method to put heroes on staging area
-    public void initializeHeroesInStagingArea(List<Hero> heroes, List<SpriteSheetImageView> heroViews) {
-        //Define staging area positions
-        List<Pair<Integer,Integer>> stagingPositions = List.of(
-                new Pair<>(9, 0), new Pair<>(9, 1), new Pair<>(9, 2), new Pair<>(9, 3), new Pair<>(9, 2)
-        );
-
-        // assign each hero a posiion in the staging area
-        for (int i = 0; i < heroes.size() && i < stagingPositions.size(); i++) {
-            Hero hero = heroes.get(i);
-            Pair<Integer,Integer> position = stagingPositions.get(i);
-            int row = position.first;
-            int col = position.second;
-
-            // place hero on the grid in the staging area position
-            addCharacterToGrid(row, col, hero);
-        }
+            return false;
+        });
     }
 
     // Method to check if a position is within the grid bounds

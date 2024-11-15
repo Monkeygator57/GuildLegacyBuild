@@ -62,12 +62,12 @@ public class FloorFactory {
         floor1HeroViews.add(heroView5);
 
         // Define positions for each hero
-        /*List<Pair<Integer, Integer>> floor1HeroPositions = new ArrayList<>();
-        floor1HeroPositions.add(new Pair<>(9, 5));  // Position for hero1
+        List<Pair<Integer, Integer>> floor1HeroPositions = new ArrayList<>();
+        floor1HeroPositions.add(new Pair<>(9, 4));  // Position for hero1
         floor1HeroPositions.add(new Pair<>(9, 3));  // Position for hero2
         floor1HeroPositions.add(new Pair<>(9, 2));
         floor1HeroPositions.add(new Pair<>(9, 1));
-        floor1HeroPositions.add(new Pair<>(9, 0));*/
+        floor1HeroPositions.add(new Pair<>(9, 0));
 
         //MODIFIED above and below
 
@@ -76,8 +76,8 @@ public class FloorFactory {
                 1,
                 floor1Heroes,
                 floor1HeroViews,
-                null, //MODIFIED
-                //floor1HeroPositions,
+                //null, //MODIFIED
+                floor1HeroPositions,
                 floor1Enemies,
                 floor1EnemyViews,
                 floor1EnemyPositions

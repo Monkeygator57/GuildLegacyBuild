@@ -34,10 +34,10 @@ public class BattleManager {
     }
 
     // Overloaded constructor to accept only CharacterController
-    public BattleManager(CharacterController characterController) {
+    /*public BattleManager(CharacterController characterController) {
         this.characterController = characterController;
         this.floorFactory = new FloorFactory(); // Provide a default or new instance
-    }
+    }*/
 
     // Public getter for characterController
     public CharacterController getCharacterController() {
@@ -55,11 +55,10 @@ public class BattleManager {
 
         // Populate heroes, enemies, and corresponding views from the Floor object
         heroes.addAll(floor.getHeroes());
-        enemies.addAll(floor.getEnemies());
         heroViews.addAll(floor.getHeroViews());
+        enemies.addAll(floor.getEnemies());
         enemyViews.addAll(floor.getEnemyViews());
 
-        characterController.initializeHeroesInStagingArea(heroes, heroViews);
 
         // Logging to confirm the setup
         Log.d("BattleManager", "BattleManager setup - Number of heroes: " + heroes.size());
@@ -79,7 +78,7 @@ public class BattleManager {
             BattleCharacter battleCharacter = new BattleCharacter(hero, heroView, row, col);
             allCharacters.add(battleCharacter);
 
-            Log.d("BattleManager", "Placed hero at (" + row + ", " + col + ")");
+            //Log.d("BattleManager", "Placed hero at (" + position.first + ", " + position.second + ")");
         }
 
         // Add enemies to the grid and allCharacters list
@@ -100,7 +99,7 @@ public class BattleManager {
         }
 
         // Start the battle
-        startBattle();
+        //startBattle();
     }
 
     // Start the battle logic

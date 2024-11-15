@@ -29,7 +29,7 @@ public class GridBuilder {
         createGrid();
     }
 
-    // layout paramaters for a single, used to avoid redundant code
+    // layout parameters for a single, used to avoid redundant code
     private GridLayout.LayoutParams createCellLayoutParams(int row, int col) {
         GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
                 GridLayout.spec(row),
@@ -68,15 +68,15 @@ public class GridBuilder {
 
             GridLayout.LayoutParams stagingParams = createCellLayoutParams(numRows, col);
             stagingTile.setLayoutParams(stagingParams);
-
             stagingTile.setBackgroundColor(Color.LTGRAY); // set staging area to lighter color (temp)
 
+            // Add the container to the grid layout
             characterGrid.addView(stagingTile, stagingParams);
         }
 
-        // create ondraglistener for each cell
+        // create onDragListener for each cell
         for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
+            for (int col = 0; col < numCols - 6; col++) {
                 int cellIndex = row * numCols + col;
                 View gridCell = characterGrid.getChildAt(cellIndex);
                 gridCell.setOnDragListener((v, event) -> {
@@ -104,7 +104,6 @@ public class GridBuilder {
                                 if (parent != null) {
                                     parent.removeView(draggedView); //remove from unintended parent
                                 }
-
                                 FrameLayout stagingTile = findAvailableStagingTile();
                                 if (stagingTile != null) {
                                     stagingTile.addView(draggedView);

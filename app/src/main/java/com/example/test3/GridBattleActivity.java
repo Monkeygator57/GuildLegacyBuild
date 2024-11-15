@@ -15,6 +15,7 @@ public class GridBattleActivity extends AppCompatActivity {
     private GridBuilder gridBuilder;
     private GridLayout gridLayout;
     public boolean isBattleStarted = false;
+    public boolean heroInStagingArea = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class GridBattleActivity extends AppCompatActivity {
         // Initialize characterController
         GridLayout gridLayout = findViewById(R.id.characterGrid);
         characterController = new CharacterController(gridLayout, this);
-        Log.d("GridBattleActivity", "GridManager initialized.");
+        Log.d("GridBattleActivity", "CharacterController initialized.");
 
         // Initialize FloorFactory
         floorFactory = new FloorFactory();
@@ -34,27 +35,30 @@ public class GridBattleActivity extends AppCompatActivity {
         battleManager = new BattleManager(new CharacterController(gridLayout, this), floorFactory);
         Log.d("GridBattleActivity", "BattleManager initialized.");
 
-
         // Build visual grid
-        gridBuilder = new GridBuilder(9,9, 3, gridLayout);
+        gridBuilder = new GridBuilder(9,9, 1, gridLayout);
         Log.d("GridBattleActivity", "GridBuilder initialized.");
 
+        //Build Floor1 to stage heroes and enemies
+        Floor floor1 = floorFactory.createFloor1(this);
+        battleManager.startNewFloor(floor1);
 
         // Initialize the grid
         characterController.displayCharacterGrid();
         Log.d("GridBattleActivity", "Grid initialized.");
 
         // Set up button to start the first floor battle
-        Button startFirstFloorButton = findViewById(R.id.startFirstFloorButton);
+        Button startFirstFloorButton = findViewById(R.id.startBattle);
         startFirstFloorButton.setOnClickListener(view -> {
             Log.d("GridBattleActivity", "Start First Floor button clicked.");
 
-            // Create Floor 1 using the FloorFactory
-            Floor floor1 = floorFactory.createFloor1(this);
-
             // Start the new floor battle
-            battleManager.startNewFloor(floor1);
-            isBattleStarted = true;
+            if (heroInStagingArea == true) {
+                battleManager.startBattle();
+                isBattleStarted = true;
+            } else {
+                Log.d("GridBattleActivity", "Heroes still in staging area!");
+            }
         });
 
         // **Added Move Hero Button Back**
@@ -86,3 +90,4 @@ public class GridBattleActivity extends AppCompatActivity {
         });
     }
 }
+
