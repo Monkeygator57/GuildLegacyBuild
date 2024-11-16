@@ -22,7 +22,7 @@ public class Database {
     // Use Query to retrieve any information in a record. returnNum is the index of the value you want
     // 0:UserID, 1:Warrior Level, 2:Mage Level, 3:Cleric Level, 4:Rogue Level, 5:Equipped Item
     // After these, every even number is an item and the following odd number is the weight
-    static String Query(int UserID, int returnNum) {
+    public String Query(int UserID, int returnNum) {
         for (ArrayList<String> Record : Database) {
             if (Record.get(0).equalsIgnoreCase(valueOf(UserID))) {
                 return Record.get(returnNum);
@@ -35,17 +35,17 @@ public class Database {
     // Index of 1   2      3          4
     // Is Warrior, Mage, Cleric, and Rogue
     // Int Level refers to the index of the level, Value refers to the actual value of it
-    static void SetLevel(int ID, int Level, int value){
+    public void SetLevel(int ID, int Level, int value){
         Database.get(GetIndex(ID)).set(Level, valueOf(value));
     }
-    static void LevelUp(int ID, int level){
+    public void LevelUp(int ID, int level){
         int value = Integer.parseInt(Database.get(GetIndex(ID)).get(level));
         value++;
         Database.get(GetIndex(ID)).set(level, valueOf(value));
     }
 
     //New user method
-    static void NewRecord(int ID) {
+    public void NewRecord(int ID) {
         //Checks if this ID exists
         for (ArrayList<String> Record : Database) {
             if (Record.get(0).equalsIgnoreCase(valueOf(ID))) {
@@ -64,7 +64,7 @@ public class Database {
     }
 
     //Writes database onto file and updates database array
-    static void UpdateData() throws FileNotFoundException {
+    public void UpdateData() throws FileNotFoundException {
         Scanner myReader = new Scanner(myObj);
         try {
             FileWriter myWriter = new FileWriter("Data.txt");
@@ -92,7 +92,7 @@ public class Database {
     // Index of 5 Is Equipped Item
 
     //Adds a list of items to the inventory
-    static void InventoryAddList(int ID, ArrayList<String> items) {
+    public void InventoryAddList(int ID, ArrayList<String> items) {
         if (items.size() % 2 == 0) { //Checking that there are an even number of items in the list to insure each inventory item as a weight
             for (String item : items) {
                 Database.get(GetIndex(ID)).add(item);
@@ -100,16 +100,16 @@ public class Database {
         }
     }
     //Adds an individual Item to the Inventory
-    static void InventoryAddItem(int ID, String item, int weight) {
+    public void InventoryAddItem(int ID, String item, int weight) {
         Database.get(GetIndex(ID)).add(item);
         Database.get(GetIndex(ID)).add(valueOf(weight));
     }
     //Returns Currently Equipped Item
-    static String GetEquippedItem(int ID) {
+    public String GetEquippedItem(int ID) {
         return Database.get(GetIndex(ID)).get(5);
     }
     //Sets Equipped Item
-    static void SetEquippedItem(int ID, String item) {
+    public void SetEquippedItem(int ID, String item) {
         for (ArrayList<String> Record : Database) {
             if (Record.get(0).equalsIgnoreCase(valueOf(ID))) {
                 for (String invItem : Record) {
