@@ -33,11 +33,7 @@ public class BattleManager {
         this.floorFactory = floorFactory;
     }
 
-    // Overloaded constructor to accept only CharacterController
-    /*public BattleManager(CharacterController characterController) {
-        this.characterController = characterController;
-        this.floorFactory = new FloorFactory(); // Provide a default or new instance
-    }*/
+
 
     // Public getter for characterController
     public CharacterController getCharacterController() {
@@ -55,9 +51,9 @@ public class BattleManager {
 
         // Populate heroes, enemies, and corresponding views from the Floor object
         heroes.addAll(floor.getHeroes());
-        heroViews.addAll(floor.getHeroViews());
+        //heroViews.addAll(floor.getHeroViews());
         enemies.addAll(floor.getEnemies());
-        enemyViews.addAll(floor.getEnemyViews());
+        //enemyViews.addAll(floor.getEnemyViews());
 
 
         // Logging to confirm the setup
@@ -68,28 +64,32 @@ public class BattleManager {
         for (int i = 0; i < heroes.size(); i++) {
             Pair<Integer, Integer> position = floor.getHeroPositions().get(i);
             Hero hero = heroes.get(i);
-            SpriteSheetImageView heroView = heroViews.get(i);
+            //SpriteSheetImageView heroView = heroViews.get(i);
 
             int row = position.first;
             int col = position.second;
             characterController.addCharacterToGrid(row, col, hero);
 
+            SpriteSheetImageView heroView = characterController.getCharacterViewAtPosition(row, col);
+
             // Add to allCharacters
             BattleCharacter battleCharacter = new BattleCharacter(hero, heroView, row, col);
             allCharacters.add(battleCharacter);
 
-            //Log.d("BattleManager", "Placed hero at (" + position.first + ", " + position.second + ")");
+            Log.d("BattleManager", "Placed hero at (" + position.first + ", " + position.second + ")");
         }
 
         // Add enemies to the grid and allCharacters list
         for (int i = 0; i < enemies.size(); i++) {
             Pair<Integer, Integer> position = floor.getEnemyPositions().get(i);
             Enemy enemy = enemies.get(i);
-            SpriteSheetImageView enemyView = enemyViews.get(i);
+            //SpriteSheetImageView enemyView = enemyViews.get(i);
 
             int row = position.first;
             int col = position.second;
             characterController.addCharacterToGrid(row, col, enemy);
+
+            SpriteSheetImageView enemyView = characterController.getCharacterViewAtPosition(row, col);
 
             // Add to allCharacters
             BattleCharacter battleCharacter = new BattleCharacter(enemy, enemyView, row, col);

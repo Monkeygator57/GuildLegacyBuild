@@ -64,8 +64,17 @@ public class CharacterController {
     public SpriteSheetImageView getCharacterViewAtPosition(int row, int col) {
         Pair<Integer, Integer> position = new Pair<>(row, col);
         View characterView = characterViews.get(position);
-        if (characterView instanceof SpriteSheetImageView) {
+        /*if (characterView instanceof SpriteSheetImageView) {
             return (SpriteSheetImageView) characterView;
+        }*/
+        if (characterView instanceof FrameLayout) {
+            FrameLayout container = (FrameLayout) characterView;
+            if (container.getChildCount() > 0) {
+                View childView = container.getChildAt(0);
+                if (childView instanceof SpriteSheetImageView) {
+                    return (SpriteSheetImageView) childView;
+                }
+            }
         }
         return null;
     }
@@ -74,6 +83,7 @@ public class CharacterController {
     public Map<Pair<Integer, Integer>, Character> getCharacterObjects() {
         return characterObjects;
     }
+    public Map<Pair<Integer, Integer>, View> getCharacterViews() {return characterViews;}
 
     // Method to get all currently occupied positions
     public Set<Pair<Integer, Integer>> getOccupiedPositions() {

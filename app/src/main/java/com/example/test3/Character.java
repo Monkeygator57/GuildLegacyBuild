@@ -2,6 +2,8 @@ package com.example.test3;
 
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
+
 import java.util.*;
 
 public abstract class Character {
@@ -20,6 +22,8 @@ public abstract class Character {
     protected Map<SpriteState, String> spriteSheetResources;
     protected Map<SpriteState, Integer> stateFrameCounts;
     private Pair<Integer, Integer> position; // Character's current position
+
+    private View associatedView; // HERERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 
     public enum SpriteState {
         IDLE(5), ATTACK(3), HIT(2), DEATH(4), MOVING(8);
@@ -67,6 +71,18 @@ public abstract class Character {
     public SpriteState getSpriteState(){
         return currentState;
     }
+
+
+    // HERERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+    public View getAssociatedView(){
+        return associatedView;
+    }
+
+    public void setAssociatedView(View associatedView){
+        this.associatedView = associatedView;
+    }
+    // HERERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+
 
     // Pathfinding method to move towards a target
     public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, CharacterController characterController) {

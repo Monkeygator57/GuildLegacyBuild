@@ -32,7 +32,7 @@ public class GridBattleActivity extends AppCompatActivity {
         Log.d("GridBattleActivity", "FloorFactory initialized.");
 
         // Initialize BattleManager with CharacterController and FloorFactory
-        battleManager = new BattleManager(new CharacterController(gridLayout, this), floorFactory);
+        battleManager = new BattleManager(characterController, floorFactory);
         Log.d("GridBattleActivity", "BattleManager initialized.");
 
         // Build visual grid

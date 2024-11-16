@@ -1,12 +1,14 @@
 package com.example.test3;
 
 import android.graphics.Color;
+import android.util.Pair;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import androidx.gridlayout.widget.GridLayout;
 
+import java.util.Map;
 
 
 public class GridBuilder {
@@ -15,6 +17,7 @@ public class GridBuilder {
     private final int numRows;
     private final int numCols;
     private final int stagingAreaRows;
+    private CharacterController characterController;
 
     private static final int CELL_WIDTH = 105;
     private static final int CELL_HEIGHT = 105;
@@ -26,6 +29,7 @@ public class GridBuilder {
         this.numRows = numRows;
         this.numCols = numCols;
         this.stagingAreaRows = stagingAreaRows;
+        this.characterController = characterController;
         createGrid();
     }
 
