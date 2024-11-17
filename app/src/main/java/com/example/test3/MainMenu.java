@@ -36,9 +36,12 @@ public class MainMenu extends AppCompatActivity {
         questsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainMenu.this, "Quests Clicked", Toast.LENGTH_SHORT).show();
+                // Navigate to QuestActivity
+                Intent intent = new Intent(MainMenu.this, QuestActivity.class);
+                startActivity(intent);
             }
         });
+
 
         // Bag Button: Open BagActivity
         Button bagButton = findViewById(R.id.bag_button);
