@@ -1,67 +1,137 @@
 package com.example.test3;
 
+import android.util.Log;
+import android.util.Pair;
+import java.util.*;
 
-// Parent Class
 public abstract class Character {
     protected String name;
     protected int health;
     protected int attackPower;
     protected int defense;
-    protected int baseSpeed;
-    protected Weapon equippedWeapon;
-    protected Armor equippedArmor;
-    protected Trinket equippedTrinket;
+    protected int speed;
+    protected int moveSpeed;
+    protected int strength;
+    protected int agility;
+    protected int intelligence;
+    protected int attackRange;
+    protected boolean facingLeft;
+    protected SpriteState currentState;
+    protected Map<SpriteState, String> spriteSheetResources;
+    protected Map<SpriteState, Integer> stateFrameCounts;
+    private Pair<Integer, Integer> position; // Character's current position
 
+    public enum SpriteState {
+        IDLE(5), ATTACK(3), HIT(2), DEATH(4), MOVING(8);
 
-    public Character(String name, int health, int attackPower, int defense, int baseSpeed) {
+        private final int frameCount;
+
+        SpriteState(int frameCount) {
+            this.frameCount = frameCount;
+        }
+
+        public int getFrameCount(){
+            return frameCount;
+        }
+    }
+
+    public Character(String name, int health, int attackPower, int attackRange, int defense, int speed, int moveSpeed, int strength, int agility, int intelligence, Map<SpriteState, String> spriteSheetResources, Map<SpriteState, Integer> stateFrameCounts, boolean facingLeft) {
         this.name = name;
         this.health = health;
         this.attackPower = attackPower;
         this.defense = defense;
-        this.baseSpeed = baseSpeed;
-        this.equippedWeapon = null;
-        this.equippedArmor = null;
-        this.equippedTrinket = null;
+        this.strength = strength;
+        this.agility = agility;
+        this.intelligence = intelligence;
+        this.speed = speed;
+        this.moveSpeed = moveSpeed;
+        this.facingLeft = facingLeft;
+        this.attackRange = attackRange;
+        this.spriteSheetResources = spriteSheetResources != null ? spriteSheetResources : new HashMap<>();
+        this.stateFrameCounts = stateFrameCounts != null ? stateFrameCounts : new HashMap<>();
+        this.currentState = SpriteState.IDLE;
+    }
+
+    public int getFrameCountsForCurrentState(){
+        return stateFrameCounts.getOrDefault(currentState, 1);
+    }
+
+    public String getCurrentSpriteSheetResource() {
+        return spriteSheetResources.getOrDefault(currentState, null);
+    }
+
+    public void setSpriteState(SpriteState state){
+        this.currentState = state;
+    }
+
+    public SpriteState getSpriteState(){
+        return currentState;
+    }
+
+    // Pathfinding method to move towards a target
+    public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, GridManager gridManager) {
+        AStarPathfinder pathfinder = new AStarPathfinder();
+
+        // Get the grid size from GridManager
+        int numRows = gridManager.getNumRows();
+        int numCols = gridManager.getNumCols();
+
+        // Get path from current position to target, avoiding occupied cells
+        List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(
+                position.first, position.second,
+                targetPosition.first, targetPosition.second,
+                occupiedCells, numRows, numCols);
+
+        if (fullPath == null || fullPath.isEmpty()) {
+            // No path found or already at destination
+            return;
+        }
+
+        // Limit path based on move speed
+        int steps = Math.min(moveSpeed, fullPath.size() - 1); // Exclude starting position
+        List<Pair<Integer, Integer>> limitedPath = fullPath.subList(1, steps + 1);
+
+        // Move along the limited path by updating the character's position on each step
+        if (!limitedPath.isEmpty()) {
+            Pair<Integer, Integer> nextPosition = limitedPath.get(limitedPath.size() - 1); // The furthest position within moveSpeed
+            gridManager.moveCharacter(position.first, position.second, nextPosition.first, nextPosition.second, this);
+            position = nextPosition;  // Update the character's current position
+        }
     }
 
     // Method for attack
     public abstract void attack(Character target);
 
-
-    // Modified takeDamage method to use total defense
+    // Method to take damage
     public void takeDamage(int damage) {
-        int damageTaken = Math.max(damage - getTotalDefense(), 0);
+        int damageTaken = Math.max(damage - defense, 0); // Adjust for defense
         health -= damageTaken;
-        System.out.println(name + " takes " + damageTaken + " damage! Health now: " + health);
+        Log.d("Character", name + " takes " + damageTaken + " damage! Health now: " + health);
     }
-
-
-    // Equipment methods
-    public void equipWeapon(Weapon weapon) {
-        this.equippedWeapon = weapon;
-        System.out.println(name + " equipped " + weapon.getName());
-    }
-
-    public void equipArmor(Armor armor) {
-        this.equippedArmor = armor;
-        System.out.println(name + " equipped " + armor.getName());
-    }
-
-    public void equipTrinket(Trinket trinket) {
-        this.equippedTrinket = trinket;
-        System.out.println(name + " equipped " + trinket.getName());
-    }
-
 
     // Check if character is alive
     public boolean isAlive() {
         return health > 0;
     }
 
-    // Gathers and Setters
+    // Getters and Setters
+    public Pair<Integer, Integer> getPosition() {
+        return position;
+    }
+
+    public void setPosition(Pair<Integer, Integer> position) {
+        this.position = position;
+    }
+
+    public boolean getFacingLeft() {
+        return facingLeft;
+    }
+
     public int getHealth() {
         return health;
     }
+
+    public int getMoveSpeed(){ return moveSpeed; }
 
     public String getName() {
         return name;
@@ -75,38 +145,21 @@ public abstract class Character {
         return attackPower;
     }
 
-    // Modified getters to include equipment bonuses
-    public int getTotalAttackPower() {
-        int totalAttack = attackPower;
-        if (equippedWeapon != null) {
-            totalAttack += equippedWeapon.getAttackBonus();
-        }
-        if (equippedTrinket != null) {
-            totalAttack += equippedTrinket.getStatBonus();
-        }
-        return totalAttack;
+    public int getStrength() {
+        return strength;
     }
 
-    public int getTotalDefense() {
-        int totalDefense = defense;
-        if (equippedArmor != null) {
-            totalDefense += equippedArmor.getDefenseBonus();
-        }
-        if (equippedTrinket != null) {
-            totalDefense += equippedTrinket.getStatBonus();
-        }
-        return totalDefense;
+    public int getAgility() {
+        return agility;
     }
 
-    public int getTotalSpeed() {
-        int totalSpeed = baseSpeed;
-        if (equippedArmor != null) {
-            totalSpeed += equippedArmor.getSpeedModifier();
-        }
-        if (equippedTrinket != null) {
-            totalSpeed += equippedTrinket.getStatBonus();
-        }
-        return Math.max(1, totalSpeed); // Speed cannot go below 1
+    public int getIntelligence() {
+        return intelligence;
     }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getAttackRange() { return attackRange; }
 }
-
