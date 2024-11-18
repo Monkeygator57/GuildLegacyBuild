@@ -23,10 +23,10 @@ public class CharacterController {
     private final Context context;
 
     // Hash maps to store character views and objects by their grid position.
-    private final HashMap<Pair<Integer, Integer>, View> characterViews;
-    private final HashMap<Pair<Integer, Integer>, Character> characterObjects;
+    public static HashMap<Pair<Integer, Integer>, View> characterViews;
+    public static HashMap<Pair<Integer, Integer>, Character> characterObjects;
 
-    private final int numRows = 10;
+    private final int numRows = 9;
     private final int numCols = 9;
 
     // Add getter methods
@@ -42,8 +42,8 @@ public class CharacterController {
         this.context = context;
 
         // Initialize hash maps
-        this.characterViews = new HashMap<>();
-        this.characterObjects = new HashMap<>();
+        characterViews = new HashMap<>();
+        characterObjects = new HashMap<>();
     }
 
     // Method to remove a character from the grid at a specified position
@@ -228,10 +228,47 @@ public class CharacterController {
                         ((SpriteSheetImageView) spriteView).setCharacter(character);
                     }
                 }
-
                 Log.d("CharacterController", character.getName() + " has moved to (" + newRow + ", " + newCol + ")");
             }, (path.size() - 1) * animationDuration);  // Delay this update to happen after the final animation step
         }
+    }
+
+    public static void moveCharacterForDrag(int oldRow, int oldCol, int newRow, int newCol, Character character) {
+        Pair<Integer, Integer> fromPosition = new Pair<>(oldRow, oldCol);
+        Pair<Integer, Integer> toPosition = new Pair<>(newRow, newCol);
+
+        characterObjects.remove(fromPosition);
+        View characterView = characterViews.get(fromPosition);
+
+        characterObjects.put(toPosition, character);
+        characterViews.put(toPosition, characterView);
+
+                // Reset the translation so the view is back to its grid position
+        characterView.setTranslationX(0);
+        characterView.setTranslationY(0);
+
+                // Update the character's sprite state back to idle
+        character.setSpriteState(Character.SpriteState.IDLE);
+        if (characterView instanceof FrameLayout) {
+            View spriteView = ((FrameLayout) characterView).getChildAt(0);
+            if (spriteView instanceof SpriteSheetImageView) {
+                ((SpriteSheetImageView) spriteView).setCharacter(character);
+            }
+        }
+    }
+
+
+    public Pair<Integer, Integer> getCharacterPositionFromView(View view) {
+        for (Map.Entry<Pair<Integer, Integer>, View> entry : characterViews.entrySet()) {
+            if (entry.getValue() == view) {
+                return entry.getKey();
+            }
+        }
+        return null; // View not found
+    }
+
+    public Character getCharacterAtPosition(Pair<Integer, Integer> position) {
+        return characterObjects.get(position);
     }
 
     // Method to check if a position is occupied

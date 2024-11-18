@@ -14,8 +14,11 @@ public class GridBattleActivity extends AppCompatActivity {
     private FloorFactory floorFactory;
     private GridBuilder gridBuilder;
     private GridLayout gridLayout;
+    private Character character;
     public boolean isBattleStarted = false;
     public boolean heroInStagingArea = true;
+    private BattleCharacter battleCharacter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +39,12 @@ public class GridBattleActivity extends AppCompatActivity {
         Log.d("GridBattleActivity", "BattleManager initialized.");
 
         // Build visual grid
-        gridBuilder = new GridBuilder(9,9, 1, gridLayout);
+        gridBuilder = new GridBuilder(9,9, gridLayout, characterController);
         Log.d("GridBattleActivity", "GridBuilder initialized.");
 
         //Build Floor1 to stage heroes and enemies
         Floor floor1 = floorFactory.createFloor1(this);
         battleManager.startNewFloor(floor1);
-
-        // Initialize the grid
-        characterController.displayCharacterGrid();
-        Log.d("GridBattleActivity", "Grid initialized.");
 
         // Set up button to start the first floor battle
         Button startFirstFloorButton = findViewById(R.id.startBattle);
@@ -53,7 +52,16 @@ public class GridBattleActivity extends AppCompatActivity {
             Log.d("GridBattleActivity", "Start First Floor button clicked.");
 
             // Start the new floor battle
-            if (heroInStagingArea == true) {
+
+            /*for (int col = 0; col < 4; col++) {
+                for (int row = 0; row < 9; row++) {
+                    if (character.getPosition().second != row) {
+                        heroInStagingArea = false;
+                    }
+                }
+            }*/
+
+            if (heroInStagingArea == true) {  // need a check for if heroes in staging area/ check positions to see if in staging area
                 battleManager.startBattle();
                 isBattleStarted = true;
             } else {
@@ -61,14 +69,15 @@ public class GridBattleActivity extends AppCompatActivity {
             }
         });
 
+
         // **Added Move Hero Button Back**
         // Set up button to move hero
         Button moveHeroButton = findViewById(R.id.moveHeroButton);
         moveHeroButton.setOnClickListener(view -> {
             Log.d("GridBattleActivity", "Move Hero button clicked.");
 
-            int oldRow = 0;
-            int oldCol = 0;
+            int oldRow = 9;
+            int oldCol = 2;
 
             // Retrieve the character at the old position
             Character character = characterController.getCharacterAtPosition(oldRow, oldCol);
@@ -77,7 +86,7 @@ public class GridBattleActivity extends AppCompatActivity {
                 int newCol = 5;
 
                 // Move the character using GridManager
-                characterController.moveCharacter(oldRow, oldCol, newRow, newCol, character);
+                characterController.moveCharacterForDrag(oldRow, oldCol, newRow, newCol, character);
 
                 // Update the character's position if needed
                 // If character maintains its own position, update it here

@@ -45,8 +45,8 @@ public class BattleManager {
         // Clear existing lists to avoid residual data
         heroes.clear();
         enemies.clear();
-        heroViews.clear();
-        enemyViews.clear();
+        //heroViews.clear();
+        //enemyViews.clear();
         allCharacters.clear();
 
         // Populate heroes, enemies, and corresponding views from the Floor object

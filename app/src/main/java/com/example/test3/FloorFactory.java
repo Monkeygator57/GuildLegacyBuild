@@ -19,15 +19,6 @@ public class FloorFactory {
         floor1Enemies.add(enemy2);
         floor1Enemies.add(enemy3);
 
-        // Create SpriteSheetImageView for each enemy
-        SpriteSheetImageView enemyView1 = new SpriteSheetImageView(context, null);
-        SpriteSheetImageView enemyView2 = new SpriteSheetImageView(context, null);
-        SpriteSheetImageView enemyView3 = new SpriteSheetImageView(context, null);
-        /*List<SpriteSheetImageView> floor1EnemyViews = new ArrayList<>();
-        floor1EnemyViews.add(enemyView1);
-        floor1EnemyViews.add(enemyView2);
-        floor1EnemyViews.add(enemyView3);*/
-
         // Define positions for each enemy
         List<Pair<Integer, Integer>> floor1EnemyPositions = new ArrayList<>();
         floor1EnemyPositions.add(new Pair<>(2, 6));  // Position for enemy1
@@ -48,26 +39,13 @@ public class FloorFactory {
         floor1Heroes.add(hero4);
         floor1Heroes.add(hero5);
 
-        // Create SpriteSheetImageView for each hero
-        /*SpriteSheetImageView heroView1 = new SpriteSheetImageView(context, null);
-        SpriteSheetImageView heroView2 = new SpriteSheetImageView(context, null);
-        SpriteSheetImageView heroView3 = new SpriteSheetImageView(context, null);
-        SpriteSheetImageView heroView4 = new SpriteSheetImageView(context, null);
-        SpriteSheetImageView heroView5 = new SpriteSheetImageView(context, null);
-        List<SpriteSheetImageView> floor1HeroViews = new ArrayList<>();
-        floor1HeroViews.add(heroView1);
-        floor1HeroViews.add(heroView2);
-        floor1HeroViews.add(heroView3);
-        floor1HeroViews.add(heroView4);
-        floor1HeroViews.add(heroView5);*/
-
         // Define positions for each hero
         List<Pair<Integer, Integer>> floor1HeroPositions = new ArrayList<>();
-        floor1HeroPositions.add(new Pair<>(9, 4));  // Position for hero1
-        floor1HeroPositions.add(new Pair<>(9, 3));  // Position for hero2
-        floor1HeroPositions.add(new Pair<>(9, 2));
-        floor1HeroPositions.add(new Pair<>(9, 1));
-        floor1HeroPositions.add(new Pair<>(9, 0));
+        floor1HeroPositions.add(new Pair<>(8, 4));  // Position for hero1
+        floor1HeroPositions.add(new Pair<>(8, 3));  // Position for hero2
+        floor1HeroPositions.add(new Pair<>(8, 2));
+        floor1HeroPositions.add(new Pair<>(8, 1));
+        floor1HeroPositions.add(new Pair<>(8, 0));
 
         //MODIFIED above and below
 
@@ -75,11 +53,8 @@ public class FloorFactory {
         return new Floor(
                 1,
                 floor1Heroes,
-                //floor1HeroViews,
-                //null, //MODIFIED
                 floor1HeroPositions,
                 floor1Enemies,
-                //floor1EnemyViews,
                 floor1EnemyPositions
         );
     }

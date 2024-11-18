@@ -135,9 +135,7 @@ public abstract class Character {
         return position;
     }
 
-    public void setPosition(Pair<Integer, Integer> position) {
-        this.position = position;
-    }
+    public void setPosition(int x, int y) {this.position = position;}
 
     public boolean getFacingLeft() {
         return facingLeft;
