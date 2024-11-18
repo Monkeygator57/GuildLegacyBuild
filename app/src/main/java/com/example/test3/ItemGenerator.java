@@ -47,6 +47,22 @@ public class ItemGenerator {
         return weapons;
     }
 
+    public static Weapon generateWeapon() {
+        List<Weapon> weapons = loadWeapons();
+        if (weapons.isEmpty()) {
+            return null;
+        }
+        int randomIndex = (int) (Math.random() * weapons.size());
+        return weapons.get(randomIndex);
+    }
+
+    /*
+    example use would be something like...
+    'Weapon lootWeapon = ItemGenerator.generateWeapon();
+    and then you could equip it with...
+    character.equipWeapon(lootWeapon);'
+     */
+
     public static List<Armor> loadArmor() {
         List<Armor> armors = new ArrayList<>();
         try {
@@ -71,6 +87,16 @@ public class ItemGenerator {
         return armors;
     }
 
+    public static Armor generateArmor() {
+        List<Armor> armors = loadArmor();
+        if (armors.isEmpty()) {
+            return null;
+        }
+        int randomIndex = (int) (Math.random() * armors.size());
+        return armors.get(randomIndex);
+    }
+
+
     public static List<Trinket> loadTrinkets() {
         List<Trinket> trinkets = new ArrayList<>();
         try {
@@ -94,6 +120,9 @@ public class ItemGenerator {
                     weightedTrinketData.add(new WeightedTrinketData(name, statBonus, weight, type));
                 }
             }
+
+
+
 
             for (WeightedTrinketData data : weightedTrinketData) {
                 int roll = (int) (Math.random() * totalWeight);
@@ -120,6 +149,14 @@ public class ItemGenerator {
             e.printStackTrace();
         }
         return trinkets;
+    }
+
+    public static Trinket generateTrinket() {
+        List<Trinket> trinkets = loadTrinkets();
+        if (trinkets.isEmpty()) {
+            return null;
+        }
+        return trinkets.get((int) (Math.random() * trinkets.size()));
     }
 
     private static class WeightedTrinketData {
