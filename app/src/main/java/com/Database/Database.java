@@ -33,7 +33,8 @@ public class Database {
 
     //Query method
     // Use Query to retrieve any information in a record. returnNum is the index of the value you want
-    // 0:UserID, 1:Warrior Level, 2:Mage Level, 3:Cleric Level, 4:Rogue Level, 5:Equipped Item
+    // Note** INDEX LOCATIONS FOR QUERY METHOD
+    // 0:Username|1:Password|2:ClassLevel|3:EquippedWeapon|4:EquippedArmor|5:EquippedTrinket
     // After these, every even number is an item and the following odd number is the weight
     public String Query(String UserID, int returnNum) {
         for (ArrayList<String> Record : Database) {
@@ -45,12 +46,11 @@ public class Database {
     }
 
     // Changing the Class Levels
-    // Index of 1   2      3          4
-    // Is Warrior, Mage, Cleric, and Rogue
-    // Int Level refers to the index of the level, Value refers to the actual value of it
+    //Username and level to set class level to
     public void SetLevel(String ID, int value){
         Database.get(GetIndex(ID)).set(2, valueOf(value));
     }
+    //Increases Class Level by one
     public void LevelUp(String ID){
         int value = Integer.parseInt(Database.get(GetIndex(ID)).get(2));
         value++;

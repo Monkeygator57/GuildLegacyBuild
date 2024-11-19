@@ -69,11 +69,13 @@ public class MainActivity extends AppCompatActivity {
             warrior.InventoryAddItem(USER, "sword", 5);
             warrior.SetEquippedItem(USER, "hand", "sword");
             String testing = warrior.GetEquippedItem(USER, "hand");
-            //String USERSPASSWORD = warrior.Query(USER, 1);
+            String USERSPASSWORD = warrior.Query(USER, 1);
             String testing2 = "Random extra line for debug screen to stop on";
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
+
+
         //END TEST
 
 
