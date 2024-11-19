@@ -51,22 +51,7 @@ public class GridBattleActivity extends AppCompatActivity {
         startFirstFloorButton.setOnClickListener(view -> {
             Log.d("GridBattleActivity", "Start First Floor button clicked.");
 
-            // Start the new floor battle
-
-            /*for (int col = 0; col < 4; col++) {
-                for (int row = 0; row < 9; row++) {
-                    if (character.getPosition().second != row) {
-                        heroInStagingArea = false;
-                    }
-                }
-            }*/
-
-            if (heroInStagingArea == true) {  // need a check for if heroes in staging area/ check positions to see if in staging area
-                battleManager.startBattle();
-                isBattleStarted = true;
-            } else {
-                Log.d("GridBattleActivity", "Heroes still in staging area!");
-            }
+            battleManager.startBattle();
         });
 
 

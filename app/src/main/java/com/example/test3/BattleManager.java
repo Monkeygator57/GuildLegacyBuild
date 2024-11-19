@@ -17,7 +17,7 @@ public class BattleManager {
     private final List<Enemy> enemies = new ArrayList<>();
     private final List<SpriteSheetImageView> heroViews = new ArrayList<>();
     private final List<SpriteSheetImageView> enemyViews = new ArrayList<>();
-    private final List<BattleCharacter> allCharacters = new ArrayList<>();
+    public static final List<BattleCharacter> allCharacters = new ArrayList<>();
     private final CharacterController characterController;
     private FloorFactory floorFactory;
 

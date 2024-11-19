@@ -255,6 +255,13 @@ public class CharacterController {
                 ((SpriteSheetImageView) spriteView).setCharacter(character);
             }
         }
+
+        for (BattleCharacter battleCharacter : BattleManager.allCharacters) {
+            if (battleCharacter.getCharacter() == character) {
+                battleCharacter.setPosition(newRow, newCol);
+                break;
+            }
+        }
     }
 
 

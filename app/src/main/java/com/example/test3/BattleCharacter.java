@@ -36,6 +36,10 @@ public class BattleCharacter {
         this.row = row;
         this.col = col;
     }
+    public void setPositionPair(Pair<Integer, Integer> position) {
+        this.row = position.first;
+        this.col = position.second;
+    }
 
     public boolean isHero() {
         return character instanceof Hero;

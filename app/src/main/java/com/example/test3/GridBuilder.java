@@ -93,10 +93,10 @@ public class GridBuilder {
         int oldRow = 0;
         int oldCol = 0;
 
-        /*if (battleCharacter != null && battleCharacter.getCharacter() != null) {
+        if (battleCharacter != null && battleCharacter.getCharacter() != null) {
             oldRow = battleCharacter.getCharacter().getPosition().second;
             oldCol = battleCharacter.getCharacter().getPosition().first;
-        }*/
+        }
 
         for (int row = 0; row < numRows; row++) {
                 for (int col = 0; col < numCols - 6; col++) {

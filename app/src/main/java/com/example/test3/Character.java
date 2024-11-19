@@ -73,17 +73,6 @@ public abstract class Character {
     }
 
 
-    // HERERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-    public View getAssociatedView(){
-        return associatedView;
-    }
-
-    public void setAssociatedView(View associatedView){
-        this.associatedView = associatedView;
-    }
-    // HERERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
-
-
     // Pathfinding method to move towards a target
     public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, CharacterController characterController) {
         AStarPathfinder pathfinder = new AStarPathfinder();
