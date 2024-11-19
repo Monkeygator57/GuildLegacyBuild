@@ -1,5 +1,6 @@
 package com.example.test3;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -39,13 +40,14 @@ public class MainActivity extends AppCompatActivity {
                 } else if (password.isEmpty()) {
                     editTextPassword.setError("Please enter password");
                 } else {
-                    // Perform login (Here you can add your own authentication logic)
+
                     Snackbar.make(view, "Logging in...", Snackbar.LENGTH_LONG).show();
 
-                    // For demo purposes, use hardcoded login credentials
+                    // Use hardcoded login credentials
                     if (username.equals("admin") && password.equals("1234")) {
-                        Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        // Navigate to next screen or handle successful login
+                        Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                        startActivity(intent);
+
                     } else {
                         Toast.makeText(MainActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
                     }

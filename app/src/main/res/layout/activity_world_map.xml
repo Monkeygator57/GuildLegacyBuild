@@ -15,7 +15,7 @@
 
     <!-- Button for Region 1 -->
 
-    <!-- Button for Region 2 -->
+
     <Button
             android:id="@+id/region1_button"
             android:layout_width="wrap_content"
@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="340dp" app:layout_constraintHorizontal_bias="0.947"/>
+    <!-- Button for Region 2 -->
     <Button
             android:id="@+id/region2_button"
             android:layout_width="wrap_content"

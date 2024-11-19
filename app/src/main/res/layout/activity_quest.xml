@@ -25,7 +25,7 @@
             android:textStyle="bold"
             android:textColor="@android:color/white" />
 
-    <!-- RecyclerView positioned below the title -->
+    <!-- RecyclerView  -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/quests_recycler_view"
             android:layout_width="302dp"
