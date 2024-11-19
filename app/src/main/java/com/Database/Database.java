@@ -13,11 +13,18 @@ public class Database {
     public String filename;
     public File path;
 
+
     public Database(String filetxt, File Path) throws IOException {
         filename = filetxt;
         path = Path;
         File newFile = new File(path, filename);
-        newFile.createNewFile();
+        if (!newFile.exists()){
+            newFile.createNewFile();
+        }
+
+
+
+
     }
 
     public static void database(String[] args) throws FileNotFoundException {
