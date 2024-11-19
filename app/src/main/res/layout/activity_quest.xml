@@ -3,15 +3,15 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/questbg2">
+        >
 
-    <!-- Scroll area -->
+    <!-- Scroll Background -->
     <ImageView
-            android:id="@+id/scroll_area"
+            android:id="@+id/scroll_background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/questbg2" />
+            android:src="@drawable/questimage" />
 
     <!-- Text Title -->
     <TextView
@@ -19,21 +19,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="180dp"
             android:text="Available Quests"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="16dp" />
+            android:textColor="@android:color/white" />
 
-    <!-- RecyclerView positioned on scrolls -->
+    <!-- RecyclerView positioned below the title -->
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/quests_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginTop="120dp"
-            android:layout_marginBottom="60dp"
-            android:padding="16dp"
-            android:layout_gravity="center" />
+            android:layout_width="302dp"
+            android:layout_height="192dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="220dp"
+            android:padding="16dp"/>
 </FrameLayout>
