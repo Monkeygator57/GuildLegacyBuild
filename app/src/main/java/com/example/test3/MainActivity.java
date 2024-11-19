@@ -3,6 +3,7 @@ package com.example.test3;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import com.Database.Database;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
@@ -16,6 +17,10 @@ import com.example.test3.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -27,6 +32,49 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        //Testing Database
+
+        //Adds Database for each class
+        File path = getApplicationContext().getFilesDir();
+        Database warrior;
+        Database mage;
+        Database cleric;
+        Database ranger;
+
+        try {
+            warrior = new Database("warrior.txt", path);
+            mage = new Database("mage.txt", path);
+            cleric = new Database("cleric.txt", path);
+            ranger = new Database("ranger.txt", path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //Testing Database
+        try {
+            String USER = "TEST";
+            String USERPASS = "PASS";
+
+            //Creation of a new user, must run all 4, one per class.
+
+            warrior.NewRecord(USER, "PASS");
+            mage.NewRecord(USER, USERPASS);
+            cleric.NewRecord(USER, USERPASS);
+            ranger.NewRecord(USER, USERPASS);
+
+            //Variable(warrior) is for which database/class to pull from
+            //'USER' is which user you want to pull from. *ALL* method parameters start with 'USER'
+            warrior.InventoryAddItem(USER, "sword", 5);
+            warrior.SetEquippedItem(USER, "hand", "sword");
+            String testing = warrior.GetEquippedItem(USER, "hand");
+            //String USERSPASSWORD = warrior.Query(USER, 1);
+            String testing2 = "Random extra line for debug screen to stop on";
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        //END TEST
 
 
         setSupportActionBar(binding.toolbar);
