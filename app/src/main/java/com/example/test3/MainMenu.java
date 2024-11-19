@@ -57,9 +57,13 @@ public class MainMenu extends AppCompatActivity {
         Button worldMapButton = findViewById(R.id.world_map_button);
         worldMapButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Toast.makeText(MainMenu.this, "World Map Clicked", Toast.LENGTH_SHORT).show();
-            }
+            public void onClick(View v)
+                {
+                    // Navigate to World Map
+                    Intent intent = new Intent(MainMenu.this, activity_world_map.class);
+                    startActivity(intent);
+                }
+
         });
 
         Button campaignButton = findViewById(R.id.campaign_button);

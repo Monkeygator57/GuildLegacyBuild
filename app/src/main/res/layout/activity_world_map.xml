@@ -13,7 +13,9 @@
             android:scaleType="centerCrop"
             android:src="@drawable/worldmap" />
 
-    <!-- Buttons for Clickable Regions -->
+    <!-- Button for Region 1 -->
+
+    <!-- Button for Region 2 -->
     <Button
             android:id="@+id/region1_button"
             android:layout_width="wrap_content"
@@ -22,17 +24,16 @@
             android:text="Region 1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="100dp"
-            android:layout_marginStart="50dp"/>
-
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="340dp" app:layout_constraintHorizontal_bias="0.947"/>
     <Button
             android:id="@+id/region2_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:text="Region 2"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/region1_button"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="200dp"
-            android:layout_marginEnd="60dp"/>
+            android:layout_marginTop="12dp" app:layout_constraintHorizontal_bias="0.143"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
