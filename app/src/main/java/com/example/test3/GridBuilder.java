@@ -1,6 +1,7 @@
 package com.example.test3;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.util.Pair;
 import android.view.DragEvent;
 import android.view.View;
@@ -54,9 +55,12 @@ public class GridBuilder {
 
     // main grid creation method
     private void createGrid() {
-        //characterGrid.removeAllViews();
+        characterGrid.removeAllViews();
+
         characterGrid.setRowCount(numRows);
         characterGrid.setColumnCount(numCols);
+        characterGrid.setClipChildren(false);
+        characterGrid.setClipToPadding(false);
 
         // Working grid maker, creates standard 9 x 9 grid.
         for (int row = 0; row < numRows; row++) {
@@ -75,37 +79,14 @@ public class GridBuilder {
             }
         }
 
+
         characterController.displayCharacterGrid();
 
-        //create staging area
-        /*for (int col = 0; col < numCols; col++) {
-            FrameLayout stagingTile = new FrameLayout(characterGrid.getContext());
-
-            GridLayout.LayoutParams stagingParams = createCellLayoutParams(numRows, col);
-            stagingTile.setLayoutParams(stagingParams);
-            stagingTile.setBackgroundColor(Color.LTGRAY); // set staging area to lighter color (temp)
-
-            // Add the container to the grid layout
-            characterGrid.addView(stagingTile, stagingParams);
-        }*/
-
         // create onDragListener for each cell
-        int oldRow = 0;
-        int oldCol = 0;
-
-        if (battleCharacter != null && battleCharacter.getCharacter() != null) {
-            oldRow = battleCharacter.getCharacter().getPosition().second;
-            oldCol = battleCharacter.getCharacter().getPosition().first;
-        }
-
-        for (int row = 0; row < numRows; row++) {
+            for (int row = 0; row < numRows; row++) {
                 for (int col = 0; col < numCols - 6; col++) {
                     int cellIndex = row * numCols + col;
                     View gridCell = characterGrid.getChildAt(cellIndex);
-                    int finalRow = row;
-                    int finalCol = col;
-                    int finalOldRow = oldRow;
-                    int finalOldCol = oldCol;
                     gridCell.setOnDragListener((v, event) -> {
                         switch (event.getAction()) {
                             case DragEvent.ACTION_DRAG_STARTED:
@@ -119,13 +100,6 @@ public class GridBuilder {
                             case DragEvent.ACTION_DROP:
                                 View draggedView = (View) event.getLocalState();
                                 Pair<Integer, Integer> oldPosition = characterController.getCharacterPositionFromView(draggedView);
-
-                                //ViewGroup parent = (ViewGroup) draggedView.getParent();
-                                //parent.removeView(draggedView); // Remove char from view
-                                //FrameLayout targetCell = (FrameLayout) v;
-                                //targetCell.addView(draggedView); // add char to target cell
-
-                                //CharacterController.moveCharacterForDrag(finalOldRow, finalOldCol, finalRow, finalCol, character);
 
                                 Pair<Integer, Integer> newPosition = (Pair<Integer, Integer>) v.getTag();
                                 int newRow = newPosition.first;
@@ -145,19 +119,10 @@ public class GridBuilder {
                                 draggedView.setLayoutParams(updatedParams);
 
                                 v.setBackgroundColor(Color.GRAY); // reset color
+
+
                                 return true;
                             case DragEvent.ACTION_DRAG_ENDED:
-                                /*if (!event.getResult()) { // used in case character is placed out of bounds of grid
-                                    draggedView = (View) event.getLocalState();
-                                    parent = (ViewGroup) draggedView.getParent();
-                                    if (parent != null) {
-                                        parent.removeView(draggedView); //remove from unintended parent
-                                    }
-                                    FrameLayout stagingTile = findAvailableStagingTile();
-                                    if (stagingTile != null) {
-                                        stagingTile.addView(draggedView);
-                                    }
-                                }*/
                                 return true;
                             default:
                                 return false;
@@ -168,19 +133,35 @@ public class GridBuilder {
         }
 
 
-    // used to find available tile if placed out of bounds
-    private FrameLayout findAvailableStagingTile() {
-        for (int col = 0; col < numCols; col++) {
-            FrameLayout stagingTile = (FrameLayout) characterGrid.getChildAt(numCols * numCols + col); // find empty tile if placed out of bounds
-            if (stagingTile.getChildCount() == 0) {
-                return stagingTile;
+    public void updateGridWithCharacters(CharacterController characterController) {
+        // map of character views, since we are basically "switching" to the allCharacters map after battle starts
+        Map<Pair<Integer, Integer>, View> characterViewMap = characterController.getCharacterViews();
+
+        for (Map.Entry<Pair<Integer, Integer>, View> entry : characterViewMap.entrySet()) {
+            Pair<Integer, Integer> position = entry.getKey();
+            View characterView = entry.getValue();
+
+            if (characterView == null) {
+                Log.e("GridBuilder", "Character view is null for position: " + position);
+                continue; // Skip adding this view to avoid null references
+            }
+
+            // Update layout parameters for the existing view to ensure it stays correctly positioned
+            GridLayout.LayoutParams layoutParams = createCellLayoutParams(position.first, position.second);
+            characterView.setLayoutParams(layoutParams);
+
+
+            // Ensure the character's state is properly updated in the SpriteSheetImageView
+            if (characterView instanceof FrameLayout) {
+                View childView = ((FrameLayout) characterView).getChildAt(0);
+                if (childView instanceof SpriteSheetImageView) {
+                    Character character = characterController.getCharacterAtPosition(position.first, position.second);
+                    if (character != null) {
+                        ((SpriteSheetImageView) childView).setCharacter(character);
+                    }
+                }
             }
         }
-        return null; // no empty tile found
-    }
-
-    public int getStagingAreaStartRows() {
-        return numRows;
     }
 
     public int calculateCellWidth() {

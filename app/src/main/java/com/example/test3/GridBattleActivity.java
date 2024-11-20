@@ -13,11 +13,6 @@ public class GridBattleActivity extends AppCompatActivity {
     private BattleManager battleManager;
     private FloorFactory floorFactory;
     private GridBuilder gridBuilder;
-    private GridLayout gridLayout;
-    private Character character;
-    public boolean isBattleStarted = false;
-    public boolean heroInStagingArea = true;
-    private BattleCharacter battleCharacter;
 
 
     @Override
@@ -42,9 +37,12 @@ public class GridBattleActivity extends AppCompatActivity {
         gridBuilder = new GridBuilder(9,9, gridLayout, characterController);
         Log.d("GridBattleActivity", "GridBuilder initialized.");
 
-        //Build Floor1 to stage heroes and enemies
+        //Build Floor1 to create heroes and enemies
         Floor floor1 = floorFactory.createFloor1(this);
         battleManager.startNewFloor(floor1);
+
+        // update grid with character positions/views/objects
+        gridBuilder.updateGridWithCharacters(characterController);
 
         // Set up button to start the first floor battle
         Button startFirstFloorButton = findViewById(R.id.startBattle);
@@ -53,7 +51,6 @@ public class GridBattleActivity extends AppCompatActivity {
 
             battleManager.startBattle();
         });
-
 
         // **Added Move Hero Button Back**
         // Set up button to move hero
@@ -72,10 +69,6 @@ public class GridBattleActivity extends AppCompatActivity {
 
                 // Move the character using GridManager
                 characterController.moveCharacterForDrag(oldRow, oldCol, newRow, newCol, character);
-
-                // Update the character's position if needed
-                // If character maintains its own position, update it here
-                // character.setPosition(new Pair<>(newRow, newCol));
 
                 Log.d("GridBattleActivity", character.getName() + " moved from (" + oldRow + ", " + oldCol + ") to (" + newRow + ", " + newCol + ")");
             } else {

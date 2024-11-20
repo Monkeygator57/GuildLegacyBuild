@@ -40,20 +40,17 @@ public class BattleManager {
         return characterController;
     }
 
+
     // Start new floor
     public void startNewFloor(Floor floor) {
         // Clear existing lists to avoid residual data
         heroes.clear();
         enemies.clear();
-        //heroViews.clear();
-        //enemyViews.clear();
         allCharacters.clear();
 
         // Populate heroes, enemies, and corresponding views from the Floor object
         heroes.addAll(floor.getHeroes());
-        //heroViews.addAll(floor.getHeroViews());
         enemies.addAll(floor.getEnemies());
-        //enemyViews.addAll(floor.getEnemyViews());
 
 
         // Logging to confirm the setup
@@ -64,7 +61,6 @@ public class BattleManager {
         for (int i = 0; i < heroes.size(); i++) {
             Pair<Integer, Integer> position = floor.getHeroPositions().get(i);
             Hero hero = heroes.get(i);
-            //SpriteSheetImageView heroView = heroViews.get(i);
 
             int row = position.first;
             int col = position.second;
@@ -83,7 +79,6 @@ public class BattleManager {
         for (int i = 0; i < enemies.size(); i++) {
             Pair<Integer, Integer> position = floor.getEnemyPositions().get(i);
             Enemy enemy = enemies.get(i);
-            //SpriteSheetImageView enemyView = enemyViews.get(i);
 
             int row = position.first;
             int col = position.second;

@@ -113,21 +113,12 @@ public class CharacterController {
     public void addCharacterToGrid(int row, int col, Character character) {
         FrameLayout container = new FrameLayout(context);
 
-        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
-                GridLayout.spec(row),
-                GridLayout.spec(col)
-        );
-        layoutParams.width = 105;
-        layoutParams.height = 105;
-        layoutParams.setMargins(6, 6, 6, 6);
-        container.setLayoutParams(layoutParams);
-
         // Create and configure the SpriteSheetImageView for the character
         SpriteSheetImageView spriteView = new SpriteSheetImageView(context, null);
         spriteView.setCharacter(character); // Set the character
 
         // Set layout parameters for the sprite
-        FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(80, 80);
+        FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(105, 105);
         spriteParams.gravity = Gravity.CENTER;
         spriteView.setLayoutParams(spriteParams);
 
@@ -142,7 +133,9 @@ public class CharacterController {
         characterObjects.put(position, character); // Store the character object
 
         //enable drag and drop for this character view
-        enableDragAndDrop(container);
+        if (character instanceof Hero) {
+            enableDragAndDrop(container);
+        }
     }
 
     // Method to move character from one cell to another
@@ -237,17 +230,18 @@ public class CharacterController {
         Pair<Integer, Integer> fromPosition = new Pair<>(oldRow, oldCol);
         Pair<Integer, Integer> toPosition = new Pair<>(newRow, newCol);
 
+        //update characterObjects and characterView HashMaps
         characterObjects.remove(fromPosition);
         View characterView = characterViews.get(fromPosition);
 
         characterObjects.put(toPosition, character);
         characterViews.put(toPosition, characterView);
 
-                // Reset the translation so the view is back to its grid position
+        // Reset the translation so the view is back to its grid position
         characterView.setTranslationX(0);
         characterView.setTranslationY(0);
 
-                // Update the character's sprite state back to idle
+        // Update the character's sprite state back to idle
         character.setSpriteState(Character.SpriteState.IDLE);
         if (characterView instanceof FrameLayout) {
             View spriteView = ((FrameLayout) characterView).getChildAt(0);
@@ -256,6 +250,7 @@ public class CharacterController {
             }
         }
 
+        // update battleManagers allCharacters list
         for (BattleCharacter battleCharacter : BattleManager.allCharacters) {
             if (battleCharacter.getCharacter() == character) {
                 battleCharacter.setPosition(newRow, newCol);

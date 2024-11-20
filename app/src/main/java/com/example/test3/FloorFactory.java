@@ -41,11 +41,11 @@ public class FloorFactory {
 
         // Define positions for each hero
         List<Pair<Integer, Integer>> floor1HeroPositions = new ArrayList<>();
-        floor1HeroPositions.add(new Pair<>(8, 4));  // Position for hero1
-        floor1HeroPositions.add(new Pair<>(8, 3));  // Position for hero2
-        floor1HeroPositions.add(new Pair<>(8, 2));
-        floor1HeroPositions.add(new Pair<>(8, 1));
-        floor1HeroPositions.add(new Pair<>(8, 0));
+        floor1HeroPositions.add(new Pair<>(3, 2));  // Position for hero1 warrior
+        floor1HeroPositions.add(new Pair<>(5, 2));  // Position for hero2 warrior2
+        floor1HeroPositions.add(new Pair<>(4, 0));  // mage
+        floor1HeroPositions.add(new Pair<>(2, 1));  // ranger
+        floor1HeroPositions.add(new Pair<>(6, 1));  // ranger2
 
         //MODIFIED above and below
 
