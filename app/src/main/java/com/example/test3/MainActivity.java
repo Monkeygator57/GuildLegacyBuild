@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                     editTextPassword.setError("Please enter password");
                 } else {
 
-                    Snackbar.make(view, "Logging in...", Snackbar.LENGTH_LONG).show();
+
 
                     // Use hardcoded login credentials
                     if (username.equals("admin") && password.equals("1234")) {

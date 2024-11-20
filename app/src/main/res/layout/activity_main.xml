@@ -9,18 +9,14 @@
         tools:context=".MainActivity"
         android:background="@drawable/glback">
 
-    <!-- App Bar Layout with Toolbar -->
+    <!-- App Bar Layout -->
     <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-
     </com.google.android.material.appbar.AppBarLayout>
 
-
-
-
+    <!-- Main Content -->
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,40 +25,46 @@
             android:layout_gravity="center"
             android:padding="16dp">
 
-
+        <!-- Game Title -->
         <TextView
                 android:id="@+id/game_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/game_title"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/holo_red_dark"
                 android:paddingBottom="20dp" />
 
-
+        <!-- Username Input -->
         <EditText
                 android:id="@+id/editTextUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/username_hint"
                 android:inputType="text"
-                android:textColorHint="@android:color/black"
-                android:padding="20dp"
-                android:layout_marginBottom="10dp" />
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="18sp"
+                android:padding="16dp"
+                android:background="@android:drawable/edit_text"
+                android:layout_marginBottom="16dp" />
 
-
+        <!-- Password Input -->
         <EditText
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password_hint"
                 android:inputType="textPassword"
-                android:textColorHint="@android:color/black"
-                android:padding="20dp"
-                android:layout_marginBottom="20dp" />
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textSize="18sp"
+                android:padding="16dp"
+                android:background="@android:drawable/edit_text"
+                android:layout_marginBottom="24dp" />
 
-
+        <!-- Login Button -->
         <Button
                 android:id="@+id/buttonLogin"
                 android:layout_width="wrap_content"
@@ -70,7 +72,6 @@
                 android:text="@string/login"
                 android:textColor="@android:color/white"
                 android:layout_gravity="center" />
-
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
