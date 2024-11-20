@@ -86,7 +86,20 @@ public class Hero extends Character{
         currentXP -= xpToNextLevel;  // Deduct XP for the level
         level++;  // Increase level
         xpToNextLevel *= XP_GROWTH_RATE;  // Increase XP requirement for next level
-
+        switch (getJobName()){
+            case "Warrior":
+                MainActivity.warrior.LevelUp(MainActivity.username);
+                break;
+            case "Mage":
+                MainActivity.mage.LevelUp(MainActivity.username);
+                break;
+            case "Cleric":
+                MainActivity.cleric.LevelUp(MainActivity.username);
+                break;
+            case "Ranger":
+                MainActivity.ranger.LevelUp(MainActivity.username);
+                break;
+        }
         System.out.println(name + " has leveled up to level " + level + "!");
 
         applyJobStats();  // Recalculate stats based on new level

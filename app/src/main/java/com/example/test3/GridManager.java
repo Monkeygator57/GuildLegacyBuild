@@ -236,7 +236,7 @@ public class GridManager {
                 characterView.setTranslationY(0);
 
                 // Update the character's sprite state back to idle
-                character.setSpriteState(Character.SpriteState.IDLE);
+                //character.setSpriteState(Character.SpriteState.IDLE);
                 if (characterView instanceof FrameLayout) {
                     View spriteView = ((FrameLayout) characterView).getChildAt(0);
                     if (spriteView instanceof SpriteSheetImageView) {
