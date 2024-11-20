@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -21,32 +22,50 @@ public class BattleManager {
     private final CharacterController characterController;
     private FloorFactory floorFactory;
 
+    private int currentFloorNumber = Floor.floorNumber;
     private final Handler handler = new Handler();
     private final int delayBetweenActions = 1000;  // Delay between actions in milliseconds
     private boolean isBattleInProgress = false;
+    private final GridBattleActivity gridBattleActivity;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     // Constructor to accept CharacterController and FloorFactory
-    public BattleManager(CharacterController characterController, FloorFactory floorFactory) {
+    public BattleManager(GridBattleActivity gridBattleActivity, CharacterController characterController, FloorFactory floorFactory) {
+        //this.context = context;
         this.characterController = characterController;
         this.floorFactory = floorFactory;
+        this.gridBattleActivity = gridBattleActivity;
     }
 
-
-
-    // Public getter for characterController
+    // Public getter for charactercontroller
     public CharacterController getCharacterController() {
         return characterController;
     }
 
 
+    // Helper method to clear previous floor data
+    private void clearPreviousFloorData() {
+        // Remove all characters from the grid
+        for (BattleCharacter character : allCharacters) {
+            characterController.removeCharacter(character.getRow(), character.getCol());
+        }
+
+        // Clear all character lists
+        heroes.clear();
+        enemies.clear();
+        heroViews.clear();
+        enemyViews.clear();
+        allCharacters.clear();
+
+        // Log the clearing of previous data
+        Log.d("BattleManager", "Cleared previous floor data from grid and lists.");
+    }
+
     // Start new floor
     public void startNewFloor(Floor floor) {
         // Clear existing lists to avoid residual data
-        heroes.clear();
-        enemies.clear();
-        allCharacters.clear();
+        clearPreviousFloorData();
 
         // Populate heroes, enemies, and corresponding views from the Floor object
         heroes.addAll(floor.getHeroes());
@@ -72,7 +91,7 @@ public class BattleManager {
             BattleCharacter battleCharacter = new BattleCharacter(hero, heroView, row, col);
             allCharacters.add(battleCharacter);
 
-            Log.d("BattleManager", "Placed hero at (" + position.first + ", " + position.second + ")");
+            Log.d("BattleManager", "Placed hero at (" + row + ", " + col + ")");
         }
 
         // Add enemies to the grid and allCharacters list
@@ -238,9 +257,9 @@ public class BattleManager {
 
                 // Remove from specific lists
                 if (defender.getCharacter() instanceof Hero) {
-                    // Remove from heroes list
+                    heroes.remove(defender.getCharacter());  // Remove from heroes list
                 } else {
-                    // Remove from enemies list
+                    enemies.remove(defender.getCharacter()); // Remove from enemies list
                 }
             } else {
                 // Display defender's hit animation
@@ -295,14 +314,60 @@ public class BattleManager {
         }
         return enemyList;
     }
+//
+//    public void advanceToNextFloor(){
+//
+//        //set the new floor
+//        Floor nextFloor = GridBattleActivity.currentFloor;
+//
+//        //start the ner floor
+//        startNewFloor(nextFloor);
+//    }
 
     private void displayWinner() {
-        if (heroes.isEmpty()) {
-            System.out.println("Enemies win the battle!");
-        } else if (enemies.isEmpty()) {
-            System.out.println("Heroes win the battle!");
+        boolean allHeroesDead = true;
+        boolean allEnemiesDead = true;
+
+        for (BattleCharacter character : allCharacters) {
+            if (character.isAlive()) {
+                if (character.isHero()) {
+                    allHeroesDead = false;  // If we find an alive hero, set `allHeroesDead` to false
+                } else {
+                    allEnemiesDead = false;  // If we find an alive enemy, set `allEnemiesDead` to false
+                }
+            }
+            // If neither all heroes nor all enemies are dead, we can stop early
+            if (!allHeroesDead && !allEnemiesDead) {
+                break;
+            }
         }
-        handler.removeCallbacksAndMessages(null);  // Clear all tasks after the battle
+
+        if (allHeroesDead) {
+            System.out.println("Enemies win the battle!");
+        } else if (allEnemiesDead) {
+            gridBattleActivity.advanceToNextFloor();
+            try{
+                MainActivity.warrior.UpdateData();
+                MainActivity.mage.UpdateData();
+                MainActivity.cleric.UpdateData();
+                MainActivity.ranger.UpdateData();
+            } catch (FileNotFoundException e){
+
+            }
+
+
+        }
+        handler.removeCallbacks(() -> executeTurn());  // Clear all tasks after the battle
         isBattleInProgress = false;
+    }
+
+    public void saveHeroStates(List<Hero> heroes) {
+        for (BattleCharacter character : allCharacters) { // save new hero positions after placed
+            if (character.getCharacter() instanceof Hero) {
+                Hero hero = (Hero) character.getCharacter(); // reset hero health
+                hero.resetHealth();
+                heroes.add(hero);
+            }
+        }
     }
 }

@@ -5,12 +5,11 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.DragEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import androidx.gridlayout.widget.GridLayout;
 
 
-import java.util.HashMap;
+
 import java.util.Map;
 
 
@@ -19,13 +18,7 @@ public class GridBuilder {
     private final GridLayout characterGrid;
     private final int numRows;
     private final int numCols;
-    //private final int stagingAreaRows;
-    private CharacterController characterController;
-    private HashMap characterObjects;
-    private HashMap<Pair<Integer, Integer>, View> characterViews;
-    private Character character;
-    private BattleCharacter battleCharacter;
-    private View characterView;
+    private final CharacterController characterController;
 
     private static final int CELL_WIDTH = 105;
     private static final int CELL_HEIGHT = 105;
@@ -36,7 +29,6 @@ public class GridBuilder {
         this.characterGrid = gridLayout;
         this.numRows = numRows;
         this.numCols = numCols;
-        //this.stagingAreaRows = stagingAreaRows;
         this.characterController = characterController;
         createGrid();
     }
@@ -107,7 +99,7 @@ public class GridBuilder {
 
                                 Character character = characterController.getCharacterAtPosition(oldPosition);
                                 if (character != null) {
-                                    characterController.moveCharacterForDrag(
+                                    CharacterController.moveCharacterForDrag(
                                             oldPosition.first, oldPosition.second, newRow, newCol, character
                                     );
                                 }

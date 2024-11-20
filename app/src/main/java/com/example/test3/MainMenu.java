@@ -20,6 +20,8 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainMenu.this, "Begin Game", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainMenu.this, GridBattleActivity.class);
+                startActivity(intent);
             }
         });
 

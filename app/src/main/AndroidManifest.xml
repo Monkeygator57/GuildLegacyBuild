@@ -51,5 +51,12 @@
                 android:exported="false"
                 android:label="@string/title_activity_bag"
                 android:theme="@style/Theme.Test3" />
+
+        <!-- Grid Activity -->
+        <activity
+            android:name=".GridBattleActivity"
+            android:label="Grid Battle"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+
     </application>
 </manifest>

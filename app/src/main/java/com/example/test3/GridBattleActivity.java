@@ -6,6 +6,9 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class GridBattleActivity extends AppCompatActivity {
 
@@ -13,6 +16,8 @@ public class GridBattleActivity extends AppCompatActivity {
     private BattleManager battleManager;
     private FloorFactory floorFactory;
     private GridBuilder gridBuilder;
+    private GridBattleActivity gridBattleActivity;
+    private Floor currentFloor;
 
 
     @Override
@@ -30,16 +35,16 @@ public class GridBattleActivity extends AppCompatActivity {
         Log.d("GridBattleActivity", "FloorFactory initialized.");
 
         // Initialize BattleManager with CharacterController and FloorFactory
-        battleManager = new BattleManager(characterController, floorFactory);
+        battleManager = new BattleManager(this, characterController, floorFactory);
         Log.d("GridBattleActivity", "BattleManager initialized.");
 
         // Build visual grid
         gridBuilder = new GridBuilder(9,9, gridLayout, characterController);
         Log.d("GridBattleActivity", "GridBuilder initialized.");
 
-        //Build Floor1 to create heroes and enemies
-        Floor floor1 = floorFactory.createFloor1(this);
-        battleManager.startNewFloor(floor1);
+        //Build Floor0 to create heroes and enemies
+        Floor floor0 = floorFactory.createFloor1(this);
+        battleManager.startNewFloor(floor0);
 
         // update grid with character positions/views/objects
         gridBuilder.updateGridWithCharacters(characterController);
@@ -49,6 +54,9 @@ public class GridBattleActivity extends AppCompatActivity {
         startFirstFloorButton.setOnClickListener(view -> {
             Log.d("GridBattleActivity", "Start First Floor button clicked.");
 
+
+            Floor floor1 = floorFactory.createFloor1(this);
+            currentFloor = floor1;
             battleManager.startBattle();
         });
 
@@ -76,5 +84,22 @@ public class GridBattleActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void advanceToNextFloor() {
+        // Increment the floor number
+        Floor.nextFloorNumber();
+
+        List<Hero> savedHeroes = new ArrayList<>();
+        battleManager.saveHeroStates(savedHeroes);
+
+        // Update the current floor with the next floor
+        currentFloor = floorFactory.createFloor(this, Floor.floorNumber, savedHeroes);
+
+        // Call advanceToNextFloor() on BattleManager
+        battleManager.startNewFloor(currentFloor);
+
+        gridBuilder.updateGridWithCharacters(characterController);
+    }
+
 }
 
