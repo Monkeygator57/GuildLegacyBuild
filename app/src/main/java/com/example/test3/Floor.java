@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Floor {
-    private final int floorNumber;
+    public static int floorNumber;
     private final List<Hero> heroes;
     private final List<SpriteSheetImageView> heroViews;
     private final List<Pair<Integer, Integer>> heroPositions;
@@ -22,7 +22,7 @@ public class Floor {
             List<SpriteSheetImageView> enemyViews,
             List<Pair<Integer, Integer>> enemyPositions
     ) {
-        this.floorNumber = floorNumber;
+        floorNumber = floorNumber;
         this.heroes = heroes;
         this.heroViews = heroViews;
         this.heroPositions = heroPositions;
@@ -31,8 +31,17 @@ public class Floor {
         this.enemyPositions = enemyPositions;
     }
 
-    public int getFloorNumber() {
+    public static int getFloorNumber() {
         return floorNumber;
+    }
+
+    public static int setFloorNumber(int currentFloorNumber) {
+        return floorNumber = currentFloorNumber;
+    };
+
+    public static int nextFloorNumber(){
+        setFloorNumber(floorNumber + 1);
+        return getFloorNumber();
     }
 
     public List<Hero> getHeroes() {
