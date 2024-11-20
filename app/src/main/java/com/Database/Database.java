@@ -69,6 +69,7 @@ public class Database {
         ArrayList<String> newUser = new ArrayList<String>();
         newUser.add(ID);
         newUser.add(password);
+        newUser.add("0");  //Class Level
         newUser.add("NA"); //Equipped Weapon
         newUser.add("NA"); //Equipped Armor
         newUser.add("NA"); //Equipped Trinket
@@ -118,6 +119,11 @@ public class Database {
     public void InventoryAddItem(String ID, String item, int weight) {
         Database.get(GetIndex(ID)).add(item);
         Database.get(GetIndex(ID)).add(valueOf(weight));
+    }
+    public void InventoryRemoveItem(String ID, String item) {
+        int i = Database.get(GetIndex(ID)).indexOf(item);
+        Database.get(GetIndex(ID)).remove(item);
+        Database.get(GetIndex(ID)).remove(i + 1);
     }
     //Returns Currently Equipped Item
     public String GetEquippedItem(String ID, String Item) {

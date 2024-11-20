@@ -18,7 +18,11 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-
+    public static Database warrior;
+    public static Database mage;
+    public static Database cleric;
+    public static Database ranger;
+    public static String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Database Creation
         File path = getApplicationContext().getFilesDir();
-        Database warrior;
-        Database mage;
-        Database cleric;
-        Database ranger;
+
 
         try {
             warrior = new Database("warrior.txt", path);
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = editTextUsername.getText().toString().trim();
+                username = editTextUsername.getText().toString().trim();
                 String password = editTextPassword.getText().toString().trim();
 
                 // Basic validation
