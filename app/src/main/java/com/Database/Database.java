@@ -104,7 +104,7 @@ public class Database {
     }
 
 
-    //Note: Inventory will start at an index of 5
+    //Note: Inventory will start at an index of 6
     // Index of 3,4,5 Is Equipped Item
 
     //Adds a list of items to the inventory
