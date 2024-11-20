@@ -2,93 +2,57 @@ package com.example.test3;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import com.Database.Database;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.example.test3.databinding.ActivityMainBinding;
-
-
-import android.view.Menu;
-import android.view.MenuItem;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Set up view binding
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        // Find views by ID
+        EditText editTextUsername = findViewById(R.id.editTextUsername);
+        EditText editTextPassword = findViewById(R.id.editTextPassword);
+        Button buttonLogin = findViewById(R.id.buttonLogin);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        // Handle login button click
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
+                String username = editTextUsername.getText().toString().trim();
+                String password = editTextPassword.getText().toString().trim();
+
+                // Basic validation
+                if (username.isEmpty()) {
+                    editTextUsername.setError("Please enter username");
+                } else if (password.isEmpty()) {
+                    editTextPassword.setError("Please enter password");
+                } else {
+
+                    Snackbar.make(view, "Logging in...", Snackbar.LENGTH_LONG).show();
+
+                    // Use hardcoded login credentials
+                    if (username.equals("admin") && password.equals("1234")) {
+                        Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                        startActivity(intent);
+
+                    } else {
+                        Toast.makeText(MainActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
-
-        // Button to switch to grid fragment
-        Button switchToGridButton = findViewById(R.id.switchToGridButton);
-        switchToGridButton.setOnClickListener(v -> {
-
-            Intent intent = new Intent(MainActivity.this, GridBattleActivity.class);
-            startActivity(intent);
-        });
-
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-
-
-
-
 }

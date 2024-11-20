@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+    <!-- Scroll Background -->
+    <ImageView
+            android:id="@+id/scroll_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/questimage" />
+
+    <!-- Text Title -->
+    <TextView
+            android:id="@+id/quest_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="180dp"
+            android:text="Available Quests"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
+
+    <!-- RecyclerView  -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/quests_recycler_view"
+            android:layout_width="302dp"
+            android:layout_height="192dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="220dp"
+            android:padding="16dp"/>
+</FrameLayout>
