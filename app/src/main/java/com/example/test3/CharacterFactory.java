@@ -95,7 +95,7 @@ public class CharacterFactory {
         goblinFrameCounts.put(Character.SpriteState.DEATH, 4);
         goblinFrameCounts.put(Character.SpriteState.MOVING, 8);
 
-        return new Enemy("Goblin", 100, 20, 1, 5, 1, 3,10, 5, 5, 0, false, goblinSpriteSheets, goblinFrameCounts, true);
+        return new Enemy("Goblin", 100, 20, 1, 5, 1, 3,10, 5, 5, 10, false, goblinSpriteSheets, goblinFrameCounts, true);
     }
 
     public static Enemy createGoblinElite(){
@@ -114,6 +114,25 @@ public class CharacterFactory {
         goblinEliteFrameCounts.put(Character.SpriteState.DEATH, 4);
         goblinEliteFrameCounts.put(Character.SpriteState.MOVING, 8);
 
-        return new Enemy("Goblin Warlord", 150, 25, 2, 10, 1, 3,15, 6, 7, 10, true, goblinEliteSpriteSheets, goblinEliteFrameCounts, true);
+        return new Enemy("Goblin Warlord", 150, 25, 2, 10, 1, 3,15, 6, 7, 40, true, goblinEliteSpriteSheets, goblinEliteFrameCounts, true);
+    }
+
+    public static Enemy createGoblinRiderBoss(){
+        // Define sprite sheets for the elite goblin character
+        Map<Character.SpriteState, String> goblinRiderSpriteSheets = new HashMap<>();
+        goblinRiderSpriteSheets.put(Character.SpriteState.IDLE, "orc_rider_idle");
+        goblinRiderSpriteSheets.put(Character.SpriteState.ATTACK, "orc_rider_attack01");
+        goblinRiderSpriteSheets.put(Character.SpriteState.HIT, "orc_rider_hurt");
+        goblinRiderSpriteSheets.put(Character.SpriteState.DEATH, "orc_rider_death");
+        goblinRiderSpriteSheets.put(Character.SpriteState.MOVING, "orc_rider_walk");
+
+        Map<Character.SpriteState, Integer> goblinRiderFrameCounts = new HashMap<>();
+        goblinRiderFrameCounts.put(Character.SpriteState.IDLE, 6);
+        goblinRiderFrameCounts.put(Character.SpriteState.ATTACK, 8);
+        goblinRiderFrameCounts.put(Character.SpriteState.HIT, 4);
+        goblinRiderFrameCounts.put(Character.SpriteState.DEATH, 4);
+        goblinRiderFrameCounts.put(Character.SpriteState.MOVING, 8);
+
+        return new Enemy("Goblin Warlord", 150 * Floor.floorNumber, 25 * Floor.floorNumber, 2, 10 * (Floor.floorNumber / 2), 1, 3,15, 6, 7, 40, true, goblinRiderSpriteSheets, goblinRiderFrameCounts, true);
     }
 }

@@ -32,13 +32,13 @@ public class FirstFragment extends Fragment {
 
        Hero warrior = CharacterFactory.createWarrior();
 
-       Enemy goblin = CharacterFactory.createGoblin();
+       Enemy goblinRider = CharacterFactory.createGoblinRiderBoss();
        Enemy eliteGoblin = CharacterFactory.createGoblinElite();
 
 
         // Set the hero’s initial state and display it
         spriteSheetImageViewHero.setCharacter(warrior);
-        spriteSheetImageViewGoblin.setCharacter(goblin);
+        spriteSheetImageViewGoblin.setCharacter(goblinRider);
         spriteSheetImageViewEliteGoblin.setCharacter(eliteGoblin);
 
         return binding.getRoot();
