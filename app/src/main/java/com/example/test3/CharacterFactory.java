@@ -31,6 +31,7 @@ public class CharacterFactory {
     public static Job createWarriorJob(){
         return new Job("Warrior", 200, 10, 30, 4, 10, 1, 15, 2, 1, MainStatType.STRENGTH, 1);
     }
+
     public static Hero createMage(){
 
         Map<Character.SpriteState, String> mageSpriteSheets = new HashMap<>();

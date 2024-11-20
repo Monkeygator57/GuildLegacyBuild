@@ -1,14 +1,15 @@
 package com.example.test3;
 
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import androidx.gridlayout.widget.GridLayout;
-import android.widget.TextView;
 
-import android.animation.ObjectAnimator;
+
 import android.util.Log;
 import android.util.Pair;
 
@@ -16,14 +17,14 @@ import java.util.*;
 
 import android.os.Handler;
 
-public class GridManager {
+public class CharacterController {
 
     private final GridLayout gridLayout;
     private final Context context;
 
     // Hash maps to store character views and objects by their grid position.
-    private final HashMap<Pair<Integer, Integer>, View> characterViews;
-    private final HashMap<Pair<Integer, Integer>, Character> characterObjects;
+    public static HashMap<Pair<Integer, Integer>, View> characterViews;
+    public static HashMap<Pair<Integer, Integer>, Character> characterObjects;
 
     private final int numRows = 9;
     private final int numCols = 9;
@@ -32,18 +33,17 @@ public class GridManager {
     public int getNumRows() {
         return numRows;
     }
-
     public int getNumCols() {
         return numCols;
     }
 
-    public GridManager(GridLayout gridLayout, Context context) {
+    public CharacterController(GridLayout gridLayout, Context context) {
         this.gridLayout = gridLayout;
         this.context = context;
 
         // Initialize hash maps
-        this.characterViews = new HashMap<>();
-        this.characterObjects = new HashMap<>();
+        characterViews = new HashMap<>();
+        characterObjects = new HashMap<>();
     }
 
     // Method to remove a character from the grid at a specified position
@@ -64,8 +64,17 @@ public class GridManager {
     public SpriteSheetImageView getCharacterViewAtPosition(int row, int col) {
         Pair<Integer, Integer> position = new Pair<>(row, col);
         View characterView = characterViews.get(position);
-        if (characterView instanceof SpriteSheetImageView) {
+        /*if (characterView instanceof SpriteSheetImageView) {
             return (SpriteSheetImageView) characterView;
+        }*/
+        if (characterView instanceof FrameLayout) {
+            FrameLayout container = (FrameLayout) characterView;
+            if (container.getChildCount() > 0) {
+                View childView = container.getChildAt(0);
+                if (childView instanceof SpriteSheetImageView) {
+                    return (SpriteSheetImageView) childView;
+                }
+            }
         }
         return null;
     }
@@ -74,6 +83,7 @@ public class GridManager {
     public Map<Pair<Integer, Integer>, Character> getCharacterObjects() {
         return characterObjects;
     }
+    public Map<Pair<Integer, Integer>, View> getCharacterViews() {return characterViews;}
 
     // Method to get all currently occupied positions
     public Set<Pair<Integer, Integer>> getOccupiedPositions() {
@@ -85,36 +95,8 @@ public class GridManager {
         return characterObjects.get(position);
     }
 
-    // Method to initialize the grid
-    public void initializeGrid() {
-        displayCharacterGrid();
-    }
-
-    // Method to display the character grid
+    // Method to display the characters on the grid
     public void displayCharacterGrid() {
-        gridLayout.removeAllViews(); // Clear existing views on grid
-
-        // Create grid tiles
-        for (int row = 0; row < numRows; row++) {
-            for (int col = 0; col < numCols; col++) {
-                FrameLayout tileContainer = new FrameLayout(context);
-
-                // Set size for each cell
-                GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
-                        GridLayout.spec(row),
-                        GridLayout.spec(col)
-                );
-                layoutParams.width = 105;
-                layoutParams.height = 105;
-                layoutParams.setMargins(6, 6, 6, 6);
-                tileContainer.setLayoutParams(layoutParams);
-                tileContainer.setBackgroundColor(Color.DKGRAY);
-
-                // Add the container to the grid layout
-                gridLayout.addView(tileContainer, layoutParams);
-            }
-        }
-
         // Loop through each character position in characterObjects
         for (Map.Entry<Pair<Integer, Integer>, Character> entry : characterObjects.entrySet()) {
             Pair<Integer, Integer> position = entry.getKey();
@@ -122,7 +104,7 @@ public class GridManager {
 
             int row = position.first;
             int col = position.second;
-
+            // add charcter objects to grid
             addCharacterToGrid(row, col, character);
         }
     }
@@ -131,21 +113,12 @@ public class GridManager {
     public void addCharacterToGrid(int row, int col, Character character) {
         FrameLayout container = new FrameLayout(context);
 
-        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(
-                GridLayout.spec(row),
-                GridLayout.spec(col)
-        );
-        layoutParams.width = 105;
-        layoutParams.height = 105;
-        layoutParams.setMargins(6, 6, 6, 6);
-        container.setLayoutParams(layoutParams);
-
         // Create and configure the SpriteSheetImageView for the character
         SpriteSheetImageView spriteView = new SpriteSheetImageView(context, null);
         spriteView.setCharacter(character); // Set the character
 
         // Set layout parameters for the sprite
-        FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(80, 80);
+        FrameLayout.LayoutParams spriteParams = new FrameLayout.LayoutParams(105, 105);
         spriteParams.gravity = Gravity.CENTER;
         spriteView.setLayoutParams(spriteParams);
 
@@ -158,6 +131,11 @@ public class GridManager {
         Pair<Integer, Integer> position = new Pair<>(row, col);
         characterViews.put(position, container); // Store the visual view
         characterObjects.put(position, character); // Store the character object
+
+        //enable drag and drop for this character view
+        if (character instanceof Hero) {
+            enableDragAndDrop(container);
+        }
     }
 
     // Method to move character from one cell to another
@@ -243,16 +221,77 @@ public class GridManager {
                         ((SpriteSheetImageView) spriteView).setCharacter(character);
                     }
                 }
-
-                Log.d("GridManager", character.getName() + " has moved to (" + newRow + ", " + newCol + ")");
+                Log.d("CharacterController", character.getName() + " has moved to (" + newRow + ", " + newCol + ")");
             }, (path.size() - 1) * animationDuration);  // Delay this update to happen after the final animation step
         }
+    }
+
+    public static void moveCharacterForDrag(int oldRow, int oldCol, int newRow, int newCol, Character character) {
+        Pair<Integer, Integer> fromPosition = new Pair<>(oldRow, oldCol);
+        Pair<Integer, Integer> toPosition = new Pair<>(newRow, newCol);
+
+        //update characterObjects and characterView HashMaps
+        characterObjects.remove(fromPosition);
+        View characterView = characterViews.get(fromPosition);
+
+        characterObjects.put(toPosition, character);
+        characterViews.put(toPosition, characterView);
+
+        // Reset the translation so the view is back to its grid position
+        characterView.setTranslationX(0);
+        characterView.setTranslationY(0);
+
+        // Update the character's sprite state back to idle
+        character.setSpriteState(Character.SpriteState.IDLE);
+        if (characterView instanceof FrameLayout) {
+            View spriteView = ((FrameLayout) characterView).getChildAt(0);
+            if (spriteView instanceof SpriteSheetImageView) {
+                ((SpriteSheetImageView) spriteView).setCharacter(character);
+            }
+        }
+
+        // update battleManagers allCharacters list
+        for (BattleCharacter battleCharacter : BattleManager.allCharacters) {
+            if (battleCharacter.getCharacter() == character) {
+                battleCharacter.setPosition(newRow, newCol);
+                break;
+            }
+        }
+    }
+
+
+    public Pair<Integer, Integer> getCharacterPositionFromView(View view) {
+        for (Map.Entry<Pair<Integer, Integer>, View> entry : characterViews.entrySet()) {
+            if (entry.getValue() == view) {
+                return entry.getKey();
+            }
+        }
+        return null; // View not found
+    }
+
+    public Character getCharacterAtPosition(Pair<Integer, Integer> position) {
+        return characterObjects.get(position);
     }
 
     // Method to check if a position is occupied
     public boolean isPositionOccupied(int row, int col) {
         Pair<Integer, Integer> position = new Pair<>(row, col);
         return characterObjects.containsKey(position);
+    }
+
+
+    //Drag and drop functionality for heroes
+    private void enableDragAndDrop(View characterView) {
+        characterView.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData dragData = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                view.startDrag(dragData, shadowBuilder, view, 0);
+                return true;
+            }
+
+            return false;
+        });
     }
 
     // Method to check if a position is within the grid bounds

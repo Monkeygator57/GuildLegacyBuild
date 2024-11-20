@@ -2,6 +2,8 @@ package com.example.test3;
 
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
+
 import java.util.*;
 
 public abstract class Character {
@@ -20,6 +22,8 @@ public abstract class Character {
     protected Map<SpriteState, String> spriteSheetResources;
     protected Map<SpriteState, Integer> stateFrameCounts;
     private Pair<Integer, Integer> position; // Character's current position
+
+    private View associatedView; // HERERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 
     public enum SpriteState {
         IDLE(5), ATTACK(3), HIT(2), DEATH(4), MOVING(8);
@@ -68,13 +72,14 @@ public abstract class Character {
         return currentState;
     }
 
+
     // Pathfinding method to move towards a target
-    public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, GridManager gridManager) {
+    public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, CharacterController characterController) {
         AStarPathfinder pathfinder = new AStarPathfinder();
 
         // Get the grid size from GridManager
-        int numRows = gridManager.getNumRows();
-        int numCols = gridManager.getNumCols();
+        int numRows = characterController.getNumRows();
+        int numCols = characterController.getNumCols();
 
         // Get path from current position to target, avoiding occupied cells
         List<Pair<Integer, Integer>> fullPath = pathfinder.findPath(
@@ -94,7 +99,7 @@ public abstract class Character {
         // Move along the limited path by updating the character's position on each step
         if (!limitedPath.isEmpty()) {
             Pair<Integer, Integer> nextPosition = limitedPath.get(limitedPath.size() - 1); // The furthest position within moveSpeed
-            gridManager.moveCharacter(position.first, position.second, nextPosition.first, nextPosition.second, this);
+            characterController.moveCharacter(position.first, position.second, nextPosition.first, nextPosition.second, this);
             position = nextPosition;  // Update the character's current position
         }
     }
@@ -119,9 +124,7 @@ public abstract class Character {
         return position;
     }
 
-    public void setPosition(Pair<Integer, Integer> position) {
-        this.position = position;
-    }
+    public void setPosition(int x, int y) {this.position = position;}
 
     public boolean getFacingLeft() {
         return facingLeft;

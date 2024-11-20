@@ -1,19 +1,18 @@
 package com.example.test3;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
+
 public class GridBattleActivity extends AppCompatActivity {
 
-    private GridManager gridManager;
+    private CharacterController characterController;
     private BattleManager battleManager;
     private FloorFactory floorFactory;
-    private Context context;
-    public static Floor currentFloor;
+    private GridBuilder gridBuilder;
 
 
     @Override
@@ -21,37 +20,36 @@ public class GridBattleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.grid_battle); // Load the grid_battle.xml layout
 
-        // Initialize GridManager
+        // Initialize characterController
         GridLayout gridLayout = findViewById(R.id.characterGrid);
-        gridManager = new GridManager(gridLayout, this);
-        Log.d("GridBattleActivity", "GridManager initialized.");
+        characterController = new CharacterController(gridLayout, this);
+        Log.d("GridBattleActivity", "CharacterController initialized.");
 
         // Initialize FloorFactory
         floorFactory = new FloorFactory();
         Log.d("GridBattleActivity", "FloorFactory initialized.");
 
-        // Initialize BattleManager with GridManager and FloorFactory
-        battleManager = new BattleManager(this,gridManager, floorFactory);
+        // Initialize BattleManager with CharacterController and FloorFactory
+        battleManager = new BattleManager(characterController, floorFactory);
         Log.d("GridBattleActivity", "BattleManager initialized.");
 
-        // Initialize the grid
-        gridManager.initializeGrid();
-        Log.d("GridBattleActivity", "Grid initialized.");
+        // Build visual grid
+        gridBuilder = new GridBuilder(9,9, gridLayout, characterController);
+        Log.d("GridBattleActivity", "GridBuilder initialized.");
 
+        //Build Floor1 to create heroes and enemies
+        Floor floor1 = floorFactory.createFloor1(this);
+        battleManager.startNewFloor(floor1);
 
+        // update grid with character positions/views/objects
+        gridBuilder.updateGridWithCharacters(characterController);
 
         // Set up button to start the first floor battle
-        Button startFirstFloorButton = findViewById(R.id.startFirstFloorButton);
+        Button startFirstFloorButton = findViewById(R.id.startBattle);
         startFirstFloorButton.setOnClickListener(view -> {
             Log.d("GridBattleActivity", "Start First Floor button clicked.");
 
-            // Create Floor 1 using the FloorFactory
-            Floor floor1 = floorFactory.createFloor1(this);
-
-
-
-            // Start the new floor battle
-            battleManager.startNewFloor(floor1);
+            battleManager.startBattle();
         });
 
         // **Added Move Hero Button Back**
@@ -60,21 +58,17 @@ public class GridBattleActivity extends AppCompatActivity {
         moveHeroButton.setOnClickListener(view -> {
             Log.d("GridBattleActivity", "Move Hero button clicked.");
 
-            int oldRow = 0;
-            int oldCol = 0;
+            int oldRow = 9;
+            int oldCol = 2;
 
             // Retrieve the character at the old position
-            Character character = gridManager.getCharacterAtPosition(oldRow, oldCol);
+            Character character = characterController.getCharacterAtPosition(oldRow, oldCol);
             if (character != null) {
                 int newRow = 5;
                 int newCol = 5;
 
                 // Move the character using GridManager
-                gridManager.moveCharacter(oldRow, oldCol, newRow, newCol, character);
-
-                // Update the character's position if needed
-                // If character maintains its own position, update it here
-                // character.setPosition(new Pair<>(newRow, newCol));
+                characterController.moveCharacterForDrag(oldRow, oldCol, newRow, newCol, character);
 
                 Log.d("GridBattleActivity", character.getName() + " moved from (" + oldRow + ", " + oldCol + ") to (" + newRow + ", " + newCol + ")");
             } else {
@@ -82,15 +76,5 @@ public class GridBattleActivity extends AppCompatActivity {
             }
         });
     }
-
-    public void advanceToNextFloor() {
-        // Increment the floor number
-        Floor.nextFloorNumber();
-
-        // Update the current floor with the next floor
-        currentFloor = floorFactory.createFloor(this, Floor.floorNumber);
-
-        // Call advanceToNextFloor() on BattleManager
-        battleManager.startNewFloor(currentFloor);
-    }
 }
+
