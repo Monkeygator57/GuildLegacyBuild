@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -350,6 +351,15 @@ public class BattleManager {
             System.out.println("Enemies win the battle!");
         } else if (allEnemiesDead) {
             gridBattleActivity.advanceToNextFloor();
+            try{
+                MainActivity.warrior.UpdateData();
+                MainActivity.mage.UpdateData();
+                MainActivity.cleric.UpdateData();
+                MainActivity.ranger.UpdateData();
+            } catch (FileNotFoundException e){
+
+            }
+
 
         }
         handler.removeCallbacks(() -> executeTurn());  // Clear all tasks after the battle
