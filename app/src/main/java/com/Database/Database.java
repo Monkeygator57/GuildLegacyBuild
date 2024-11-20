@@ -105,7 +105,7 @@ public class Database {
 
 
     //Note: Inventory will start at an index of 5
-    // Index of 2,3,4 Is Equipped Item
+    // Index of 3,4,5 Is Equipped Item
 
     //Adds a list of items to the inventory
     public void InventoryAddList(String ID, ArrayList<String> items) {
