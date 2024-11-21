@@ -8,7 +8,7 @@ public abstract class Character {
     protected int attackPower;
     protected int defense;
     protected int baseSpeed;
-    protected Weapon equippedWeaon;
+    protected Weapon equippedWeapon;
     protected Armor equippedArmor;
     protected Trinket equippedTrinket;
 
