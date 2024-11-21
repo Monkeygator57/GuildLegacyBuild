@@ -17,6 +17,9 @@ public abstract class Character {
     protected int agility;
     protected int intelligence;
     protected int attackRange;
+    protected Weapon equippedWeapon;
+    protected Armor equippedArmor;
+    protected Trinket equippedTrinket;
     protected boolean facingLeft;
     protected SpriteState currentState;
     protected Map<SpriteState, String> spriteSheetResources;
@@ -49,6 +52,9 @@ public abstract class Character {
         this.intelligence = intelligence;
         this.speed = speed;
         this.moveSpeed = moveSpeed;
+        this.equippedWeapon = null;
+        this.equippedArmor = null;
+        this.equippedTrinket = null;
         this.facingLeft = facingLeft;
         this.attackRange = attackRange;
         this.spriteSheetResources = spriteSheetResources != null ? spriteSheetResources : new HashMap<>();
@@ -107,6 +113,22 @@ public abstract class Character {
     // Method for attack
     public abstract void attack(Character target);
 
+    // Equipment methods
+    public void equipWeapon(Weapon weapon) {
+        this.equippedWeapon = weapon;
+        Log.d("Character", name + " equipped " + weapon.getName()); // Changed to Log.d to match current logging
+    }
+
+    public void equipArmor(Armor armor) {
+        this.equippedArmor = armor;
+        Log.d("Character", name + " equipped " + armor.getName());
+    }
+
+    public void equipTrinket(Trinket trinket) {
+        this.equippedTrinket = trinket;
+        Log.d("Character", name + " equipped " + trinket.getName());
+    }
+
     // Method to take damage
     public void takeDamage(int damage) {
         int damageTaken = Math.max(damage - defense, 0); // Adjust for defense
@@ -140,13 +162,29 @@ public abstract class Character {
         return name;
     }
 
+    //Stats that can be modified by equipment now check to see if their corresponding equipment is... equipped, and if so adds their bonus to the stat.
     public int getDefense() {
-        return defense;
+        int totalDefense = defense;
+        if (equippedArmor != null) {
+            totalDefense += equippedArmor.getDefenseBonus();
+        }
+        if (equippedTrinket != null) {
+            totalDefense += equippedTrinket.getStatBonus();
+        }
+        return totalDefense;
     }
 
     public int getAttackPower() {
-        return attackPower;
+        int totalAttack = attackPower;
+        if (equippedWeapon != null) {
+            totalAttack += equippedWeapon.getAttackBonus();
+        }
+        if (equippedTrinket != null) {
+            totalAttack += equippedTrinket.getStatBonus();
+        }
+        return totalAttack;
     }
+
 
     public int getStrength() {
         return strength;
@@ -161,7 +199,14 @@ public abstract class Character {
     }
 
     public int getSpeed() {
-        return speed;
+        int totalSpeed = speed;
+        if (equippedArmor != null) {
+            totalSpeed += equippedArmor.getSpeedModifier();
+        }
+        if (equippedTrinket != null) {
+            totalSpeed += equippedTrinket.getStatBonus();
+        }
+        return Math.max(1, totalSpeed);
     }
 
     public int getAttackRange() { return attackRange; }
