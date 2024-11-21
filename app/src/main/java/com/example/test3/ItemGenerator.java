@@ -21,6 +21,17 @@ import java.util.List;
 
 public class ItemGenerator {
 
+
+
+    //i can't believe this worked
+    private static String getNodeText(Node node) {
+        if (node == null) return null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO) {
+            return node.getTextContent();
+        }
+        return node.getFirstChild() != null ? node.getFirstChild().getNodeValue() : null;
+    }
+
     private static final String WEAPON_DATA_FILE = "weapon_data.xml";
     private static final String ARMOR_DATA_FILE = "armor_data.xml";
     private static final String TRINKET_DATA_FILE = "trinket_data.xml";
@@ -32,13 +43,27 @@ public class ItemGenerator {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(new File(WEAPON_DATA_FILE));
             NodeList weaponNodes = document.getElementsByTagName("weapon");
+
             for (int i = 0; i < weaponNodes.getLength(); i++) {
                 Node weaponNode = weaponNodes.item(i);
                 if (weaponNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element weaponElement = (Element) weaponNode;
-                    String name = weaponElement.getElementsByTagName("name").item(0).getTextContent();
-                    int attackBonus = Integer.parseInt(weaponElement.getElementsByTagName("attackBonus").item(0).getTextContent());
-                    weapons.add(new Weapon(name, "", 0, 0, attackBonus));
+
+                    String name = null;
+                    Node nameNode = weaponElement.getElementsByTagName("name").item(0);
+                    if (nameNode != null) {
+                        name = getNodeText(nameNode);
+                    }
+
+                    int attackBonus = 0;
+                    Node attackBonusNode = weaponElement.getElementsByTagName("attackBonus").item(0);
+                    if (attackBonusNode != null) {
+                        attackBonus = Integer.parseInt(getNodeText(attackBonusNode));
+                    }
+
+                    if (name != null) {
+                        weapons.add(new Weapon(name, "", 0, 0, attackBonus));
+                    }
                 }
             }
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -74,9 +99,9 @@ public class ItemGenerator {
                 Node armorNode = armorNodes.item(i);
                 if (armorNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element armorElement = (Element) armorNode;
-                    String name = armorElement.getElementsByTagName("name").item(0).getTextContent();
-                    int defenseBonus = Integer.parseInt(armorElement.getElementsByTagName("defenseBonus").item(0).getTextContent());
-                    String armorWeightStr = armorElement.getElementsByTagName("armorWeight").item(0).getTextContent();
+                    String name = getNodeText(armorElement.getElementsByTagName("name").item(0));
+                    int defenseBonus = Integer.parseInt(getNodeText(armorElement.getElementsByTagName("defenseBonus").item(0)));
+                    String armorWeightStr = getNodeText(armorElement.getElementsByTagName("armorWeight").item(0));
                     Armor.ArmorWeight armorWeight = Armor.ArmorWeight.valueOf(armorWeightStr);
                     armors.add(new Armor(name, "", 0, 0, defenseBonus, armorWeight));
                 }
@@ -112,18 +137,14 @@ public class ItemGenerator {
                 Node trinketNode = trinketNodes.item(i);
                 if (trinketNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element trinketElement = (Element) trinketNode;
-                    String name = trinketElement.getElementsByTagName("name").item(0).getTextContent();
-                    int statBonus = Integer.parseInt(trinketElement.getElementsByTagName("statBonus").item(0).getTextContent());
-                    int weight = Integer.parseInt(trinketElement.getElementsByTagName("weight").item(0).getTextContent());
-                    TrinketType type = TrinketType.valueOf(trinketElement.getElementsByTagName("type").item(0).getTextContent());
+                    String name = getNodeText(trinketElement.getElementsByTagName("name").item(0));
+                    int statBonus = Integer.parseInt(getNodeText(trinketElement.getElementsByTagName("statBonus").item(0)));
+                    int weight = Integer.parseInt(getNodeText(trinketElement.getElementsByTagName("weight").item(0)));
+                    TrinketType type = TrinketType.valueOf(getNodeText(trinketElement.getElementsByTagName("type").item(0)));
                     totalWeight += weight;
                     weightedTrinketData.add(new WeightedTrinketData(name, statBonus, weight, type));
                 }
             }
-
-
-
-
             for (WeightedTrinketData data : weightedTrinketData) {
                 int roll = (int) (Math.random() * totalWeight);
                 int cumulativeWeight = 0;
