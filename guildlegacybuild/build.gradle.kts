@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.constraint.layout)
     implementation(libs.livedata)
     implementation(libs.viewmodel)
+    implementation(libs.support.annotations)
     testImplementation(libs.junit)
     androidTestImplementation(libs.runner)
     androidTestImplementation(libs.android.espresso.core)
