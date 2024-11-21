@@ -5,38 +5,72 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".MainActivity">
+        android:padding="16dp"
+        tools:context=".MainActivity"
+        android:background="@drawable/glback">
 
+    <!-- App Bar Layout with Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
-
-        <Button
-            android:id="@+id/switchToGridButton"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Switch to grid view" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="16dp"
-            app:srcCompat="@android:drawable/ic_dialog_email"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:padding="16dp">
+
+
+        <TextView
+                android:id="@+id/game_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/game_title"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_red_dark"
+                android:paddingBottom="20dp" />
+
+
+        <EditText
+                android:id="@+id/editTextUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username_hint"
+                android:inputType="text"
+                android:textColorHint="@android:color/black"
+                android:padding="20dp"
+                android:layout_marginBottom="10dp" />
+
+
+        <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password_hint"
+                android:inputType="textPassword"
+                android:textColorHint="@android:color/black"
+                android:padding="20dp"
+                android:layout_marginBottom="20dp" />
+
+
+        <Button
+                android:id="@+id/buttonLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center" />
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

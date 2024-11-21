@@ -36,6 +36,10 @@ public class BattleCharacter {
         this.row = row;
         this.col = col;
     }
+    public void setPositionPair(Pair<Integer, Integer> position) {
+        this.row = position.first;
+        this.col = position.second;
+    }
 
     public boolean isHero() {
         return character instanceof Hero;
@@ -97,7 +101,7 @@ public class BattleCharacter {
                 int nextCol = nextPosition.second;
 
                 // Check if the new position is occupied
-                if (!battleManager.getGridManager().isPositionOccupied(nextRow, nextCol)) {
+                if (!battleManager.getCharacterController().isPositionOccupied(nextRow, nextCol)) {
                     battleManager.moveCharacter(this, nextPosition);
                     Log.d("BattleCharacter", character.getName() + " moved to (" + nextRow + ", " + nextCol + ")");
 
