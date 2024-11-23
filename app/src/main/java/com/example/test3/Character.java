@@ -1,8 +1,10 @@
 package com.example.test3;
 
+import android.os.Build;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import androidx.annotation.RequiresApi;
 
 import java.util.*;
 
@@ -62,10 +64,12 @@ public abstract class Character {
         this.currentState = SpriteState.IDLE;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public int getFrameCountsForCurrentState(){
         return stateFrameCounts.getOrDefault(currentState, 1);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public String getCurrentSpriteSheetResource() {
         return spriteSheetResources.getOrDefault(currentState, null);
     }
@@ -80,6 +84,7 @@ public abstract class Character {
 
 
     // Pathfinding method to move towards a target
+    @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
     public void moveTowards(Pair<Integer, Integer> targetPosition, Set<Pair<Integer, Integer>> occupiedCells, CharacterController characterController) {
         AStarPathfinder pathfinder = new AStarPathfinder();
 

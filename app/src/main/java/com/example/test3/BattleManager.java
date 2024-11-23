@@ -1,8 +1,10 @@
 package com.example.test3;
 
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Pair;
+import androidx.annotation.RequiresApi;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ public class BattleManager {
     }
 
     // Start new floor
+    @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
     public void startNewFloor(Floor floor) {
         // Clear existing lists to avoid residual data
         clearPreviousFloorData();
@@ -168,6 +171,7 @@ public class BattleManager {
     }
 
     // Method to find the next position towards the target using pathfinding
+    @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
     public Pair<Integer, Integer> findNextPositionTowards(BattleCharacter character, BattleCharacter target) {
         int startRow = character.getRow();
         int startCol = character.getCol();
@@ -202,6 +206,7 @@ public class BattleManager {
     }
 
     // Asynchronous version of findNextPositionTowards
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void findNextPositionTowardsAsync(BattleCharacter character, BattleCharacter target, Consumer<Pair<Integer, Integer>> callback) {
         executorService.execute(() -> {
             Pair<Integer, Integer> nextPosition = findNextPositionTowards(character, target);
@@ -212,6 +217,7 @@ public class BattleManager {
     }
 
     // Method to move a character on the grid
+    @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
     public void moveCharacter(BattleCharacter character, Pair<Integer, Integer> newPosition) {
         int oldRow = character.getRow();
         int oldCol = character.getCol();
@@ -324,6 +330,25 @@ public class BattleManager {
 //        startNewFloor(nextFloor);
 //    }
 
+    private void generateBattleRewards() {
+        // Generate one of each type of item
+        Weapon weaponReward = ItemGenerator.generateWeapon();
+        Armor armorReward = ItemGenerator.generateArmor();
+        Trinket trinketReward = ItemGenerator.generateTrinket();
+
+        // Log the generated items
+        Log.d("BattleManager", "Battle Rewards Generated:");
+        if (weaponReward != null) {
+            Log.d("BattleManager", "Weapon: " + weaponReward.getName());
+        }
+        if (armorReward != null) {
+            Log.d("BattleManager", "Armor: " + armorReward.getName());
+        }
+        if (trinketReward != null) {
+            Log.d("BattleManager", "Trinket: " + trinketReward.getName());
+        }
+    }
+
     private void displayWinner() {
         boolean allHeroesDead = true;
         boolean allEnemiesDead = true;
@@ -331,12 +356,11 @@ public class BattleManager {
         for (BattleCharacter character : allCharacters) {
             if (character.isAlive()) {
                 if (character.isHero()) {
-                    allHeroesDead = false;  // If we find an alive hero, set `allHeroesDead` to false
+                    allHeroesDead = false;
                 } else {
-                    allEnemiesDead = false;  // If we find an alive enemy, set `allEnemiesDead` to false
+                    allEnemiesDead = false;
                 }
             }
-            // If neither all heroes nor all enemies are dead, we can stop early
             if (!allHeroesDead && !allEnemiesDead) {
                 break;
             }
@@ -345,18 +369,20 @@ public class BattleManager {
         if (allHeroesDead) {
             System.out.println("Enemies win the battle!");
         } else if (allEnemiesDead) {
+            // Heroes won - generate rewards before advancing
+            generateBattleRewards();
+
             gridBattleActivity.advanceToNextFloor();
-            try{
+            try {
                 MainActivity.warrior.UpdateData();
                 MainActivity.mage.UpdateData();
                 MainActivity.cleric.UpdateData();
                 MainActivity.ranger.UpdateData();
-            } catch (FileNotFoundException e){
-
+            } catch (FileNotFoundException e) {
+                Log.e("BattleManager", "Error updating hero data", e);
             }
-
-
         }
+
         handler.removeCallbacks(() -> executeTurn());  // Clear all tasks after the battle
         isBattleInProgress = false;
     }

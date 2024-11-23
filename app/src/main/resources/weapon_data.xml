@@ -24,4 +24,60 @@
         <name>Jagged Halberd</name>
         <attackBonus>15</attackBonus>
     </weapon>
+    <weapon>
+        <name>Shadow Blade</name>
+        <attackBonus>17</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Crystal Spear</name>
+        <attackBonus>20</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Thunder Maul</name>
+        <attackBonus>22</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Frost Axe</name>
+        <attackBonus>25</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Dragon's Fang</name>
+        <attackBonus>27</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Celestial Staff</name>
+        <attackBonus>30</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Void Scythe</name>
+        <attackBonus>32</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Phoenix Glaive</name>
+        <attackBonus>35</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Demon's Cleaver</name>
+        <attackBonus>37</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Astral Bow</name>
+        <attackBonus>40</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Titan's Warhammer</name>
+        <attackBonus>42</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Soul Reaver</name>
+        <attackBonus>45</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Divine Rapier</name>
+        <attackBonus>47</attackBonus>
+    </weapon>
+    <weapon>
+        <name>Moonlight Greatsword</name>
+        <attackBonus>50</attackBonus>
+    </weapon>
 </weapons>

@@ -30,4 +30,74 @@
         <defenseBonus>18</defenseBonus>
         <armorWeight>HEAVY</armorWeight>
     </item>
+    <item>
+        <name>Shadow Cloak</name>
+        <defenseBonus>21</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Runic Brigandine</name>
+        <defenseBonus>24</defenseBonus>
+        <armorWeight>MEDIUM</armorWeight>
+    </item>
+    <item>
+        <name>Obsidian Plate</name>
+        <defenseBonus>27</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
+    <item>
+        <name>Moonweave Vestments</name>
+        <defenseBonus>30</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Crystal Mail</name>
+        <defenseBonus>33</defenseBonus>
+        <armorWeight>MEDIUM</armorWeight>
+    </item>
+    <item>
+        <name>Titan's Bulwark</name>
+        <defenseBonus>36</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
+    <item>
+        <name>Phoenix Feather Garb</name>
+        <defenseBonus>39</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Living Wood Armor</name>
+        <defenseBonus>42</defenseBonus>
+        <armorWeight>MEDIUM</armorWeight>
+    </item>
+    <item>
+        <name>Golem's Shell</name>
+        <defenseBonus>45</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
+    <item>
+        <name>Void-Woven Shroud</name>
+        <defenseBonus>48</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Astral Scale Mail</name>
+        <defenseBonus>51</defenseBonus>
+        <armorWeight>MEDIUM</armorWeight>
+    </item>
+    <item>
+        <name>Celestial Platemail</name>
+        <defenseBonus>54</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
+    <item>
+        <name>Time-Warped Silks</name>
+        <defenseBonus>57</defenseBonus>
+        <armorWeight>LIGHT</armorWeight>
+    </item>
+    <item>
+        <name>Literally Just A Steel Barrel</name>
+        <defenseBonus>60</defenseBonus>
+        <armorWeight>HEAVY</armorWeight>
+    </item>
 </armor>
